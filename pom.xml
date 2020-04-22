@@ -16,6 +16,16 @@
     <name>DataSearch Dengue Store</name>
 
     <dependencies>
+        <dependency>
+            <groupId>org.locationtech.geomesa</groupId>
+            <artifactId>geomesa-hbase-datastore_2.11</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+         <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>${common-cli.version}</version>
+         </dependency>
     </dependencies>
 
     <build>
@@ -80,9 +90,50 @@
             </plugin>
         </plugins>
     </build>
+    <repositories>
+        <repository>
+                    <id>locationtech-releases</id>
+                    <url>https://repo.locationtech.org/content/groups/releases</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>locationtech-snapshots</id>
+                    <url>https://repo.locationtech.org/content/groups/snapshots</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>boundlessgeo</id>
+                    <url>http://repo.boundlessgeo.com/main</url>
+                </repository>
+                <repository>
+                    <id>osgeo</id>
+                    <url>http://download.osgeo.org/webdav/geotools</url>
+                </repository>
+                <repository>
+                    <id>osgeo-1</id>
+                    <url>https://repo.osgeo.org/repository/release/</url>
+                </repository>
+                <repository>
+                    <id>conjars.org</id>
+                    <url>http://conjars.org/repo</url>
+                </repository>
+                <repository>
+                    <id>geomajas</id>
+                    <name>Geomajas Maven Repository</name>
+                    <url>http://maven.geomajas.org/(http://maven.geomajas.org/)</url>
+                </repository>
+    </repositories>
     <properties>
        <maven.findbugsplugin.version.exclude>findbugs-exclude.xml</maven.findbugsplugin.version.exclude>
        <maven.findbugsplugin.version>3.0.5</maven.findbugsplugin.version>
+       <common-cli.version>1.4</common-cli.version>
     </properties>
 
 </project>
