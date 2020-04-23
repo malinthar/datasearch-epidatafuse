@@ -4,6 +4,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.log4j.BasicConfigurator;
 import org.geotools.data.DataAccessFactory;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
@@ -22,6 +23,8 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.sort.SortBy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -31,15 +34,16 @@ import java.util.Map;
 /**
  * DengueStore is a spatio-temporal data store for disease related data.
  */
-public class DengueStore implements Runnable {
+public class DiseaseDataStore implements Runnable {
 
     private final Map<String, String> params;
-    private final DengueData data;
+    private final DiseaseData data;
     private final boolean cleanup;
     private final boolean readOnly;
+    private static final Logger logger = LoggerFactory.getLogger(DiseaseDataStore.class);
 
-    public DengueStore(String[] args, DataAccessFactory.Param[] parameters,
-                       DengueData data, boolean readOnly) throws ParseException {
+    public DiseaseDataStore(String[] args, DataAccessFactory.Param[] parameters,
+                            DiseaseData data, boolean readOnly) throws ParseException {
         Options options = createOptions(parameters);
         CommandLine command = CommandLineDataStore.parseArgs(getClass(), options, args);
         params = CommandLineDataStore.getDataStoreParams(command, options);
@@ -51,12 +55,12 @@ public class DengueStore implements Runnable {
 
     public static void main(String[] args) {
         try {
-
-            new DengueStore(args, new HBaseDataStoreFactory().getParametersInfo(), new DengueData(), false).run();
+            BasicConfigurator.configure();
+            new DiseaseDataStore(args, new HBaseDataStoreFactory().getParametersInfo(), new CDRData(), false).run();
         } catch (ParseException e) {
             System.exit(1);
         } catch (Throwable e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
             System.exit(2);
         }
         System.exit(0);
@@ -93,26 +97,27 @@ public class DengueStore implements Runnable {
 
             queryFeatures(datastore, queries);
         } catch (Exception e) {
+            logger.error(e.getMessage());
             throw new RuntimeException("Error running quickstart:", e);
         } finally {
             cleanup(datastore, data.getTypeName(), cleanup);
         }
-        System.out.println("Done");
+        logger.info("Done");
     }
 
     public DataStore createDataStore(Map<String, String> params) throws IOException {
-        System.out.println("Loading datastore");
+        logger.info("Loading datastore");
 
         // use geotools service loading to get a datastore instance
         DataStore datastore = DataStoreFinder.getDataStore(params);
         if (datastore == null) {
             throw new RuntimeException("Could not create data store with provided parameters");
         }
-        System.out.println();
+        logger.info("created data");
         return datastore;
     }
 
-    public void ensureSchema(DataStore datastore, DengueData data) throws IOException {
+    public void ensureSchema(DataStore datastore, DiseaseData data) throws IOException {
         SimpleFeatureType sft = datastore.getSchema(data.getTypeName());
         if (sft == null) {
             throw new IllegalStateException("Schema '" + data.getTypeName() + "' does not exist. " +
@@ -120,30 +125,31 @@ public class DengueStore implements Runnable {
         }
     }
 
-    public SimpleFeatureType getSimpleFeatureType(DengueData data) {
+    public SimpleFeatureType getSimpleFeatureType(DiseaseData data) {
         return data.getSimpleFeatureType();
     }
 
     public void createSchema(DataStore datastore, SimpleFeatureType sft) throws IOException {
-        System.out.println("Creating schema: " + DataUtilities.encodeType(sft));
+        logger.info("Creating schema: " + DataUtilities.encodeType(sft));
         // we only need to do the once - however, calling it repeatedly is a no-op
         datastore.createSchema(sft);
-        System.out.println();
+        logger.info("");
     }
-    public List<SimpleFeature> getTestFeatures(DengueData data) {
-        System.out.println("Generating test data");
+    public List<SimpleFeature> getTestFeatures(DiseaseData data) {
+        logger.info("Generating test data");
         List<SimpleFeature> features = data.getTestData();
-        System.out.println();
+        logger.info("");
         return features;
     }
 
-    public List<Query> getTestQueries(DengueData data) {
+    public List<Query> getTestQueries(DiseaseData data) {
         return data.getTestQueries();
     }
 
-    public void writeFeatures(DataStore datastore, SimpleFeatureType sft, List<SimpleFeature> features) throws IOException {
+    public void writeFeatures(DataStore datastore, SimpleFeatureType sft,
+                              List<SimpleFeature> features) throws IOException {
         if (features.size() > 0) {
-            System.out.println("Writing test data");
+            logger.info("Writing test data");
             // use try-with-resources to ensure the writer is closed
             try (FeatureWriter<SimpleFeatureType, SimpleFeature> writer =
                          datastore.getFeatureWriterAppend(sft.getTypeName(), Transaction.AUTO_COMMIT)) {
@@ -172,20 +178,20 @@ public class DengueStore implements Runnable {
                     writer.write();
                 }
             }
-            System.out.println("Wrote " + features.size() + " features");
-            System.out.println();
+            logger.info("Wrote " + features.size() + " features");
+            logger.info("");
         }
     }
 
     public void queryFeatures(DataStore datastore, List<Query> queries) throws IOException {
         for (Query query : queries) {
-            System.out.println("Running query " + ECQL.toCQL(query.getFilter()));
+            logger.info("Running query " + ECQL.toCQL(query.getFilter()));
             if (query.getPropertyNames() != null) {
-                System.out.println("Returning attributes " + Arrays.asList(query.getPropertyNames()));
+                logger.info("Returning attributes " + Arrays.asList(query.getPropertyNames()));
             }
             if (query.getSortBy() != null) {
                 SortBy sort = query.getSortBy()[0];
-                System.out.println("Sorting by " + sort.getPropertyName() + " " + sort.getSortOrder());
+                logger.info("Sorting by " + sort.getPropertyName() + " " + sort.getSortOrder());
             }
             // submit the query, and get back an iterator over matching features
             // use try-with-resources to ensure the reader is closed
@@ -197,14 +203,14 @@ public class DengueStore implements Runnable {
                     SimpleFeature feature = reader.next();
                     if (n++ < 10) {
                         // use geotools data utilities to get a printable string
-                        System.out.println(String.format("%02d", n) + " " + DataUtilities.encodeFeature(feature));
+                        logger.info(String.format("%02d", n) + " " + DataUtilities.encodeFeature(feature));
                     } else if (n == 10) {
-                        System.out.println("...");
+                        logger.info("...");
                     }
                 }
-                System.out.println();
-                System.out.println("Returned " + n + " total features");
-                System.out.println();
+                logger.info("");
+                logger.info("Returned " + n + " total features");
+                logger.info("");
             }
         }
     }
@@ -213,7 +219,7 @@ public class DengueStore implements Runnable {
         if (datastore != null) {
             try {
                 if (cleanup) {
-                    System.out.println("Cleaning up test data");
+                    logger.info("Cleaning up test data");
                     if (datastore instanceof GeoMesaDataStore) {
                         ((GeoMesaDataStore) datastore).delete();
                     } else {
@@ -222,7 +228,7 @@ public class DengueStore implements Runnable {
                     }
                 }
             } catch (Exception e) {
-                System.err.println("Exception cleaning up test data: " + e.toString());
+                logger.error("Exception cleaning up test data: " + e.toString());
             } finally {
                 // make sure that we dispose of the datastore when we're done with it
                 datastore.dispose();

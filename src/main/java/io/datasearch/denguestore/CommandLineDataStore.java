@@ -7,12 +7,18 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.geotools.data.DataAccessFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Util class for Datastore.
+ */
 public class CommandLineDataStore {
 
+    private static final Logger logger = LoggerFactory.getLogger(CommandLineDataStore.class);
     private CommandLineDataStore() {}
 
     public static Options createOptions(DataAccessFactory.Param[] parameters) {
@@ -36,7 +42,7 @@ public class CommandLineDataStore {
         try {
             return new DefaultParser().parse(options, args);
         } catch (ParseException e) {
-            System.err.println(e.getMessage());
+            logger.error(e.getMessage());
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp(caller.getName(), options);
             throw e;
