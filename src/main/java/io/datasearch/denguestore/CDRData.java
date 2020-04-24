@@ -49,11 +49,11 @@ public class CDRData implements DiseaseData {
             // list the attributes that constitute the feature type
             // this is a reduced set of the attributes from GDELT 2.0
             StringBuilder attributes = new StringBuilder();
-            attributes.append("Locale:String:index=true,"); // marks this attribute for indexing
+            attributes.append("Locale:String,"); // marks this attribute for indexing
             attributes.append("Latitude:String,");
             attributes.append("Longitude:String,");
             attributes.append("resident:String,");
-            attributes.append("work:String,");
+            attributes.append("work:String:index=true,");
             attributes.append("*geom:Point:srid=4326"); // the "*" denotes the default geometry (used for indexing)
 
             // create the simple-feature type - use the GeoMesa 'SimpleFeatureTypes' class for best compatibility
@@ -84,7 +84,7 @@ public class CDRData implements DiseaseData {
 
             // use a geotools SimpleFeatureBuilder to create our features
             // use apache commons-csv to parse the GDELT file
-            try (CSVParser parser = CSVParser.parse(input, StandardCharsets.UTF_8, CSVFormat.TDF)) {
+            try (CSVParser parser = CSVParser.parse(input, StandardCharsets.UTF_8, CSVFormat.EXCEL)) {
                 for (CSVRecord record : parser) {
                     try {
                         // pull out the fields corresponding to our simple feature attributes
@@ -124,8 +124,8 @@ public class CDRData implements DiseaseData {
             try {
                 List<Query> queries = new ArrayList<>();
 
-                // attribute query on a secondary index - note we specified index=true for EventCode
-                queries.add(new Query(getTypeName(), ECQL.toFilter("work = '447'")));
+                // attribute query on a secondary index - note we specified index=true for Locale
+                queries.add(new Query(getTypeName(), ECQL.toFilter("Locale = '1610'")));
                 // attribute query on a secondary index with a projection
 
                 this.queries = Collections.unmodifiableList(queries);

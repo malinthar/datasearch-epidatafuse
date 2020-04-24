@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>GeoMesa Leaflet Map Viewer</title>
@@ -26,14 +27,23 @@
 <script>
 
     // Marker used to split file in order to inject data and generated code.
-    var points = {"type":"FeatureCollection","features":[]};
+    var points = {"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[80.4615,5.9427]},"properties":{"Locale":"1846","Latitude":"5.942678406","Longitude":"80.46149697","resident":"3918","work":"561"},"id":"1846"},{"type":"Feature","geometry":{"type":"Point","coordinates":[80.5962,5.9337]},"properties":{"Locale":"1610","Latitude":"5.933695294","Longitude":"80.59624365","resident":"3805","work":"494"},"id":"1610"},{"type":"Feature","geometry":{"type":"Point","coordinates":[80.5513,5.9427]},"properties":{"Locale":"1856","Latitude":"5.942678406","Longitude":"80.55132809","resident":"1739","work":"2440"},"id":"1856"},{"type":"Feature","geometry":{"type":"Point","coordinates":[80.5513,5.9517]},"properties":{"Locale":"2107","Latitude":"5.951661518","Longitude":"80.55132809","resident":"163","work":"89"},"id":"2107"},{"type":"Feature","geometry":{"type":"Point","coordinates":[80.5064,5.9427]},"properties":{"Locale":"1851","Latitude":"5.942678406","Longitude":"80.50641253","resident":"2513","work":"534"},"id":"1851"},{"type":"Feature","geometry":{"type":"Point","coordinates":[80.5154,5.9517]},"properties":{"Locale":"2103","Latitude":"5.951661518","Longitude":"80.51539564","resident":"1909","work":"447"},"id":"2103"},{"type":"Feature","geometry":{"type":"Point","coordinates":[80.5334,5.9517]},"properties":{"Locale":"2105","Latitude":"5.951661518","Longitude":"80.53336186","resident":"2805","work":"1146"},"id":"2105"},{"type":"Feature","geometry":{"type":"Point","coordinates":[80.5423,5.9517]},"properties":{"Locale":"2106","Latitude":"5.951661518","Longitude":"80.54234498","resident":"3838","work":"4141"},"id":"2106"},{"type":"Feature","geometry":{"type":"Point","coordinates":[80.5244,5.9427]},"properties":{"Locale":"1853","Latitude":"5.942678406","Longitude":"80.52437875","resident":"989","work":"227"},"id":"1853"},{"type":"Feature","geometry":{"type":"Point","coordinates":[80.5603,5.9427]},"properties":{"Locale":"1857","Latitude":"5.942678406","Longitude":"80.5603112","resident":"3661","work":"1118"},"id":"1857"}]};
 
     function onEachFeature(feature, layer) {
         layer.bindPopup("ID: " + feature.id + "<br>" + "GEOM: " + feature.geometry.type + "[" + feature.geometry.coordinates + "]<br>" + "Locale: " + feature.properties.Locale + "<br>" + "Latitude: " + feature.properties.Latitude + "<br>" + "Longitude: " + feature.properties.Longitude + "<br>" + "resident: " + feature.properties.resident + "<br>" + "work: " + feature.properties.work);
     }
 
 var heat = L.heatLayer([
-
+        [5.951661518, 80.55132809, 1],
+        [5.942678406, 80.50641253, 1],
+        [5.942678406, 80.5603112, 1],
+        [5.951661518, 80.54234498, 1],
+        [5.942678406, 80.46149697, 1],
+        [5.942678406, 80.52437875, 1],
+        [5.951661518, 80.51539564, 1],
+        [5.951661518, 80.53336186, 1],
+        [5.942678406, 80.55132809, 1],
+        [5.933695294, 80.59624365, 1]
     ], { radius: 25 });
 
 
