@@ -1,5 +1,7 @@
-package io.datasearch.denguestore;
+package io.datasearch.denguestore.data;
 
+import io.datasearch.denguestore.DiseaseData;
+import io.datasearch.denguestore.DiseaseDataStore;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -47,13 +49,12 @@ public class CDRData implements DiseaseData {
     public SimpleFeatureType getSimpleFeatureType() {
         if (sft == null) {
             // list the attributes that constitute the feature type
-            // this is a reduced set of the attributes from GDELT 2.0
             StringBuilder attributes = new StringBuilder();
-            attributes.append("Locale:String,"); // marks this attribute for indexing
+            attributes.append("Locale:String:index=true,"); // marks this attribute for indexing
             attributes.append("Latitude:String,");
             attributes.append("Longitude:String,");
             attributes.append("resident:String,");
-            attributes.append("work:String:index=true,");
+            attributes.append("work:String,");
             attributes.append("*geom:Point:srid=4326"); // the "*" denotes the default geometry (used for indexing)
 
             // create the simple-feature type - use the GeoMesa 'SimpleFeatureTypes' class for best compatibility
@@ -74,7 +75,7 @@ public class CDRData implements DiseaseData {
             List<SimpleFeature> features = new ArrayList<>();
 
             // read the bundled GDELT 2.0 TSV
-            URL input = getClass().getClassLoader().getResource("cdr-data.csv");
+            URL input = getClass().getClassLoader().getResource("cdr/cdr-data.csv");
             if (input == null) {
                 throw new RuntimeException("Couldn't load resource cdr-data.CSV");
             }

@@ -1,5 +1,6 @@
 package io.datasearch.denguestore;
 
+import io.datasearch.denguestore.data.WeatherData;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -56,7 +57,7 @@ public class DiseaseDataStore implements Runnable {
     public static void main(String[] args) {
         try {
             BasicConfigurator.configure();
-            new DiseaseDataStore(args, new HBaseDataStoreFactory().getParametersInfo(), new CDRData(), false).run();
+            new DiseaseDataStore(args, new HBaseDataStoreFactory().getParametersInfo(), new WeatherData(), false).run();
         } catch (ParseException e) {
             System.exit(1);
         } catch (Throwable e) {
