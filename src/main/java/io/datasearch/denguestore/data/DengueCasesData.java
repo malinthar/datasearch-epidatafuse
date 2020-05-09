@@ -42,7 +42,7 @@ public class DengueCasesData implements DiseaseData {
 
     @Override
     public String getTypeName() {
-        return "dengue-data";
+        return "dengue-data-old";
     }
 
     @Override

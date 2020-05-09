@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import io.datasearch.denguestore.data.DengueData;
 
 /**
  * DengueStore is a spatio-temporal data store for disease related data.

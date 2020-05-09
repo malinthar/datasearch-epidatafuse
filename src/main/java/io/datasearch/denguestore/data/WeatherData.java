@@ -120,7 +120,9 @@ public class WeatherData implements DiseaseData {
                     }
                 }
             } catch (IOException e) {
+            	logger.info(e.getMessage());
                 throw new RuntimeException("Error reading weather-data:", e);
+                
             }
             this.features = Collections.unmodifiableList(features);
         }
