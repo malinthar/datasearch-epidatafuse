@@ -1,6 +1,9 @@
 package io.datasearch.denguestore;
 
-import io.datasearch.denguestore.data.WeatherData;
+import io.datasearch.denguestore.data.DiseaseData;
+import io.datasearch.denguestore.data.FeatureData;
+import io.datasearch.denguestore.util.CommandLineDataStore;
+import io.datasearch.denguestore.util.FeatureConfigurator;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -58,7 +61,8 @@ public class DiseaseDataStore implements Runnable {
     public static void main(String[] args) {
         try {
             BasicConfigurator.configure();
-            new DiseaseDataStore(args, new HBaseDataStoreFactory().getParametersInfo(), new WeatherData(), false).run();
+            DiseaseData feature = new FeatureData(FeatureConfigurator.getFeatureConfiguration());
+            new DiseaseDataStore(args, new HBaseDataStoreFactory().getParametersInfo(), feature, false).run();
         } catch (ParseException e) {
             System.exit(1);
         } catch (Throwable e) {
@@ -99,6 +103,7 @@ public class DiseaseDataStore implements Runnable {
 
             queryFeatures(datastore, queries);
         } catch (Exception e) {
+
             logger.error(e.getMessage());
             throw new RuntimeException("Error running quickstart:", e);
         } finally {

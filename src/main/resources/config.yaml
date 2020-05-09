@@ -1,0 +1,21 @@
+feature_name: "weather-data-rainfall"
+attributes:
+  - "StationID:String:index=true"
+  - "StationName:String"
+  - "Latitude:String"
+  - "Longitude:String"
+  - "dtg:Date"
+  - "ObservedValue:String"
+  - "*geom:Point:srid=4326"
+queries:
+  - query_name: "query1"
+    query_description: "Get all rainfall records of weather station in Mannar"
+    query: "StationName = 'Mannar'"
+  - query_name: "query2"
+    query_description: "Get all records of weather stations within colombo district in January of 2013"
+    query: "bbox(geom,79.84,6.7761,80.2228,6.9861) AND dtg DURING 2013-01-01T00:00:00.000Z/2013-01-31T00:00:00.000Z"
+  - query_name: "query3"
+    query_description: "get al records of Homagama weather station during the January of 2013"
+    query: "StationName = 'Homagama' AND dtg DURING 2013-01-01T00:00:00.000Z/2013-01-31T00:00:00.000Z"
+
+data_source: "weather-rainfall-data.csv"

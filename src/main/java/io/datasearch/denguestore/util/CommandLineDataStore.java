@@ -1,4 +1,4 @@
-package io.datasearch.denguestore;
+package io.datasearch.denguestore.util;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;

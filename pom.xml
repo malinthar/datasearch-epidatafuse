@@ -83,6 +83,11 @@
             <artifactId>geomesa-index-api_${scala.abi.version}</artifactId>
             <version>2.4.0</version>
          </dependency>
+         <dependency>
+             <groupId>org.yaml</groupId>
+             <artifactId>snakeyaml</artifactId>
+             <version>${snakeyaml.version}</version>
+         </dependency>
     </dependencies>
 
     <build>
@@ -227,6 +232,7 @@
        <hbase.hadoop.version>2.5.2</hbase.hadoop.version>
        <scala.abi.version>2.11</scala.abi.version>
        <geomesa.version>2.4.0</geomesa.version>
+       <snakeyaml.version>1.25</snakeyaml.version>
     </properties>
 
 </project>

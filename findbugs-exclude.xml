@@ -26,4 +26,9 @@
         <Class name="io.datasearch.denguestore.util.CSVConstructor"/>
         <Bug pattern="RV_RETURN_VALUE_IGNORED"/>
     </Match>
+    <Match>
+        <Class name="io.datasearch.denguestore.data.FeatureData"/>
+        <Bug pattern="EC_UNRELATED_CLASS_AND_INTERFACE"/>
+    </Match>
+
 </FindBugsFilter>

@@ -1,6 +1,5 @@
 package io.datasearch.denguestore.data;
 
-import io.datasearch.denguestore.DiseaseData;
 import io.datasearch.denguestore.DiseaseDataStore;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
