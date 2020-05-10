@@ -7,14 +7,12 @@ import org.apache.commons.csv.CSVRecord;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.feature.type.AttributeTypeImpl;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.util.factory.Hints;
 import org.locationtech.geomesa.utils.interop.SimpleFeatureTypes;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.slf4j.Logger;
@@ -47,9 +45,12 @@ public class FeatureData implements DiseaseData {
 
     public FeatureData(Map<String, Object> parameters) {
         this.typeName = (String) parameters.get("feature_name");
-        buildSimpleFeature((List<String>) parameters.get("attributes"));
-        buildQueries((List<Object>) (parameters.get("queries")));
-        buildTestData((String) parameters.get("data_source"));
+        buildSimpleFeature((List<Map<String, String>>) parameters.get("attributes"));
+        buildQueries((List<Map<String, String>>) (parameters.get("queries")));
+        buildTestData((String) parameters.get("data_source"),
+                (Map<String, Integer>) parameters.get("records"),
+                (Map<String, String>) parameters.get("configurations"),
+                (List<Map<String, String>>) parameters.get("attributes"));
     }
 
     @Override
@@ -99,11 +100,11 @@ public class FeatureData implements DiseaseData {
         return subsetFilter;
     }
 
-    public void buildSimpleFeature(List<String> attributes) {
+    public void buildSimpleFeature(List<Map<String, String>> attributes) {
         if (sft == null) {
             StringBuilder featureAttributes = new StringBuilder();
             for (int i = 0; i < attributes.size(); i++) {
-                featureAttributes.append(attributes.get(i));
+                featureAttributes.append(attributes.get(i).get("attribute"));
                 if (i != attributes.size() - 1) {
                     featureAttributes.append(",");
                 }
@@ -112,7 +113,7 @@ public class FeatureData implements DiseaseData {
         }
     }
 
-    public void buildQueries(List<Object> queriesList) {
+    public void buildQueries(List<Map<String, String>> queriesList) {
         if (queries == null) {
             try {
                 List<Query> queries = new ArrayList<>();
@@ -127,9 +128,11 @@ public class FeatureData implements DiseaseData {
         }
     }
 
-    public void buildTestData(String dataSource) {
+    public void buildTestData(String dataSource, Map<String, Integer> records,
+                              Map<String, String> configurations, List<Map<String, String>> attributes) {
         if (features == null) {
 
+            DateTimeFormatter dateFormat = null;
             List<SimpleFeature> features = new ArrayList<>();
             URL input = getClass().getClassLoader().getResource(dataSource);
             if (input == null) {
@@ -137,33 +140,39 @@ public class FeatureData implements DiseaseData {
             }
 
             // date parser corresponding to the CSV format
-            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.US);
+            if (configurations.get("DateTimeFormat") != null) {
+                dateFormat = DateTimeFormatter.ofPattern(configurations.get("DateTimeFormat"), Locale.US);
+            }
 
-            // parser corresponding to the CSV format
             SimpleFeatureBuilder builder = new SimpleFeatureBuilder(getSimpleFeatureType());
 
+            // parser corresponding to the CSV format
             try (CSVParser parser = CSVParser.parse(input, StandardCharsets.UTF_8, CSVFormat.EXCEL)) {
                 for (CSVRecord record : parser) {
                     try {
-                        List<AttributeDescriptor> descriptors = getSimpleFeatureType().getAttributeDescriptors();
                         // pull out the fields corresponding to our simple feature attributes
-                        for (int i = 0; i < descriptors.size(); i++) {
-                            AttributeTypeImpl  type = (AttributeTypeImpl) descriptors.get(i).getType();
-                            logger.info(type.getUserData().toString());
-                            if ("dtg".equals(descriptors.get(i).getName())) {
-                                builder.set("dtg",
-                                        Date.from(LocalDate.parse(record.get(i),
+                        for (Map<String, String> attribute : attributes) {
+                            if ("Date".equalsIgnoreCase(attribute.get("attributeType"))) {
+                                builder.set(attribute.get("attributeName"),
+                                        Date.from(LocalDate.parse(
+                                                record.get(
+                                                        records.get(attribute.get("attributeName"))),
                                                 dateFormat).atStartOfDay(ZoneOffset.UTC).toInstant()));
-                            } else if ("geom".equals(descriptors.get(i).getName())) {
-                                double latitude = Double.parseDouble(record.get(2));
-                                double longitude = Double.parseDouble(record.get(3));
-                                builder.set("geom", "POINT (" + longitude + " " + latitude + ")");
+                            } else if ("Point".equals(attribute.get("attributeType"))) {
+                                double latitude = Double.parseDouble(
+                                        record.get(records.get("Lat")));
+                                double longitude = Double.parseDouble(
+                                        record.get(records.get("Long")));
+                                builder.set(attribute.get("attributeName"),
+                                        "POINT (" + longitude + " " + latitude + ")");
                             } else {
-                                builder.set(descriptors.get(i).getName(), record.get(i));
+                                builder.set(attribute.get("attributeName"),
+                                        record.get(records.get(attribute.get("attributeName"))));
                             }
                         }
                         builder.featureUserData(Hints.USE_PROVIDED_FID, java.lang.Boolean.TRUE);
-                        SimpleFeature feature = builder.buildFeature(record.get(0));
+                        SimpleFeature feature = builder.buildFeature(
+                                record.get(records.get(configurations.get("FeatureID"))));
                         features.add(feature);
                     } catch (Throwable e) {
                         logger.debug("Invalid weather-data record: " + e.toString() + " " + record.toString());

@@ -1,12 +1,42 @@
 feature_name: "weather-data-rainfall"
+
 attributes:
-  - "StationID:String:index=true"
-  - "StationName:String"
-  - "Latitude:String"
-  - "Longitude:String"
-  - "dtg:Date"
-  - "ObservedValue:String"
-  - "*geom:Point:srid=4326"
+  -  attribute: "StationID:String:index=true"
+     attributeName: "StationID"
+     attributeType: "String"
+  -  attribute: "StationName:String"
+     attributeName: "StationName"
+     attributeType: "String"
+  -  attribute: "Latitude:String"
+     attributeName: "Latitude"
+     attributeType: "String"
+  -  attribute: "Longitude:String"
+     attributeName: "Longitude"
+     attributeType: "String"
+  -  attribute: "dtg:Date"
+     attributeName: "dtg"
+     attributeType: "Date"
+  -  attribute: "ObservedValue:String"
+     attributeName: "ObservedValue"
+     attributeType: "String"
+  -  attribute: "*geom:Point:srid=4326"
+     attributeName: "geom"
+     attributeType: "Point"
+
+records:
+   StationID: 0
+   StationName: 1
+   Latitude: 2
+   Longitude: 3
+   dtg: 4
+   ObservedValue: 5
+   Lat: 2
+   Long: 3
+
+configurations:
+  DateTimeFormat: "yyyyMMdd"
+  FeatureID: "StationID"
+
 queries:
   - query_name: "query1"
     query_description: "Get all rainfall records of weather station in Mannar"
@@ -19,3 +49,4 @@ queries:
     query: "StationName = 'Homagama' AND dtg DURING 2013-01-01T00:00:00.000Z/2013-01-31T00:00:00.000Z"
 
 data_source: "weather-rainfall-data.csv"
+#only csv files are supported.

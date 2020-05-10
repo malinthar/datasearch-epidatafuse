@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import io.datasearch.denguestore.data.DengueData;
 
 /**
  * DengueStore is a spatio-temporal data store for disease related data.
@@ -64,6 +63,7 @@ public class DiseaseDataStore implements Runnable {
             DiseaseData feature = new FeatureData(FeatureConfigurator.getFeatureConfiguration());
             new DiseaseDataStore(args, new HBaseDataStoreFactory().getParametersInfo(), feature, false).run();
         } catch (ParseException e) {
+            logger.error(e.getMessage());
             System.exit(1);
         } catch (Throwable e) {
             logger.error(e.getMessage());
@@ -142,6 +142,7 @@ public class DiseaseDataStore implements Runnable {
         datastore.createSchema(sft);
         logger.info("");
     }
+
     public List<SimpleFeature> getTestFeatures(DiseaseData data) {
         logger.info("Generating test data");
         List<SimpleFeature> features = data.getTestData();

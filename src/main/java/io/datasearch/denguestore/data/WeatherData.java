@@ -119,9 +119,9 @@ public class WeatherData implements DiseaseData {
                     }
                 }
             } catch (IOException e) {
-            	logger.info(e.getMessage());
+                logger.info(e.getMessage());
                 throw new RuntimeException("Error reading weather-data:", e);
-                
+
             }
             this.features = Collections.unmodifiableList(features);
         }
@@ -145,7 +145,7 @@ public class WeatherData implements DiseaseData {
                 queries.add(new Query(getTypeName(), ECQL.toFilter(bbox + " AND " + during)));
                 //get al records of Homagama weather station during the January of 2013
                 queries.add(new Query(getTypeName(), ECQL.toFilter("StationName = 'Homagama' AND " + during),
-                        new String[]{ "StationID", "dtg", "geom" }));
+                        new String[]{"StationID", "dtg", "geom"}));
 
                 this.queries = Collections.unmodifiableList(queries);
             } catch (CQLException e) {
