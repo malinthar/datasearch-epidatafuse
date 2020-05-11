@@ -1,0 +1,10 @@
+queries:
+ - query_name : query1
+   catalog : cdr
+   schema : cdr-data
+   query : Locale = '1610'
+
+ - query_name : query2
+   catalog : cdr
+   schema : cdr-data
+   query : Locale = '1820'
