@@ -2,11 +2,9 @@ package io.datasearch.denguestore;
 
 import io.datasearch.denguestore.data.DiseaseData;
 import io.datasearch.denguestore.data.FeatureData;
+import io.datasearch.denguestore.query.QueryManager;
 import io.datasearch.denguestore.util.CommandLineDataStore;
 import io.datasearch.denguestore.util.FeatureConfigurator;
-import io.datasearch.denguestore.query.QueryManager;
-import scala.Console;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -34,11 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,222 +41,215 @@ import java.util.Map;
  */
 public class DiseaseDataStore implements Runnable {
 
-	private final Map<String, String> params;
-	private final DiseaseData data;
-	private final boolean cleanup;
-	private final boolean readOnly;
-	private static final Logger logger = LoggerFactory.getLogger(DiseaseDataStore.class);
+    private final Map<String, String> params;
+    private final DiseaseData data;
+    private final boolean cleanup;
+    private final boolean readOnly;
+    private static final Logger logger = LoggerFactory.getLogger(DiseaseDataStore.class);
 
-	public DiseaseDataStore(String[] args, DataAccessFactory.Param[] parameters, DiseaseData data, boolean readOnly)
-			throws ParseException {
-		Options options = createOptions(parameters);
-		CommandLine command = CommandLineDataStore.parseArgs(getClass(), options, args);
-		params = CommandLineDataStore.getDataStoreParams(command, options);
-		cleanup = command.hasOption("cleanup");
-		this.data = data;
-		this.readOnly = readOnly;
-		initializeFromOptions(command);
-	}
-
-	public static void main(String[] args) {
-    	
-    	try {
-    		
-    		QueryManager queryManager = new QueryManager();
-    		queryManager.runQueries();
-    		
-    		}catch(Exception e) {
-    			Console.print(e.getMessage());
-    		}
-    		
-    	System.exit(0);
-    	
-//        try {
-//            BasicConfigurator.configure();
-//            DiseaseData feature = new FeatureData(FeatureConfigurator.getFeatureConfiguration());
-//            new DiseaseDataStore(args, new HBaseDataStoreFactory().getParametersInfo(), feature, false).run();
-//        } catch (ParseException e) {
-//            logger.error(e.getMessage());
-//            System.exit(1);
-//        } catch (Throwable e) {
-//            logger.error(e.getMessage());
-//            System.exit(2);
-//        }
-//        System.exit(0);
+    public DiseaseDataStore(String[] args, DataAccessFactory.Param[] parameters, DiseaseData data, boolean readOnly)
+            throws ParseException {
+        Options options = createOptions(parameters);
+        CommandLine command = CommandLineDataStore.parseArgs(getClass(), options, args);
+        params = CommandLineDataStore.getDataStoreParams(command, options);
+        cleanup = command.hasOption("cleanup");
+        this.data = data;
+        this.readOnly = readOnly;
+        initializeFromOptions(command);
     }
 
-	public Options createOptions(DataAccessFactory.Param[] parameters) {
-		// parse the data store parameters from the command line
-		Options options = CommandLineDataStore.createOptions(parameters);
-		if (!readOnly) {
-			options.addOption(Option.builder().longOpt("cleanup").desc("Delete tables after running").build());
-		}
-		return options;
-	}
+    public static void main(String[] args) {
+        try {
+            if ("create".equalsIgnoreCase(args[args.length - 1])) {
+                String[] params = {args[0], args[1], args[2], args[3]};
+                BasicConfigurator.configure();
+                DiseaseData feature = new FeatureData(FeatureConfigurator.getFeatureConfiguration());
+                new DiseaseDataStore(params, new HBaseDataStoreFactory().getParametersInfo(), feature, false).run();
+            } else if ("query".equalsIgnoreCase(args[args.length - 1])) {
+                QueryManager queryManager = new QueryManager();
+                queryManager.runQueries();
+            } else {
+                logger.error("No option provided!\noptions : query, create");
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            System.exit(1);
+        }
+        System.exit(0);
+    }
 
-	public void initializeFromOptions(CommandLine command) {
-	}
+    public Options createOptions(DataAccessFactory.Param[] parameters) {
+        // parse the data store parameters from the command line
+        Options options = CommandLineDataStore.createOptions(parameters);
+        if (!readOnly) {
+            options.addOption(Option.builder().longOpt("cleanup").desc("Delete tables after running").build());
+        }
+        return options;
+    }
 
-	@Override
-	public void run() {
-		DataStore datastore = null;
-		try {
-			datastore = createDataStore(params);
+    public void initializeFromOptions(CommandLine command) {
+    }
 
-			if (readOnly) {
-				ensureSchema(datastore, data);
-			} else {
-				SimpleFeatureType sft = getSimpleFeatureType(data);
-				createSchema(datastore, sft);
-				List<SimpleFeature> features = getTestFeatures(data);
-				writeFeatures(datastore, sft, features);
-			}
+    @Override
+    public void run() {
+        DataStore datastore = null;
+        try {
+            datastore = createDataStore(params);
 
-			List<Query> queries = getTestQueries(data);
+            if (readOnly) {
+                ensureSchema(datastore, data);
+            } else {
+                SimpleFeatureType sft = getSimpleFeatureType(data);
+                createSchema(datastore, sft);
+                List<SimpleFeature> features = getTestFeatures(data);
+                writeFeatures(datastore, sft, features);
+            }
 
-			queryFeatures(datastore, queries);
-		} catch (Exception e) {
+            List<Query> queries = getTestQueries(data);
 
-			logger.error(e.getMessage());
-			throw new RuntimeException("Error running quickstart:", e);
-		} finally {
-			cleanup(datastore, data.getTypeName(), cleanup);
-		}
-		logger.info("Done");
-	}
+            queryFeatures(datastore, queries);
+        } catch (Exception e) {
 
-	public DataStore createDataStore(Map<String, String> params) throws IOException {
-		logger.info("Loading datastore");
+            logger.error(e.getMessage());
+            throw new RuntimeException("Error running quickstart:", e);
+        } finally {
+            cleanup(datastore, data.getTypeName(), cleanup);
+        }
+        logger.info("Done");
+    }
 
-		// use geotools service loading to get a datastore instance
-		DataStore datastore = DataStoreFinder.getDataStore(params);
-		if (datastore == null) {
-			throw new RuntimeException("Could not create data store with provided parameters");
-		}
-		logger.info("created data");
-		return datastore;
-	}
+    public DataStore createDataStore(Map<String, String> params) throws IOException {
+        logger.info("Loading datastore");
 
-	public void ensureSchema(DataStore datastore, DiseaseData data) throws IOException {
-		SimpleFeatureType sft = datastore.getSchema(data.getTypeName());
-		if (sft == null) {
-			throw new IllegalStateException("Schema '" + data.getTypeName() + "' does not exist. "
-					+ "Please run the associated QuickStart to generate the test data.");
-		}
-	}
+        // use geotools service loading to get a datastore instance
+        DataStore datastore = DataStoreFinder.getDataStore(params);
+        if (datastore == null) {
+            throw new RuntimeException("Could not create data store with provided parameters");
+        }
+        logger.info("created data");
+        return datastore;
+    }
 
-	public SimpleFeatureType getSimpleFeatureType(DiseaseData data) {
-		return data.getSimpleFeatureType();
-	}
+    public void ensureSchema(DataStore datastore, DiseaseData data) throws IOException {
+        SimpleFeatureType sft = datastore.getSchema(data.getTypeName());
+        if (sft == null) {
+            throw new IllegalStateException("Schema '" + data.getTypeName() + "' does not exist. "
+                    + "Please run the associated QuickStart to generate the test data.");
+        }
+    }
 
-	public void createSchema(DataStore datastore, SimpleFeatureType sft) throws IOException {
-		logger.info("Creating schema: " + DataUtilities.encodeType(sft));
-		// we only need to do the once - however, calling it repeatedly is a no-op
-		datastore.createSchema(sft);
-		logger.info("");
-	}
+    public SimpleFeatureType getSimpleFeatureType(DiseaseData data) {
+        return data.getSimpleFeatureType();
+    }
 
-	public List<SimpleFeature> getTestFeatures(DiseaseData data) {
-		logger.info("Generating test data");
-		List<SimpleFeature> features = data.getTestData();
-		logger.info("");
-		return features;
-	}
+    public void createSchema(DataStore datastore, SimpleFeatureType sft) throws IOException {
+        logger.info("Creating schema: " + DataUtilities.encodeType(sft));
+        // we only need to do the once - however, calling it repeatedly is a no-op
+        datastore.createSchema(sft);
+        logger.info("");
+    }
 
-	public List<Query> getTestQueries(DiseaseData data) {
-		return data.getTestQueries();
-	}
+    public List<SimpleFeature> getTestFeatures(DiseaseData data) {
+        logger.info("Generating test data");
+        List<SimpleFeature> features = data.getTestData();
+        logger.info("");
+        return features;
+    }
 
-	public void writeFeatures(DataStore datastore, SimpleFeatureType sft, List<SimpleFeature> features)
-			throws IOException {
-		if (features.size() > 0) {
-			logger.info("Writing test data");
-			// use try-with-resources to ensure the writer is closed
-			try (FeatureWriter<SimpleFeatureType, SimpleFeature> writer = datastore
-					.getFeatureWriterAppend(sft.getTypeName(), Transaction.AUTO_COMMIT)) {
-				for (SimpleFeature feature : features) {
-					// using a geotools writer, you have to get a feature, modify it, then commit it
-					// appending writers will always return 'false' for haveNext, so we don't need
-					// to bother checking
-					SimpleFeature toWrite = writer.next();
+    public List<Query> getTestQueries(DiseaseData data) {
+        return data.getTestQueries();
+    }
 
-					// copy attributes
-					toWrite.setAttributes(feature.getAttributes());
+    public void writeFeatures(DataStore datastore, SimpleFeatureType sft, List<SimpleFeature> features)
+            throws IOException {
+        if (features.size() > 0) {
+            logger.info("Writing test data");
+            // use try-with-resources to ensure the writer is closed
+            try (FeatureWriter<SimpleFeatureType, SimpleFeature> writer = datastore
+                    .getFeatureWriterAppend(sft.getTypeName(), Transaction.AUTO_COMMIT)) {
+                for (SimpleFeature feature : features) {
+                    // using a geotools writer, you have to get a feature, modify it, then commit it
+                    // appending writers will always return 'false' for haveNext, so we don't need
+                    // to bother checking
+                    SimpleFeature toWrite = writer.next();
 
-					// if you want to set the feature ID, you have to cast to an implementation
-					// class
-					// and add the USE_PROVIDED_FID hint to the user data
-					((FeatureIdImpl) toWrite.getIdentifier()).setID(feature.getID());
-					toWrite.getUserData().put(Hints.USE_PROVIDED_FID, Boolean.TRUE);
+                    // copy attributes
+                    toWrite.setAttributes(feature.getAttributes());
 
-					// alternatively, you can use the PROVIDED_FID hint directly
-					// toWrite.getUserData().put(Hints.PROVIDED_FID, feature.getID());
+                    // if you want to set the feature ID, you have to cast to an implementation
+                    // class
+                    // and add the USE_PROVIDED_FID hint to the user data
+                    ((FeatureIdImpl) toWrite.getIdentifier()).setID(feature.getID());
+                    toWrite.getUserData().put(Hints.USE_PROVIDED_FID, Boolean.TRUE);
 
-					// if no feature ID is set, a UUID will be generated for you
+                    // alternatively, you can use the PROVIDED_FID hint directly
+                    // toWrite.getUserData().put(Hints.PROVIDED_FID, feature.getID());
 
-					// make sure to copy the user data, if there is any
-					toWrite.getUserData().putAll(feature.getUserData());
+                    // if no feature ID is set, a UUID will be generated for you
 
-					// write the feature
-					writer.write();
-				}
-			}
-			logger.info("Wrote " + features.size() + " features");
-			logger.info("");
-		}
-	}
+                    // make sure to copy the user data, if there is any
+                    toWrite.getUserData().putAll(feature.getUserData());
 
-	public void queryFeatures(DataStore datastore, List<Query> queries) throws IOException {
-		for (Query query : queries) {
-			logger.info("Running query " + ECQL.toCQL(query.getFilter()));
-			if (query.getPropertyNames() != null) {
-				logger.info("Returning attributes " + Arrays.asList(query.getPropertyNames()));
-			}
-			if (query.getSortBy() != null) {
-				SortBy sort = query.getSortBy()[0];
-				logger.info("Sorting by " + sort.getPropertyName() + " " + sort.getSortOrder());
-			}
-			// submit the query, and get back an iterator over matching features
-			// use try-with-resources to ensure the reader is closed
-			try (FeatureReader<SimpleFeatureType, SimpleFeature> reader = datastore.getFeatureReader(query,
-					Transaction.AUTO_COMMIT)) {
-				// loop through all results, only print out the first 10
-				int n = 0;
-				while (reader.hasNext()) {
-					SimpleFeature feature = reader.next();
-					if (n++ < 10) {
-						// use geotools data utilities to get a printable string
-						logger.info(String.format("%02d", n) + " " + DataUtilities.encodeFeature(feature));
-					} else if (n == 10) {
-						logger.info("...");
-					}
-				}
-				logger.info("");
-				logger.info("Returned " + n + " total features");
-				logger.info("");
-			}
-		}
-	}
+                    // write the feature
+                    writer.write();
+                }
+            }
+            logger.info("Wrote " + features.size() + " features");
+            logger.info("");
+        }
+    }
 
-	public void cleanup(DataStore datastore, String typeName, boolean cleanup) {
-		if (datastore != null) {
-			try {
-				if (cleanup) {
-					logger.info("Cleaning up test data");
-					if (datastore instanceof GeoMesaDataStore) {
-						((GeoMesaDataStore) datastore).delete();
-					} else {
-						((SimpleFeatureStore) datastore.getFeatureSource(typeName)).removeFeatures(Filter.INCLUDE);
-						datastore.removeSchema(typeName);
-					}
-				}
-			} catch (Exception e) {
-				logger.error("Exception cleaning up test data: " + e.toString());
-			} finally {
-				// make sure that we dispose of the datastore when we're done with it
-				datastore.dispose();
-			}
-		}
-	}
+    public void queryFeatures(DataStore datastore, List<Query> queries) throws IOException {
+        for (Query query : queries) {
+            logger.info("Running query " + ECQL.toCQL(query.getFilter()));
+            if (query.getPropertyNames() != null) {
+                logger.info("Returning attributes " + Arrays.asList(query.getPropertyNames()));
+            }
+            if (query.getSortBy() != null) {
+                SortBy sort = query.getSortBy()[0];
+                logger.info("Sorting by " + sort.getPropertyName() + " " + sort.getSortOrder());
+            }
+            // submit the query, and get back an iterator over matching features
+            // use try-with-resources to ensure the reader is closed
+            try (FeatureReader<SimpleFeatureType, SimpleFeature> reader = datastore.getFeatureReader(query,
+                    Transaction.AUTO_COMMIT)) {
+                // loop through all results, only print out the first 10
+                int n = 0;
+                while (reader.hasNext()) {
+                    SimpleFeature feature = reader.next();
+                    if (n++ < 10) {
+                        // use geotools data utilities to get a printable string
+                        logger.info(String.format("%02d", n) + " " + DataUtilities.encodeFeature(feature));
+                    } else if (n == 10) {
+                        logger.info("...");
+                    }
+                }
+                logger.info("");
+                logger.info("Returned " + n + " total features");
+                logger.info("");
+            }
+        }
+    }
+
+    public void cleanup(DataStore datastore, String typeName, boolean cleanup) {
+        if (datastore != null) {
+            try {
+                if (cleanup) {
+                    logger.info("Cleaning up test data");
+                    if (datastore instanceof GeoMesaDataStore) {
+                        ((GeoMesaDataStore) datastore).delete();
+                    } else {
+                        ((SimpleFeatureStore) datastore.getFeatureSource(typeName)).removeFeatures(Filter.INCLUDE);
+                        datastore.removeSchema(typeName);
+                    }
+                }
+            } catch (Exception e) {
+                logger.error("Exception cleaning up test data: " + e.toString());
+            } finally {
+                // make sure that we dispose of the datastore when we're done with it
+                datastore.dispose();
+            }
+        }
+    }
 
 }

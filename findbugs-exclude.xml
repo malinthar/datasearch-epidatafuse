@@ -30,5 +30,15 @@
         <Class name="io.datasearch.denguestore.data.FeatureData"/>
         <Bug pattern="EC_UNRELATED_CLASS_AND_INTERFACE"/>
     </Match>
+    <Match>
+        <Class name="io.datasearch.denguestore.DiseaseDataStore"/>
+        <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+    </Match>
+    <Match>
+        <Class name="io.datasearch.denguestore.query.QueryObject"/>
+        <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
+
+
 
 </FindBugsFilter>
