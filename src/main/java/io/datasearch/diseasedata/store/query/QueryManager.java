@@ -1,7 +1,7 @@
-package io.datasearch.denguestore.query;
+package io.datasearch.diseasedata.store.query;
 
 
-import io.datasearch.denguestore.DiseaseDataStore;
+import io.datasearch.diseasedata.store.DiseaseDataStore;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.DataUtilities;
@@ -66,10 +66,10 @@ public class QueryManager {
         int n = 0;
         while (reader.hasNext()) {
             SimpleFeature feature = (SimpleFeature) reader.next();
-            if (n++ < 10) {
+            if (n++ < 1000) {
                 // use geotools data utilities to get a printable string
                 logger.info(String.format("%02d", n) + " " + DataUtilities.encodeFeature(feature));
-            } else if (n == 10) {
+            } else if (n == 1000) {
                 logger.info("...");
             }
         }

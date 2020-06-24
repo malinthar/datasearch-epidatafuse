@@ -1,15 +1,11 @@
-package io.datasearch.denguestore;
+package io.datasearch.diseasedata.store.schema;
 
-import io.datasearch.denguestore.data.DiseaseData;
-import io.datasearch.denguestore.data.FeatureData;
-import io.datasearch.denguestore.query.QueryManager;
-import io.datasearch.denguestore.util.CommandLineDataStore;
-import io.datasearch.denguestore.util.FeatureConfigurator;
+import io.datasearch.diseasedata.store.data.DiseaseData;
+import io.datasearch.diseasedata.store.util.CommandLineDataStore;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.log4j.BasicConfigurator;
 import org.geotools.data.DataAccessFactory;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
@@ -22,7 +18,6 @@ import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.filter.identity.FeatureIdImpl;
 import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.util.factory.Hints;
-import org.locationtech.geomesa.hbase.data.HBaseDataStoreFactory;
 import org.locationtech.geomesa.index.geotools.GeoMesaDataStore;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -37,17 +32,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * DengueStore is a spatio-temporal data store for disease related data.
+ * SchemaBuilder class for creating new feature types.
  */
-public class DiseaseDataStore implements Runnable {
-
+public class SchemaBuilder implements Runnable {
     private final Map<String, String> params;
     private final DiseaseData data;
     private final boolean cleanup;
     private final boolean readOnly;
-    private static final Logger logger = LoggerFactory.getLogger(DiseaseDataStore.class);
+    private static final Logger logger = LoggerFactory.getLogger(SchemaBuilder.class);
 
-    public DiseaseDataStore(String[] args, DataAccessFactory.Param[] parameters, DiseaseData data, boolean readOnly)
+    public SchemaBuilder(String[] args, DataAccessFactory.Param[] parameters, DiseaseData data, boolean readOnly)
             throws ParseException {
         Options options = createOptions(parameters);
         CommandLine command = CommandLineDataStore.parseArgs(getClass(), options, args);
@@ -56,26 +50,6 @@ public class DiseaseDataStore implements Runnable {
         this.data = data;
         this.readOnly = readOnly;
         initializeFromOptions(command);
-    }
-
-    public static void main(String[] args) {
-        try {
-            if ("create".equalsIgnoreCase(args[args.length - 1])) {
-                String[] params = {args[0], args[1], args[2], args[3]};
-                BasicConfigurator.configure();
-                DiseaseData feature = new FeatureData(FeatureConfigurator.getFeatureConfiguration());
-                new DiseaseDataStore(params, new HBaseDataStoreFactory().getParametersInfo(), feature, false).run();
-            } else if ("query".equalsIgnoreCase(args[args.length - 1])) {
-                QueryManager queryManager = new QueryManager();
-                queryManager.runQueries();
-            } else {
-                logger.error("No option provided!\noptions : query, create");
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            System.exit(1);
-        }
-        System.exit(0);
     }
 
     public Options createOptions(DataAccessFactory.Param[] parameters) {
@@ -251,5 +225,4 @@ public class DiseaseDataStore implements Runnable {
             }
         }
     }
-
 }

@@ -1,6 +1,6 @@
-package io.datasearch.denguestore.util;
+package io.datasearch.diseasedata.store.util;
 
-import io.datasearch.denguestore.DiseaseDataStore;
+import io.datasearch.diseasedata.store.DiseaseDataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;

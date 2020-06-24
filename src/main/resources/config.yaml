@@ -1,4 +1,4 @@
-feature_name: "weather-data-rainfall"
+feature_name: "weather-data-precipitation"
 
 attributes:
   -  attribute: "StationID:String:index=true"
@@ -48,5 +48,5 @@ queries:
     query_description: "get al records of Homagama weather station during the January of 2013"
     query: "StationName = 'Homagama' AND dtg DURING 2013-01-01T00:00:00.000Z/2013-01-31T00:00:00.000Z"
 
-data_source: "weather-rainfall-data.csv"
+data_source: "weather-precipitation-data.csv"
 #only csv files are supported.

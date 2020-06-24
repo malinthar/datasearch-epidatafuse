@@ -1,4 +1,4 @@
-package io.datasearch.denguestore.data;
+package io.datasearch.diseasedata.store.data;
 
 import org.geotools.data.Query;
 import org.geotools.filter.text.cql2.CQLException;

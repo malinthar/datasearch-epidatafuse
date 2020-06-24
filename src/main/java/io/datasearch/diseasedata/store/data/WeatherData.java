@@ -1,6 +1,6 @@
-package io.datasearch.denguestore.data;
+package io.datasearch.diseasedata.store.data;
 
-import io.datasearch.denguestore.DiseaseDataStore;
+import io.datasearch.diseasedata.store.DiseaseDataStore;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -77,7 +77,7 @@ public class WeatherData implements DiseaseData {
 
             List<SimpleFeature> features = new ArrayList<>();
             //CSVConstructor.INSTANCE.readCSV();
-            URL input = getClass().getClassLoader().getResource("weather-rainfall-data.csv");
+            URL input = getClass().getClassLoader().getResource("weather-precipitation-data.csv");
             if (input == null) {
                 throw new RuntimeException("Couldn't load resource weather-rainfall-data.CSV");
             }

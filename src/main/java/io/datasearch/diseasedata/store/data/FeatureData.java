@@ -1,6 +1,6 @@
-package io.datasearch.denguestore.data;
+package io.datasearch.diseasedata.store.data;
 
-import io.datasearch.denguestore.DiseaseDataStore;
+import io.datasearch.diseasedata.store.DiseaseDataStore;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;

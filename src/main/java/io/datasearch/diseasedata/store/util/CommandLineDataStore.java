@@ -1,4 +1,4 @@
-package io.datasearch.denguestore.util;
+package io.datasearch.diseasedata.store.util;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;

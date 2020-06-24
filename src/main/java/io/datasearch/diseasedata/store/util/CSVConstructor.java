@@ -1,4 +1,4 @@
-package io.datasearch.denguestore.util;
+package io.datasearch.diseasedata.store.util;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -77,8 +77,8 @@ public class CSVConstructor {
 
     public Writer createOutput() {
         try {
-            //URL input = getClass().getClassLoader().getResource("weather-rainfall-data.csv");
-            FileWriter csvWriter = new FileWriter("weather-rainfall-data.csv");
+            //URL input = getClass().getClassLoader().getResource("weather-precipitation-data.csv");
+            FileWriter csvWriter = new FileWriter("weather-precipitation-data.csv");
             csvWriter.append("StationID");
             csvWriter.append(",");
             csvWriter.append("StationName");

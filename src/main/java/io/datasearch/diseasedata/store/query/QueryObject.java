@@ -1,4 +1,4 @@
-package io.datasearch.denguestore.query;
+package io.datasearch.diseasedata.store.query;
 
 import org.geotools.data.Query;
 
@@ -16,3 +16,4 @@ public class QueryObject {
         this.schema = schema;
     }
 }
+//todo: query object model to support streaming APIs

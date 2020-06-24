@@ -9,8 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.datasearch.denguestore.store</groupId>
-    <artifactId>dataserach-dengue-store</artifactId>
+    <groupId>io.datasearch.diseasedata.store</groupId>
+    <artifactId>dataserach-disease-data-store</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>DataSearch Dengue Store</name>
