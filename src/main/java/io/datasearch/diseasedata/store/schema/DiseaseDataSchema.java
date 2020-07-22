@@ -1,25 +1,17 @@
-package io.datasearch.denguestore.data;
+package io.datasearch.diseasedata.store.schema;
 
-import org.geotools.data.Query;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
-
-import java.util.List;
 
 /**
  * Interface for Disease Data Features.
  */
-public interface DiseaseData {
+public interface DiseaseDataSchema {
 
     String getTypeName();
     SimpleFeatureType getSimpleFeatureType();
-    List<SimpleFeature> getTestData();
-    List<Query> getTestQueries();
-    Filter getSubsetFilter();
-
 
     /**
      * Creates a geotools filter based on a bounding box and date range

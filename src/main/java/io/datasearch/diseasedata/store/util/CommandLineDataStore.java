@@ -1,4 +1,4 @@
-package io.datasearch.denguestore.util;
+package io.datasearch.diseasedata.store.util;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -51,14 +51,12 @@ public class CommandLineDataStore {
 
     public static Map<String, String> getDataStoreParams(CommandLine command, Options options) {
         Map<String, String> params = new HashMap<>();
-        // noinspection unchecked
         for (Option opt: options.getOptions()) {
             String value = command.getOptionValue(opt.getLongOpt());
             if (value != null) {
                 params.put(opt.getArgName(), value);
             }
         }
-
         return params;
     }
 }

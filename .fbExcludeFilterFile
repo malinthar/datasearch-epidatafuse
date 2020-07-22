@@ -19,15 +19,15 @@
 
 <FindBugsFilter>
     <Match>
-        <Class name="io.datasearch.denguestore.util.CSVConstructor"/>
+        <Class name="CSVConstructor"/>
         <Bug pattern="DM_DEFAULT_ENCODING"/>
     </Match>
     <Match>
-        <Class name="io.datasearch.denguestore.util.CSVConstructor"/>
+        <Class name="CSVConstructor"/>
         <Bug pattern="RV_RETURN_VALUE_IGNORED"/>
     </Match>
     <Match>
-        <Class name="io.datasearch.denguestore.data.FeatureData"/>
+        <Class name="FeatureData"/>
         <Bug pattern="EC_UNRELATED_CLASS_AND_INTERFACE"/>
     </Match>
 

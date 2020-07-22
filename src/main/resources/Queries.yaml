@@ -1,10 +1,15 @@
 queries:
  - query_name : query1
-   catalog : cdr
-   schema : cdr-data
-   query : Locale = '1610'
+   catalog : weatherdata
+   schema : weather-data-precipitation
+   query : StationName = 'Mannar'
 
  - query_name : query2
-   catalog : cdr
-   schema : cdr-data
-   query : Locale = '1820'
+   catalog: weatherdata
+   schema: weather-data-precipitation
+   query: bbox(geom,79.84,6.7761,80.2228,6.9861) AND dtg DURING 2013-01-01T00:00:00.000Z/2013-01-31T00:00:00.000Z
+
+ - query_name : query3
+   catalog: weatherdata
+   schema: weather-data-precipitation
+   query: StationName = 'Homagama' AND dtg DURING 2013-01-01T00:00:00.000Z/2013-01-31T00:00:00.000Z
