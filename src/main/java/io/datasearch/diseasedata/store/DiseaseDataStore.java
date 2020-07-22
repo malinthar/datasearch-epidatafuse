@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
  */
 public class DiseaseDataStore {
     private static final Logger logger = LoggerFactory.getLogger(DiseaseDataStore.class);
-
     public static void main(String[] args) {
         BasicConfigurator.configure();
         try {
