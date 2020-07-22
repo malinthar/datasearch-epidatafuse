@@ -26,4 +26,9 @@ public class DengDIPipeLine {
     public DengDIPipeLine(DataStore dataStore) {
         this.dataStore = dataStore;
     }
+
+    public DataStore getDataStore() {
+        return this.dataStore;
+    }
+
 }

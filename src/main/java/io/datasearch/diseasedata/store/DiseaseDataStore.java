@@ -18,9 +18,12 @@ public class DiseaseDataStore {
             if ("create".equalsIgnoreCase(args[args.length - 1])) {
                 String[] params = {args[0], args[1], args[2], args[3]};
                 DengDIPipeLine pipeLine = DengDIPipeLineFactory.createDengDIPipeLine(params);
-            } else if ("query".equalsIgnoreCase(args[args.length - 1])) {
+                //Insert
                 QueryManager queryManager = new QueryManager();
-                queryManager.runQueries();
+                queryManager.runQueries(pipeLine);
+//            } else if ("query".equalsIgnoreCase(args[args.length - 1])) {
+//                QueryManager queryManager = new QueryManager();
+//                queryManager.runQueries();
             } else if ("insert".equalsIgnoreCase(args[args.length - 1])) {
                 logger.error("Insert");
             } else {

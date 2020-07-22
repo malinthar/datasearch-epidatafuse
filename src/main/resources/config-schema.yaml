@@ -33,7 +33,7 @@ simple_feature_types:
 
       -  attribute: "Longitude:String"
          attributeName: "Longitude"
-    - configurations:
+    configurations:
         GeomFormat: "Point"
         DateTimeFormat: "yyyyMMdd"
         FeatureID: "StationID"
@@ -62,7 +62,7 @@ simple_feature_types:
          attributeName: "geom"
          attributeType: "Point"
 
-    - configurations:
+    configurations:
         GeomFormat: "Point"
         DateTimeFormat: "yyyyMMdd"
         FeatureID: "StationID"
