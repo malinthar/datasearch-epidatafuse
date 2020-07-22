@@ -1,3 +1,7 @@
+hbase.zoookeepers: "localhost"
+
+hbase.catalog: "weatherdata"
+
 feature_name: "weather-data-precipitation"
 
 attributes:

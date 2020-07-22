@@ -14,6 +14,7 @@ local.properties
 .loadpath
 .recommenders
 
+
 # External tool builders
 .externalToolBuilders/
 
@@ -319,3 +320,4 @@ $RECYCLE.BIN/
 hs_err_pid*
 
 # End of https://www.gitignore.io/api/node,linux,macos,maven,windows,eclipse,intellij,intellij+all
+src/main/resources/remainder.txt

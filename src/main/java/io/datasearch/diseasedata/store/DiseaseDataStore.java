@@ -1,12 +1,9 @@
 package io.datasearch.diseasedata.store;
 
-import io.datasearch.diseasedata.store.data.DiseaseData;
-import io.datasearch.diseasedata.store.data.FeatureData;
+import io.datasearch.diseasedata.store.dengdipipeline.DengDIPipeLine;
+import io.datasearch.diseasedata.store.dengdipipeline.DengDIPipeLineFactory;
 import io.datasearch.diseasedata.store.query.QueryManager;
-import io.datasearch.diseasedata.store.schema.SchemaBuilder;
-import io.datasearch.diseasedata.store.util.FeatureConfigurator;
 import org.apache.log4j.BasicConfigurator;
-import org.locationtech.geomesa.hbase.data.HBaseDataStoreFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +18,7 @@ public class DiseaseDataStore {
         try {
             if ("create".equalsIgnoreCase(args[args.length - 1])) {
                 String[] params = {args[0], args[1], args[2], args[3]};
-                DiseaseData feature = new FeatureData(FeatureConfigurator.getFeatureConfiguration());
-                new SchemaBuilder(params, new HBaseDataStoreFactory().getParametersInfo(), feature, false).run();
+                DengDIPipeLine pipeLine = DengDIPipeLineFactory.createDengDIPipeLine(params);
             } else if ("query".equalsIgnoreCase(args[args.length - 1])) {
                 QueryManager queryManager = new QueryManager();
                 queryManager.runQueries();
