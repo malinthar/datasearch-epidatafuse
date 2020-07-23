@@ -1,6 +1,6 @@
 package io.datasearch.diseasedata.store.dengdipipeline;
 
-import io.datasearch.diseasedata.store.dengdipipeline.fuseEngine.FuseEngine;
+import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.FuseEngine;
 import io.datasearch.diseasedata.store.dengdipipeline.publish.Publisher;
 import io.datasearch.diseasedata.store.dengdipipeline.stream.StreamHandler;
 import org.geotools.data.DataStore;

@@ -3,6 +3,11 @@
 
 ### Eclipse ###
 
+#checkstyle
+.checkstyle
+.fbExcludeFilterFile 
+
+
 .metadata
 tmp/
 *.tmp

@@ -39,7 +39,7 @@
         <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
     </Match>
     <Match>
-        <Class name="io.datasearch.diseasedata.store.dengdipipeline.fuseEngine.FuseEngine"/>
+        <Class name="io.datasearch.diseasedata.store.dengdipipeline.fuseengine.FuseEngine"/>
         <Bug pattern="UUF_UNUSED_FIELD"/>
     </Match>
 

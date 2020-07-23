@@ -42,10 +42,6 @@
         <Class name="io.datasearch.diseasedata.store.dengdipipeline.fuseEngine.FuseEngine"/>
         <Bug pattern="UUF_UNUSED_FIELD"/>
     </Match>
-    <Match>
-      <Bug pattern="UUF_UNUSED_FIELD" />
-      <Field name="~ajc\$.*" />
-    </Match>
 
 
 
