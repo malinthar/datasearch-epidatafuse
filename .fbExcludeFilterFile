@@ -38,6 +38,14 @@
         <Class name="io.datasearch.diseasedata.store.query.QueryObject"/>
         <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
     </Match>
+    <Match>
+        <Class name="io.datasearch.diseasedata.store.dengdipipeline.fuseEngine.FuseEngine"/>
+        <Bug pattern="UUF_UNUSED_FIELD"/>
+    </Match>
+    <Match>
+      <Bug pattern="UUF_UNUSED_FIELD" />
+      <Field name="~ajc\$.*" />
+    </Match>
 
 
 

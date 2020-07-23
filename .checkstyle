@@ -7,7 +7,7 @@
     <property name="checkstyle.suppressions.file" value="/home/chanuka/eclipse-workspace/.metadata/.plugins/org.eclipse.core.resources/.projects/dataserach-disease-data-store/com.basistech.m2e.code.quality.checkstyleConfigurator/checkstyle-suppressions-validate.xml"/>
   </local-check-config>
   <fileset name="java-sources-validate" enabled="true" check-config-name="maven-checkstyle-plugin validate" local="true">
-    <file-match-pattern match-pattern="^src/test/java.*\/.*\.java" include-pattern="true"/>
+    <file-match-pattern match-pattern="^src/test/java/.*\/.*\.java" include-pattern="true"/>
     <file-match-pattern match-pattern="^src/main/java/.*\/.*\.java" include-pattern="true"/>
     <file-match-pattern match-pattern="^src/test/java.*.*parser/.*" include-pattern="false"/>
     <file-match-pattern match-pattern="^src/main/java.*.*parser/.*" include-pattern="false"/>
