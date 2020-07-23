@@ -1,12 +1,11 @@
 package io.datasearch.diseasedata.store.dengdipipeline;
 
-import io.datasearch.diseasedata.store.dengdipipeline.aggregation.Aggregator;
+import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.FuseEngine;
 import io.datasearch.diseasedata.store.dengdipipeline.publish.Publisher;
 import io.datasearch.diseasedata.store.dengdipipeline.stream.StreamHandler;
 import org.geotools.data.DataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 /**
  * DengDIPipeline is the processing unit for streaming and historical data.
  * PipeLine starts with streaming component which retrieves streaming data and ends with data publisher which publishes
@@ -19,7 +18,7 @@ public class DengDIPipeLine {
     //Stream handler for handling data
     private StreamHandler streamHandler;
     //aggregator and transformer;
-    private Aggregator aggregator;
+    private FuseEngine fuseEngine;
     //publisher for publishing data to relevant endpoints
     private Publisher publisher;
 

@@ -19,16 +19,30 @@
 
 <FindBugsFilter>
     <Match>
-        <Class name="CSVConstructor"/>
+        <Class name="io.datasearch.diseasedata.store.util.CSVConstructor"/>
         <Bug pattern="DM_DEFAULT_ENCODING"/>
     </Match>
     <Match>
-        <Class name="CSVConstructor"/>
+        <Class name="io.datasearch.diseasedata.store.util.CSVConstructor"/>
         <Bug pattern="RV_RETURN_VALUE_IGNORED"/>
     </Match>
     <Match>
-        <Class name="FeatureData"/>
+        <Class name="io.datasearch.diseasedata.store.data.FeatureData"/>
         <Bug pattern="EC_UNRELATED_CLASS_AND_INTERFACE"/>
     </Match>
+    <Match>
+        <Class name="io.datasearch.diseasedata.store.DiseaseDataStore"/>
+        <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+    </Match>
+    <Match>
+        <Class name="io.datasearch.diseasedata.store.query.QueryObject"/>
+        <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
+    <Match>
+        <Class name="io.datasearch.diseasedata.store.dengdipipeline.fuseEngine.FuseEngine"/>
+        <Bug pattern="UUF_UNUSED_FIELD"/>
+    </Match>
+
+
 
 </FindBugsFilter>
