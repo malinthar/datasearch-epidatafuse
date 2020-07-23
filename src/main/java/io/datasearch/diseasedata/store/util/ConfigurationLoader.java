@@ -15,27 +15,34 @@ import java.util.Map;
 public class ConfigurationLoader {
     private static final Logger logger = LoggerFactory.getLogger(DiseaseDataStore.class);
 
+    private static final String SCHEMA_CONFIG_DIR = "config-schema.yaml";
+    private static final String INGESTION_CONFIG_DIR = "config-ingestion.yaml";
+    private static final String QUERY_CONFIG_DIR = "config-query.yaml";
+    private static final String GRANULARITY_CONFIG_DIR = "config-granularity.yaml";
+
     public static Map<String, Object> getSchemaConfigurations() {
-        Map<String, Object> configuration = null;
-        try {
-            Yaml yaml = new Yaml();
-            InputStream inputStream = ConfigurationLoader.class
-                    .getClassLoader()
-                    .getResourceAsStream("config-schema.yaml");
-            configuration = yaml.load(inputStream);
-        } catch (YAMLException e) {
-            logger.error(e.getMessage());
-        }
-        return configuration;
+        return getConfigurations(SCHEMA_CONFIG_DIR);
+    }
+
+    public static Map<String, Object> getIngestConfigurations() {
+        return getConfigurations(INGESTION_CONFIG_DIR);
+    }
+
+    public static Map<String, Object> getQueryConfigurations() {
+        return getConfigurations(QUERY_CONFIG_DIR);
     }
 
     public static Map<String, Object> getGranularityConfigurations() {
+        return getConfigurations(GRANULARITY_CONFIG_DIR);
+    }
+
+    public static Map<String, Object> getConfigurations(String configFileDir) {
         Map<String, Object> configuration = null;
         try {
             Yaml yaml = new Yaml();
             InputStream inputStream = ConfigurationLoader.class
                     .getClassLoader()
-                    .getResourceAsStream("config-granularity.yaml");
+                    .getResourceAsStream(configFileDir);
             configuration = yaml.load(inputStream);
         } catch (YAMLException e) {
             logger.error(e.getMessage());
