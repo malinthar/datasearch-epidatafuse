@@ -30,4 +30,10 @@ public class DengDIPipeLine {
         return this.dataStore;
     }
 
+    public FuseEngine getFuseEngine() {
+        if (this.fuseEngine == null) {
+            this.fuseEngine = new FuseEngine();
+        }
+        return this.fuseEngine;
+    }
 }

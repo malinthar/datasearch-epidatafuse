@@ -29,4 +29,18 @@ public class ConfigurationLoader {
         return configuration;
     }
 
+    public static Map<String, Object> getGranularityConfigurations() {
+        Map<String, Object> configuration = null;
+        try {
+            Yaml yaml = new Yaml();
+            InputStream inputStream = ConfigurationLoader.class
+                    .getClassLoader()
+                    .getResourceAsStream("config-granularity.yaml");
+            configuration = yaml.load(inputStream);
+        } catch (YAMLException e) {
+            logger.error(e.getMessage());
+        }
+        return configuration;
+    }
+
 }
