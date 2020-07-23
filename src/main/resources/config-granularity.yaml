@@ -28,3 +28,4 @@ feature_granularities:
       spatial:
           type: "point"
           granularity_id: "CDR-cell"
+          
