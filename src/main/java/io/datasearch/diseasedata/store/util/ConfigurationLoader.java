@@ -42,5 +42,4 @@ public class ConfigurationLoader {
         }
         return configuration;
     }
-
 }
