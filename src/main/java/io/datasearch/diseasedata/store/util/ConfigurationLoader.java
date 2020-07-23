@@ -18,6 +18,7 @@ public class ConfigurationLoader {
     private static final String SCHEMA_CONFIG_DIR = "config-schema.yaml";
     private static final String INGESTION_CONFIG_DIR = "config-ingestion.yaml";
     private static final String QUERY_CONFIG_DIR = "config-query.yaml";
+    private static final String GRANULARITY_CONFIG_DIR = "config-granularity.yaml";
 
     public static Map<String, Object> getSchemaConfigurations() {
         return getConfigurations(SCHEMA_CONFIG_DIR);
@@ -29,6 +30,10 @@ public class ConfigurationLoader {
 
     public static Map<String, Object> getQueryConfigurations() {
         return getConfigurations(QUERY_CONFIG_DIR);
+    }
+
+    public static Map<String, Object> getGranularityConfigurations() {
+        return getConfigurations(GRANULARITY_CONFIG_DIR);
     }
 
     public static Map<String, Object> getConfigurations(String configFileDir) {

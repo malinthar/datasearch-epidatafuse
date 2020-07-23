@@ -1,0 +1,30 @@
+
+
+aggregation_granularities:
+  temporal : "Weekly"
+  Spatial :
+      type: "point"
+      granularity_id: "MOH"
+
+
+feature_granularities:
+  - feature_name: "weather-data-precipitation"
+    granularities:
+      temporal: "Daily"
+      spatial:
+         type: "point"
+         granularity_id: "WeatherStation"
+
+  - feature_name: "weather-data-temp"
+    granularities:
+      temporal: "Daily"
+      spatial:
+           type: "point"
+           granularity_id: "WeatherStation"
+
+  - feature_name: "CDR"
+    granularities:
+      temporal: "Daily"
+      spatial:
+          type: "point"
+          granularity_id: "CDR-cell"

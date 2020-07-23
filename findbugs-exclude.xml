@@ -24,6 +24,10 @@
         <Class name="io.datasearch.diseasedata.store.dengdipipeline.fuseengine.FuseEngine"/>
         <Bug pattern="UUF_UNUSED_FIELD"/>
     </Match>
+    <Match>
+        <Class name="io.datasearch.diseasedata.store.dengdipipeline.fuseengine.FuseEngine"/>
+        <Bug pattern="UWF_UNWRITTEN_FIELD"/>
+    </Match>
 
 
 
