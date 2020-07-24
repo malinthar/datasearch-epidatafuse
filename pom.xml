@@ -15,7 +15,23 @@
     <packaging>jar</packaging>
     <name>DataSearch Dengue Store</name>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+         </dependency>
         <dependency>
             <groupId>org.locationtech.geomesa</groupId>
             <artifactId>geomesa_2.11</artifactId>
@@ -87,6 +103,19 @@
              <groupId>org.yaml</groupId>
              <artifactId>snakeyaml</artifactId>
              <version>${snakeyaml.version}</version>
+         </dependency>
+
+         <!-- springboot dependencies -->
+         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring.boot.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
          </dependency>
     </dependencies>
 
@@ -179,47 +208,63 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
+                <configuration>
+                        <fork>true</fork>
+                        <mainClass>io.datasearch.diseasedata.store.DiseaseDataStore</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <repositories>
         <repository>
-                    <id>locationtech-releases</id>
-                    <url>https://repo.locationtech.org/content/groups/releases</url>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </repository>
-                <repository>
-                    <id>locationtech-snapshots</id>
-                    <url>https://repo.locationtech.org/content/groups/snapshots</url>
-                    <releases>
-                        <enabled>false</enabled>
-                    </releases>
-                    <snapshots>
-                        <enabled>true</enabled>
-                    </snapshots>
-                </repository>
-                <repository>
-                    <id>boundlessgeo</id>
-                    <url>http://repo.boundlessgeo.com/main</url>
-                </repository>
-                <repository>
-                    <id>osgeo</id>
-                    <url>http://download.osgeo.org/webdav/geotools</url>
-                </repository>
-                <repository>
-                    <id>osgeo-1</id>
-                    <url>https://repo.osgeo.org/repository/release/</url>
-                </repository>
-                <repository>
-                    <id>conjars.org</id>
-                    <url>http://conjars.org/repo</url>
-                </repository>
-                <repository>
-                    <id>geomajas</id>
-                    <name>Geomajas Maven Repository</name>
-                    <url>http://maven.geomajas.org/(http://maven.geomajas.org/)</url>
-                </repository>
+            <id>locationtech-releases</id>
+            <url>https://repo.locationtech.org/content/groups/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>locationtech-snapshots</id>
+            <url>https://repo.locationtech.org/content/groups/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>boundlessgeo</id>
+            <url>http://repo.boundlessgeo.com/main</url>
+        </repository>
+        <repository>
+            <id>osgeo</id>
+            <url>http://download.osgeo.org/webdav/geotools</url>
+        </repository>
+        <repository>
+            <id>osgeo-1</id>
+            <url>https://repo.osgeo.org/repository/release/</url>
+        </repository>
+        <repository>
+            <id>conjars.org</id>
+            <url>http://conjars.org/repo</url>
+        </repository>
+        <repository>
+            <id>geomajas</id>
+            <name>Geomajas Maven Repository</name>
+            <url>http://maven.geomajas.org/(http://maven.geomajas.org/)</url>
+        </repository>
     </repositories>
     <properties>
        <maven.findbugsplugin.version.exclude>findbugs-exclude.xml</maven.findbugsplugin.version.exclude>
@@ -233,6 +278,7 @@
        <scala.abi.version>2.11</scala.abi.version>
        <geomesa.version>2.4.0</geomesa.version>
        <snakeyaml.version>1.25</snakeyaml.version>
+       <spring.boot.version>2.3.1.RELEASE</spring.boot.version>
     </properties>
 
 </project>
