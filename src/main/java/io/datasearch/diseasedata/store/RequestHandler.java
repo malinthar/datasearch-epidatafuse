@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import io.datasearch.denguestore.ingestion.DataIngester;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,11 +47,11 @@ public class RequestHandler {
 
     @RequestMapping("/ingest")
     public String ingestDengDIpipeline() {
-        try{
+        try {
             String pipelineName = "dengue";
             dengDIPipeLineMap.get(pipelineName).ingest();
             return "Success";
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.error(e.getMessage());
             return e.getMessage();
         }

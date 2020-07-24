@@ -33,11 +33,11 @@ public class SimpleFeatureTypeSchema implements DiseaseDataSchema {
         return sft;
     }
 
-    public List<Map<String, String>> getAttributes(){
+    public List<Map<String, String>> getAttributes() {
         return this.attributes;
     }
 
-     public Map<String, String> getConfigurations(){
+    public Map<String, String> getConfigurations() {
         return this.configurations;
     }
 

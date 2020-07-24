@@ -1,13 +1,14 @@
 package io.datasearch.diseasedata.store.dengdipipeline;
 
 import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.FuseEngine;
+import io.datasearch.diseasedata.store.dengdipipeline.ingestion.DataIngester;
 import io.datasearch.diseasedata.store.dengdipipeline.publish.Publisher;
 import io.datasearch.diseasedata.store.dengdipipeline.stream.StreamHandler;
 import io.datasearch.diseasedata.store.schema.SimpleFeatureTypeSchema;
 import org.geotools.data.DataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import io.datasearch.denguestore.ingestion.DataIngester;
+
 import java.util.Map;
 
 /**
@@ -47,11 +48,11 @@ public class DengDIPipeLine {
         return this.fuseEngine;
     }
 
-    public void ingest(){
-        try{
+    public void ingest() {
+        try {
             DataIngester dataIngester = new DataIngester();
-            dataIngester.insertData(this.getDataStore(),this.simpleFeatureTypeSchemas);
-        }catch(Exception e){
+            dataIngester.insertData(this.getDataStore(), this.simpleFeatureTypeSchemas);
+        } catch (Exception e) {
             logger.error(e.getMessage());
         }
     }
