@@ -1,0 +1,1 @@
+This contains daily percipitation scraped from Meteomanz
