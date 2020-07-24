@@ -12,10 +12,13 @@ import java.util.Map;
 public class SimpleFeatureTypeSchema implements DiseaseDataSchema {
     private SimpleFeatureType sft = null;
     private String typeName;
+    private List<Map<String, String>> attributes;
+
 
     public SimpleFeatureTypeSchema(Map<String, Object> parameters) {
         this.typeName = (String) parameters.get("feature_name");
-        buildSimpleFeature((List<Map<String, String>>) parameters.get("attributes"));
+        this.attributes = (List<Map<String, String>>) parameters.get("attributes");
+        buildSimpleFeature(this.attributes);
     }
 
     @Override
