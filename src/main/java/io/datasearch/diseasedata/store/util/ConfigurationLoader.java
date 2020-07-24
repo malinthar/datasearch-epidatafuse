@@ -1,6 +1,5 @@
 package io.datasearch.diseasedata.store.util;
 
-import io.datasearch.diseasedata.store.DiseaseDataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -13,7 +12,7 @@ import java.util.Map;
  * Feature configurator.
  */
 public class ConfigurationLoader {
-    private static final Logger logger = LoggerFactory.getLogger(DiseaseDataStore.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigurationLoader.class);
 
     private static final String SCHEMA_CONFIG_DIR = "config-schema.yaml";
     private static final String INGESTION_CONFIG_DIR = "config-ingestion.yaml";

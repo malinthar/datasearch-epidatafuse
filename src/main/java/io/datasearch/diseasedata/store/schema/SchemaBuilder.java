@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,9 @@ public class SchemaBuilder {
     private static final Logger logger = LoggerFactory.getLogger(SchemaBuilder.class);
     private static final String SCHEMA_CONFIGURATIONS_KEY = "simple_feature_types";
 
-    public static void buildSchema(Map<String, Object> schemaConfigurations, DataStore dataStore) {
+    public static Map<String, SimpleFeatureTypeSchema> buildSchema(
+            Map<String, Object> schemaConfigurations, DataStore dataStore) {
+        Map<String, SimpleFeatureTypeSchema> schemas = new HashMap<>();
         try {
             List<Map<String, Object>> simpleFeatureTypeConfigs =
                     (ArrayList) schemaConfigurations.get(SCHEMA_CONFIGURATIONS_KEY);
@@ -28,13 +31,15 @@ public class SchemaBuilder {
                 dataStore.createSchema(simpleFeatureType);
                 ensureSchema(dataStore, simpleFeatureTypeSchema.getSimpleFeatureType().getTypeName());
                 logger.info("Creating schema: " + DataUtilities.encodeType(simpleFeatureType));
-
+                schemas.put(simpleFeatureTypeSchema.getSimpleFeatureType().getTypeName(), simpleFeatureTypeSchema);
+                logger.info("Done! DataStore is created");
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new RuntimeException("Error creating schema:", e);
+        } finally {
+            return schemas;
         }
-        logger.info("Done! DataStore is created");
     }
 
     public static void ensureSchema(DataStore datastore, String simpleFeatureTypeName) throws IOException {
