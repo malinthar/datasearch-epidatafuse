@@ -7,7 +7,7 @@ import io.datasearch.diseasedata.store.schema.SimpleFeatureTypeSchema;
 import org.geotools.data.DataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import io.datasearch.denguestore.ingestion.DataIngester;
 import java.util.Map;
 
 /**
@@ -45,5 +45,14 @@ public class DengDIPipeLine {
             this.fuseEngine = new FuseEngine();
         }
         return this.fuseEngine;
+    }
+
+    public void ingest(){
+        try{
+            DataIngester dataIngester = new DataIngester();
+            dataIngester.insertData(this.getDataStore(),this.simpleFeatureTypeSchemas);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+        }
     }
 }

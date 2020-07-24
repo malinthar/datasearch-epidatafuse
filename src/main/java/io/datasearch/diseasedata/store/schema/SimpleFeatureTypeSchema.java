@@ -13,11 +13,13 @@ public class SimpleFeatureTypeSchema implements DiseaseDataSchema {
     private SimpleFeatureType sft = null;
     private String typeName;
     private List<Map<String, String>> attributes;
+    private Map<String, String> configurations;
 
 
     public SimpleFeatureTypeSchema(Map<String, Object> parameters) {
         this.typeName = (String) parameters.get("feature_name");
         this.attributes = (List<Map<String, String>>) parameters.get("attributes");
+        this.configurations = (Map<String, String>) parameters.get("configurations");
         buildSimpleFeature(this.attributes);
     }
 
@@ -30,6 +32,15 @@ public class SimpleFeatureTypeSchema implements DiseaseDataSchema {
     public SimpleFeatureType getSimpleFeatureType() {
         return sft;
     }
+
+    public List<Map<String, String>> getAttributes(){
+        return this.attributes;
+    }
+
+     public Map<String, String> getConfigurations(){
+        return this.configurations;
+    }
+
 
     public void buildSimpleFeature(List<Map<String, String>> attributes) {
         if (sft == null) {
