@@ -3,6 +3,7 @@ package io.datasearch.diseasedata.store.query;
 
 import io.datasearch.diseasedata.store.DiseaseDataStore;
 import io.datasearch.diseasedata.store.dengdipipeline.DengDIPipeLine;
+import io.datasearch.diseasedata.store.util.ConfigurationLoader;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.DataUtilities;
@@ -14,9 +15,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.yaml.snakeyaml.Yaml;
 
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,16 +32,7 @@ public class QueryManager {
     public List<QueryObject> readQueriesFromFile() throws Exception {
 
         List<QueryObject> queryObjects = new ArrayList<QueryObject>();
-        Map<String, Object> yml = null;
-
-
-        Yaml yaml = new Yaml();
-
-        InputStream stream = QueryManager.class
-                .getClassLoader()
-                .getResourceAsStream("Queries.yaml");
-
-        yml = yaml.load(stream);
+        Map<String, Object> yml = ConfigurationLoader.getQueryConfigurations();
 
         List<Map<String, String>> ymlObject = (List<Map<String, String>>) yml.get("queries");
         for (Map<String, String> i : ymlObject) {
