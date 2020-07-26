@@ -1,6 +1,6 @@
 hbase.zookeepers: "localhost"
 
-hbase.catalog: "weatherdata"
+hbase.catalog: "dengDIDataStore"
 
 simple_feature_types:
   - feature_name: "precipitation"
