@@ -1,14 +1,11 @@
-
-
 aggregation_granularities:
   temporal : "Weekly"
   Spatial :
       type: "point"
       granularity_id: "MOH"
 
-
 feature_granularities:
-  - feature_name: "weather-data-precipitation"
+  - feature_name: "precipitation"
     granularities:
       temporal: "Daily"
       spatial:
