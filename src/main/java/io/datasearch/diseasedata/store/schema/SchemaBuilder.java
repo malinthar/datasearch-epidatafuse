@@ -34,11 +34,10 @@ public class SchemaBuilder {
                 schemas.put(simpleFeatureTypeSchema.getSimpleFeatureType().getTypeName(), simpleFeatureTypeSchema);
                 logger.info("Done! DataStore is created");
             }
+            return schemas;
         } catch (Exception e) {
             logger.error(e.getMessage());
-            throw new RuntimeException("Error creating schema:", e);
-        } finally {
-            return schemas;
+            throw new RuntimeException("Error building schema", e);
         }
     }
 

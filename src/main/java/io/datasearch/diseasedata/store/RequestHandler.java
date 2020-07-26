@@ -20,12 +20,12 @@ public class RequestHandler {
     private Map<String, DengDIPipeLine> dengDIPipeLineMap = new HashMap<>();
 
     @RequestMapping("/init")
-    public String initDengDIPipeline(String[] params) {
+    public String initDengDIPipeline() {
         try {
             String pipelineName = "dengue";
-            DengDIPipeLine pipeLine = DengDIPipeLineFactory.createDengDIPipeLine(params);
+            DengDIPipeLine pipeLine = DengDIPipeLineFactory.createDengDIPipeLine();
             dengDIPipeLineMap.put(pipelineName, pipeLine);
-            return "Sucess!";
+            return "Success!";
         } catch (Exception e) {
             logger.error(e.getMessage());
             return e.getMessage();
@@ -56,4 +56,5 @@ public class RequestHandler {
             return e.getMessage();
         }
     }
+
 }
