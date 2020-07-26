@@ -1,0 +1,19 @@
+feature_name: "precipitation"
+
+catalog: "dengDIDataStore"
+
+records:
+  StationID: 0
+  StationName: 1
+  Latitude: 2
+  Longitude: 3
+  dtg: 4
+  ObservedValue: 5
+  Lat: 2
+  Long: 3
+
+configurations:
+  DateTimeFormat: "yyyyMMdd"
+  FeatureID: "StationID"
+
+data_source: "weather-precipitation-data.csv"

@@ -15,7 +15,7 @@ public class ConfigurationLoader {
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationLoader.class);
 
     private static final String SCHEMA_CONFIG_DIR = "config-schema.yaml";
-    private static final String INGESTION_CONFIG_DIR = "config-ingestion.yaml";
+    private static final String INGESTION_CONFIG_DIR = "config-ingest.yaml";
     private static final String QUERY_CONFIG_DIR = "config-query.yaml";
     private static final String GRANULARITY_CONFIG_DIR = "config-granularity.yaml";
 
