@@ -47,6 +47,13 @@ public class RequestHandler {
 
     @RequestMapping("/ingest")
     public String ingestDengDIpipeline() {
-        return "Not implemented yet";
+        try {
+            String pipelineName = "dengue";
+            dengDIPipeLineMap.get(pipelineName).ingest();
+            return "Success";
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return e.getMessage();
+        }
     }
 }

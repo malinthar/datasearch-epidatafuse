@@ -1,6 +1,7 @@
 package io.datasearch.diseasedata.store.dengdipipeline;
 
 import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.FuseEngine;
+import io.datasearch.diseasedata.store.dengdipipeline.ingestion.DataIngester;
 import io.datasearch.diseasedata.store.dengdipipeline.publish.Publisher;
 import io.datasearch.diseasedata.store.dengdipipeline.stream.StreamHandler;
 import io.datasearch.diseasedata.store.schema.SimpleFeatureTypeSchema;
@@ -45,5 +46,14 @@ public class DengDIPipeLine {
             this.fuseEngine = new FuseEngine();
         }
         return this.fuseEngine;
+    }
+
+    public void ingest() {
+        try {
+            DataIngester dataIngester = new DataIngester();
+            dataIngester.insertData(this.getDataStore(), this.simpleFeatureTypeSchemas);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
     }
 }
