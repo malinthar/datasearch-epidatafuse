@@ -1,1 +1,0 @@
-This contains daily average temperature scraped from Meteomanz
