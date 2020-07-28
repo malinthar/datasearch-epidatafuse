@@ -52,6 +52,15 @@ public class QueryManager {
         return dataStore;
     }
 
+    public ArrayList<SimpleFeature> readFeatureCollection(FeatureReader reader) throws Exception {
+        ArrayList<SimpleFeature> featureList = new ArrayList<SimpleFeature>();
+        int n = 0;
+        while (reader.hasNext()) {
+            SimpleFeature feature = (SimpleFeature) reader.next();
+            featureList.add(feature);
+        }
+        return featureList;
+    }
 
     public void logFeatures(FeatureReader reader) throws Exception {
         int n = 0;
@@ -81,6 +90,13 @@ public class QueryManager {
             this.logFeatures(reader);
         }
 
+    }
+
+    public ArrayList<SimpleFeature> getFeatures(DataStore dataStore, QueryObject query) throws Exception {
+        FeatureReader<SimpleFeatureType, SimpleFeature> reader =
+                dataStore.getFeatureReader(query.query, Transaction.AUTO_COMMIT);
+        ArrayList<SimpleFeature> featureList = this.readFeatureCollection(reader);
+        return featureList;
     }
 
 }

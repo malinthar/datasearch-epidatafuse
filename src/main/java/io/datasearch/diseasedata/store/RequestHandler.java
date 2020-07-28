@@ -57,4 +57,16 @@ public class RequestHandler {
         }
     }
 
+    @RequestMapping("/granularityMap")
+    public String granularityMap() {
+        try {
+            String pipelineName = "dengue";
+            dengDIPipeLineMap.get(pipelineName).mapGranularityRelations();
+            return "Success mapping";
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return e.getMessage();
+        }
+    }
+
 }

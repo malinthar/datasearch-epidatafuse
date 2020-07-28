@@ -11,11 +11,11 @@ public class FuseEngine {
     //Transformer
     private Transformer transformer;
 
-    public GranularityConvertor getGranularityConvertor() {
-        if (this.granularityConvertor == null) {
-            this.granularityConvertor = new GranularityConvertor();
-        }
-        return this.granularityConvertor;
-    }
+//    public GranularityConvertor getGranularityConvertor() {
+//        if (this.granularityConvertor == null) {
+//            this.granularityConvertor = new GranularityConvertor(th);
+//        }
+//        return this.granularityConvertor;
+//    }
 }
 

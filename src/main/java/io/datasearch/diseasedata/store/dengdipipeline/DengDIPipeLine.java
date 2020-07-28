@@ -1,6 +1,10 @@
 package io.datasearch.diseasedata.store.dengdipipeline;
 
 import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.FuseEngine;
+import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.GranularityConvertor;
+import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.GranularityMap;
+import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.GranularityRelationMapper;
+import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.NearestPointGranularityMap;
 import io.datasearch.diseasedata.store.dengdipipeline.ingestion.DataIngester;
 import io.datasearch.diseasedata.store.dengdipipeline.publish.Publisher;
 import io.datasearch.diseasedata.store.dengdipipeline.stream.StreamHandler;
@@ -52,6 +56,33 @@ public class DengDIPipeLine {
         try {
             DataIngester dataIngester = new DataIngester();
             dataIngester.insertData(this.getDataStore(), this.simpleFeatureTypeSchemas);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    public void mapGranularityRelations() {
+        try {
+            GranularityRelationMapper grmapper = new GranularityRelationMapper(this.dataStore);
+            grmapper.buildGranularityMap();
+            Map<String, GranularityMap> spatialGranularityMap = grmapper.getSpatialGranularityMap();
+
+            spatialGranularityMap.forEach((feature, map) -> {
+                logger.info(feature + " mapper " + map.getClass().getSimpleName());
+            });
+
+
+            NearestPointGranularityMap weatherStationMap = (NearestPointGranularityMap)
+                    spatialGranularityMap.get("weatherstations");
+
+            GranularityConvertor granularityConvertor = new GranularityConvertor(this.dataStore);
+
+            granularityConvertor.nearestPointGranularityMapConvertor("precipitation",
+                    "ObservedValue", "weatherstations",
+                    "StationName", weatherStationMap
+            );
+
+
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
