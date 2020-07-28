@@ -43,6 +43,6 @@ public class DataIngester {
             featureStore.addFeatures(collection);
         }
 
-        logger.info("Add " + features.size() + " new features");
+        logger.info("Add " + features.size() + " new data points");
     }
 }
