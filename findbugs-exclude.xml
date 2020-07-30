@@ -29,7 +29,7 @@
         <Bug pattern="UWF_UNWRITTEN_FIELD"/>
     </Match>
     <Match>
-        <Class name="io.datasearch.diseasedata.store.dengdipipeline.fuseengine.NearestPointGranularityMap"/>
+        <Class name="io.datasearch.diseasedata.store.dengdipipeline.models.granularitymappingmethods.NearestPointGranularityMap"/>
         <Bug pattern="URF_UNREAD_FIELD"/>
     </Match>
     <Match>

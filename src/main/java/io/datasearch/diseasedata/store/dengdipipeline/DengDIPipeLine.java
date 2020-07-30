@@ -2,10 +2,10 @@ package io.datasearch.diseasedata.store.dengdipipeline;
 
 import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.FuseEngine;
 import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.GranularityConvertor;
-import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.GranularityMap;
 import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.GranularityRelationMapper;
-import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.NearestPointGranularityMap;
 import io.datasearch.diseasedata.store.dengdipipeline.ingestion.DataIngester;
+import io.datasearch.diseasedata.store.dengdipipeline.models.granularitymappingmethods.GranularityMap;
+import io.datasearch.diseasedata.store.dengdipipeline.models.granularitymappingmethods.NearestPointGranularityMap;
 import io.datasearch.diseasedata.store.dengdipipeline.publish.Publisher;
 import io.datasearch.diseasedata.store.dengdipipeline.stream.StreamHandler;
 import io.datasearch.diseasedata.store.schema.SimpleFeatureTypeSchema;

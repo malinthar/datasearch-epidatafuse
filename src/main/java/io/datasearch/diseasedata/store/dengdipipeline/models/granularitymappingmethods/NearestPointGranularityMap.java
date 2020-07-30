@@ -1,4 +1,4 @@
-package io.datasearch.diseasedata.store.dengdipipeline.fuseengine;
+package io.datasearch.diseasedata.store.dengdipipeline.models.granularitymappingmethods;
 
 import java.util.ArrayList;
 import java.util.HashMap;
