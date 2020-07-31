@@ -19,6 +19,9 @@ local.properties
 .loadpath
 .recommenders
 
+#venv
+**/venv
+**/__pycache__
 
 # External tool builders
 .externalToolBuilders/
