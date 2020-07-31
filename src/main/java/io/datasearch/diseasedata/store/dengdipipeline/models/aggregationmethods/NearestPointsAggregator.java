@@ -30,72 +30,81 @@ public class NearestPointsAggregator implements Aggregator {
                                                     String featureGranularityType,
                                                     String featureGranularityTypeIndexCol,
                                                     NearestPointGranularityMap spatialMap) throws Exception {
+        try {
+            String targerSpatialGranularity = "moh";
+            QueryManager queryManager = new QueryManager();
+            Query query = new Query(targerSpatialGranularity);
 
-        String targerSpatialGranularity = "moh";
-        QueryManager queryManager = new QueryManager();
-        Query query = new Query(targerSpatialGranularity);
-
-        QueryObject queryObj = new QueryObject("dengDIDataStore-test", query, targerSpatialGranularity);
-        ArrayList<SimpleFeature> targetSpatialGranulaityFeatureList = queryManager.getFeatures(
-                this.dataStore, queryObj);
+            QueryObject queryObj = new QueryObject("dengDIDataStore-test", query, targerSpatialGranularity);
+            ArrayList<SimpleFeature> targetSpatialGranulaityFeatureList = queryManager.getFeatures(
+                    this.dataStore, queryObj);
 
 //        String featureGranularityTypeIndexCol =  this.dataStore.getSchema(featureGranularityType).getDescriptor(0)
 //                .getLocalName();
 
-        for (SimpleFeature targetPoint : targetSpatialGranulaityFeatureList) {
-            ArrayList<Float> neighborValues = new ArrayList<Float>();
+            for (SimpleFeature targetPoint : targetSpatialGranulaityFeatureList) {
+                ArrayList<Float> neighborValues = new ArrayList<Float>();
 
-            ArrayList<String> nearestPoints = spatialMap.getNearestPoints(targetPoint.getID());
+                ArrayList<String> nearestPoints = spatialMap.getNearestPoints(targetPoint.getID());
 
-            for (String nearestPoint : nearestPoints) {
-                String filter = featureGranularityTypeIndexCol + "='" + nearestPoint + "'";
-                query = new Query(featureType, ECQL.toFilter(filter));
-                queryObj = new QueryObject("dengDIDataStore-test", query, featureGranularityType);
+                for (String nearestPoint : nearestPoints) {
+                    String filter = featureGranularityTypeIndexCol + "='" + nearestPoint + "'";
+                    query = new Query(featureType, ECQL.toFilter(filter));
+                    queryObj = new QueryObject("dengDIDataStore-test", query, featureGranularityType);
 
 
-                ArrayList<SimpleFeature> features = queryManager.getFeatures(this.dataStore, queryObj);
-                if (!features.isEmpty()) {
-                    SimpleFeature feature = features.get(0);
-                    String valueString = (String) feature.getAttribute(valueAttribute);
+                    ArrayList<SimpleFeature> features = queryManager.getFeatures(this.dataStore, queryObj);
+                    if (!features.isEmpty()) {
+                        SimpleFeature feature = features.get(0);
+                        String valueString = (String) feature.getAttribute(valueAttribute);
 
-                    try {
-                        float value = Float.parseFloat(valueString);
-                        neighborValues.add(value);
-                    } catch (Exception e) {
-                        continue;
+                        try {
+                            float value = Float.parseFloat(valueString);
+                            neighborValues.add(value);
+                        } catch (Exception e) {
+                            continue;
+                        }
                     }
                 }
+
+                float aggregatedValue = this.calculateFinalValue("mean", neighborValues);
+
+                logger.info(targetPoint.getID() + " " + aggregatedValue);
+
+
             }
-
-            float aggregatedValue = this.calculateFinalValue("max", neighborValues);
-
-            logger.info(targetPoint.getID() + " " + aggregatedValue);
-
+        } catch (Exception e) {
+            logger.info(e.getMessage());
         }
     }
 
     public Float calculateFinalValue(String calculationMethod, ArrayList<Float> valueList) {
-        switch (calculationMethod) {
-            case "mean":
-                float total = 0;
+        try {
+            switch (calculationMethod) {
+                case "mean":
+                    float total = 0;
 
-                for (float value : valueList) {
-                    total = total + value;
-                }
+                    for (float value : valueList) {
+                        total = total + value;
+                    }
 
-                float mean = total / valueList.size();
+                    float mean = total / valueList.size();
 
-                return mean;
-            case "max":
-                float max = Collections.max(valueList);
-                return max;
+                    return mean;
+                case "max":
+                    float max = Collections.max(valueList);
+                    return max;
 
-            case "min":
-                float min = Collections.min(valueList);
-                return min;
+                case "min":
+                    float min = Collections.min(valueList);
+                    return min;
 
-            default:
-                return null;
+                default:
+                    return null;
+            }
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+            return (float) 100.0;
         }
     }
 }
