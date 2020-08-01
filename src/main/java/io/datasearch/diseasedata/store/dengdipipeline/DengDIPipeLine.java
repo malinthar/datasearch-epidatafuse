@@ -32,6 +32,8 @@ public class DengDIPipeLine {
     //publisher for publishing data to relevant endpoints
     private Publisher publisher;
 
+    private Map<String, GranularityMap> spatialGranularityMap;
+
     public DengDIPipeLine(DataStore dataStore, Map<String, SimpleFeatureTypeSchema> schemas) {
         this.dataStore = dataStore;
         this.simpleFeatureTypeSchemas = schemas;
@@ -67,24 +69,39 @@ public class DengDIPipeLine {
             grmapper.buildGranularityMap();
             Map<String, GranularityMap> spatialGranularityMap = grmapper.getSpatialGranularityMap();
 
+            this.spatialGranularityMap = spatialGranularityMap;
+
             spatialGranularityMap.forEach((feature, map) -> {
                 logger.info(feature + " mapper " + map.getClass().getSimpleName());
             });
 
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+    }
 
+    public void convertIntoRequiredGranule(String featureType) {
+
+        String granulityType = "weatherstations";
+        String spatialMappingMethod = this.spatialGranularityMap.get(granulityType).getClass().getSimpleName();
+
+        logger.info(spatialMappingMethod);
+
+        if (spatialMappingMethod.equals("NearestPointGranularityMap")) {
+            logger.info("inside--------------");
             NearestPointGranularityMap weatherStationMap = (NearestPointGranularityMap)
-                    spatialGranularityMap.get("weatherstations");
+                    this.spatialGranularityMap.get(granulityType);
 
             GranularityConvertor granularityConvertor = new GranularityConvertor(this.dataStore);
 
-            granularityConvertor.nearestPointGranularityMapConvertor("precipitation",
-                    "ObservedValue", "weatherstations",
-                    "StationName", weatherStationMap
-            );
-
-
-        } catch (Exception e) {
-            logger.error(e.getMessage());
+            try {
+                granularityConvertor.nearestPointGranularityMapConvertor("precipitation",
+                        "ObservedValue", "weatherstations",
+                        "StationName", weatherStationMap
+                );
+            } catch (Exception e) {
+                logger.info(e.getMessage());
+            }
         }
     }
 }

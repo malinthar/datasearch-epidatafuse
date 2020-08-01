@@ -69,4 +69,17 @@ public class RequestHandler {
         }
     }
 
+    @RequestMapping("/convert")
+    public String granularityConvert() {
+        try {
+            String pipelineName = "dengue";
+            String featureType = "percipitation";
+            dengDIPipeLineMap.get(pipelineName).convertIntoRequiredGranule(featureType);
+            return "Success conversion";
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return e.getMessage();
+        }
+    }
+
 }
