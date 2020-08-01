@@ -40,6 +40,10 @@
         <Class name="io.datasearch.diseasedata.store.dengdipipeline.DengDIPipeLine"/>
         <Bug pattern="BC_UNCONFIRMED_CAST_OF_RETURN_VALUE"/>
     </Match>
+    <Match>
+        <Class name="io.datasearch.diseasedata.store.dengdipipeline.fuseengine.GranularityConvertor"/>
+        <Bug pattern="BC_UNCONFIRMED_CAST_OF_RETURN_VALUE"/>
+    </Match>
 
 
 </FindBugsFilter>

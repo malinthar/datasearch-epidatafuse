@@ -5,7 +5,6 @@ import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.GranularityConv
 import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.GranularityRelationMapper;
 import io.datasearch.diseasedata.store.dengdipipeline.ingestion.DataIngester;
 import io.datasearch.diseasedata.store.dengdipipeline.models.granularitymappingmethods.GranularityMap;
-import io.datasearch.diseasedata.store.dengdipipeline.models.granularitymappingmethods.NearestPointGranularityMap;
 import io.datasearch.diseasedata.store.dengdipipeline.publish.Publisher;
 import io.datasearch.diseasedata.store.dengdipipeline.stream.StreamHandler;
 import io.datasearch.diseasedata.store.schema.SimpleFeatureTypeSchema;
@@ -84,24 +83,18 @@ public class DengDIPipeLine {
 
         String granulityType = "weatherstations";
         String spatialMappingMethod = this.spatialGranularityMap.get(granulityType).getClass().getSimpleName();
+        String temporalMappingMethod = "";
 
         logger.info(spatialMappingMethod);
 
-        if (spatialMappingMethod.equals("NearestPointGranularityMap")) {
-            logger.info("inside--------------");
-            NearestPointGranularityMap weatherStationMap = (NearestPointGranularityMap)
-                    this.spatialGranularityMap.get(granulityType);
+        GranularityConvertor granularityConvertor =
+                new GranularityConvertor(this.dataStore, this.spatialGranularityMap);
 
-            GranularityConvertor granularityConvertor = new GranularityConvertor(this.dataStore);
-
-            try {
-                granularityConvertor.nearestPointGranularityMapConvertor("precipitation",
-                        "ObservedValue", "weatherstations",
-                        "StationName", weatherStationMap
-                );
-            } catch (Exception e) {
-                logger.info(e.getMessage());
-            }
+        try {
+            granularityConvertor.convert(featureType, spatialMappingMethod, temporalMappingMethod);
+        } catch (Exception e) {
+            logger.info(e.getMessage());
         }
+
     }
 }

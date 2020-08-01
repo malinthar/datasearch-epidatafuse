@@ -73,7 +73,7 @@ public class RequestHandler {
     public String granularityConvert() {
         try {
             String pipelineName = "dengue";
-            String featureType = "percipitation";
+            String featureType = "precipitation";
             dengDIPipeLineMap.get(pipelineName).convertIntoRequiredGranule(featureType);
             return "Success conversion";
         } catch (Exception e) {
