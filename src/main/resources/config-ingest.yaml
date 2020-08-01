@@ -1,19 +1,66 @@
-feature_name: "precipitation"
+#features:
+#  - feature_name: "precipitation"
+#
+#    catalog: "dengDIDataStore-test"
+#
+#    records:
+#      StationName: 0
+#      Latitude: 3
+#      Longitude: 4
+#      dtg: 2
+#      ObservedValue: 1
+#      Lat: 3
+#      Long: 4
+#
+#    configurations:
+#      DateTimeFormat: "yyyyMMdd"
+#      FeatureID: "StationName"
+#
+#    data_source: "/Data/percipitation/daily_weather_srilanka-01_1_2013.csv"
+#
+#  - feature_name: "weatherstations"
+#
+#      catalog: "dengDIDataStore-test"
+#
+#      records:
+#        StationName: 0
+#        Latitude: 1
+#        Lat: 1
+#        Long: 2
+#
+#      configurations:
+#        FeatureID: "StationName"
+#
+#      data_source: "/Data/WeatherStations/WeatherStations.csv"
 
-catalog: "dengDIDataStore"
+#feature_name: "weatherstations"
+#
+#catalog: "dengDIDataStore-test"
+#
+#records:
+#  StationName: 0
+#  Latitude: 1
+#  Longitude: 2
+#  Lat: 1
+#  Long: 2
+#
+#configurations:
+#  FeatureID: "StationName"
+#
+#data_source: "/Data/WeatherStations/WeatherStations.csv"
+
+feature_name: "moh"
+
+catalog: "dengDIDataStore-test"
 
 records:
-  StationID: 0
-  StationName: 1
-  Latitude: 2
-  Longitude: 3
-  dtg: 4
-  ObservedValue: 5
-  Lat: 2
-  Long: 3
+  MohName: 0
+  Latitude: 1
+  Longitude: 2
+  Lat: 1
+  Long: 2
 
 configurations:
-  DateTimeFormat: "yyyyMMdd"
-  FeatureID: "StationID"
+  FeatureID: "MohName"
 
-data_source: "weather-precipitation-data.csv"
+data_source: "/Data/MOH/moh.csv"

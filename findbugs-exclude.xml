@@ -28,7 +28,22 @@
         <Class name="io.datasearch.diseasedata.store.dengdipipeline.fuseengine.FuseEngine"/>
         <Bug pattern="UWF_UNWRITTEN_FIELD"/>
     </Match>
-
+    <Match>
+        <Class name="io.datasearch.diseasedata.store.dengdipipeline.models.granularitymappingmethods.NearestPointGranularityMap"/>
+        <Bug pattern="URF_UNREAD_FIELD"/>
+    </Match>
+    <Match>
+        <Class name="io.datasearch.diseasedata.store.dengdipipeline.fuseengine.GranularityConvertor"/>
+        <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+    </Match>
+    <Match>
+        <Class name="io.datasearch.diseasedata.store.dengdipipeline.DengDIPipeLine"/>
+        <Bug pattern="BC_UNCONFIRMED_CAST_OF_RETURN_VALUE"/>
+    </Match>
+    <Match>
+        <Class name="io.datasearch.diseasedata.store.dengdipipeline.fuseengine.GranularityConvertor"/>
+        <Bug pattern="BC_UNCONFIRMED_CAST_OF_RETURN_VALUE"/>
+    </Match>
 
 
 </FindBugsFilter>
