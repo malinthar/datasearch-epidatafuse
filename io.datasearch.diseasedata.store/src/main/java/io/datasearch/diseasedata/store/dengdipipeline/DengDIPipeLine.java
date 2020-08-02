@@ -36,6 +36,7 @@ public class DengDIPipeLine {
     public DengDIPipeLine(DataStore dataStore, Map<String, SimpleFeatureTypeSchema> schemas) {
         this.dataStore = dataStore;
         this.simpleFeatureTypeSchemas = schemas;
+        this.streamHandler = new StreamHandler();
     }
 
     public DataStore getDataStore() {

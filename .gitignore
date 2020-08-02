@@ -329,3 +329,7 @@ hs_err_pid*
 
 # End of https://www.gitignore.io/api/node,linux,macos,maven,windows,eclipse,intellij,intellij+all
 src/main/resources/remainder.txt
+
+io.datasearch.diseasedata.store/target
+io.datasearch.diseasedata.store.kafkaconnector/target
+io.datasearch.diseasedata.store.kafkaconnector/compiled-connectors

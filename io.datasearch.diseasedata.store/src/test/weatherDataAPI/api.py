@@ -9,6 +9,11 @@ app = Flask(__name__)
 def hello_world():
    return ("Hello World")
 
+@app.route("/test")
+def hello_test():
+   print("Executed!")
+   return ("Hello World")
+
 @app.route("/weather")
 def weather():
    dateString = request.args.get('date')
