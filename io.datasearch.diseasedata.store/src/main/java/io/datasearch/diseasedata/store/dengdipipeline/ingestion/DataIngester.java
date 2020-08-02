@@ -12,6 +12,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class DataIngester {
     }
 
     public Map<String, List<SimpleFeature>> getFeatureData(Map<String, Object> parameters,
-                                                           Map<String, SimpleFeatureTypeSchema> simpleFeatureTypeSchemas) {
+        Map<String, SimpleFeatureTypeSchema> simpleFeatureTypeSchemas) {
         Map<String, List<SimpleFeature>> featureList = new HashMap<>();
         try {
             List<Map<String, Object>> simpleFeatureTypeList =
@@ -40,7 +41,6 @@ public class DataIngester {
                 logger.info((String) sft.get("feature_name"));
                 featureList.put((String) sft.get("feature_name"), features);
             }
-
             return featureList;
         } catch (Exception e) {
             logger.error(e.getMessage());
