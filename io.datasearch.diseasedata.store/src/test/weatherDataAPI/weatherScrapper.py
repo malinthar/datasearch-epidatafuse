@@ -5,22 +5,19 @@ import pandas as pd
 import json 
 
 
-country_code = 2120
-start_day = 30
-start_month = 7
-start_year = 2020
-end_day = 30
-end_month = 7
-end_year = 2020
+# country_code = 2120
+# start_day = 30
+# start_month = 7
+# start_year = 2020
+# end_day = 30
+# end_month = 7
+# end_year = 2020
 
-url = ("http://www.meteomanz.com/sy2?l=1&cou="+str(country_code) + "&ind=00000&d1=" +str(start_day) + "&m1=" + str(start_month).zfill(2) + "&y1="+ str(start_year)+
-		'&d2='+str(end_day) + '&m2=' + str(end_month).zfill(2) +'&y2='+ str(end_year))
+# url = ("http://www.meteomanz.com/sy2?l=1&cou="+str(country_code) + "&ind=00000&d1=" +str(start_day) + "&m1=" + str(start_month).zfill(2) + "&y1="+ str(start_year)+
+# 		'&d2='+str(end_day) + '&m2=' + str(end_month).zfill(2) +'&y2='+ str(end_year))
 
-#http://www.meteomanz.com/sy2?l=1&cou=2120&ind=00000&d1=30&m1=07&y1=2020&d2=30&m2=07&y2=2020
-#http://www.meteomanz.com/sy2?l=1&cou=2120&ind=00000&d1=30&m1=7&y1=2020&d2=30&m2=7&y2=2020
-
-
-print(url)
+# #http://www.meteomanz.com/sy2?l=1&cou=2120&ind=00000&d1=30&m1=07&y1=2020&d2=30&m2=07&y2=2020
+# #http://www.meteomanz.com/sy2?l=1&cou=2120&ind=00000&d1=30&m1=7&y1=2020&d2=30&m2=7&y2=2020
 
 
 def scrapeData(day, month, year):
@@ -32,9 +29,11 @@ def scrapeData(day, month, year):
 	end_month = month
 	end_year = year
 
-	url = ("http://www.meteomanz.com/sy2?l=1&cou="+str(country_code) + "&ind=00000&d1=" +str(start_day) + "&m1=" + str(start_month).zfill(2) + "&y1="+ str(start_year)+
-			'&d2='+str(end_day) + '&m2=' + str(end_month).zfill(2) +'&y2='+ str(end_year))
+	url = ("http://www.meteomanz.com/sy2?l=1&cou="+str(country_code) + "&ind=00000&d1=" +str(start_day).zfill(2) + "&m1=" + str(start_month).zfill(2) + "&y1="+ str(start_year)+
+			'&d2='+str(end_day).zfill(2) + '&m2=' + str(end_month).zfill(2) +'&y2='+ str(end_year))
 
+
+	print(url)
 
 	page = requests.get(url)
 	doc = lh.fromstring(page.content)
@@ -119,13 +118,27 @@ def getPercipitation(day, month, year):
 	df2 = df
 	df2["percipitation"] = df2["Prec.(mm)"]
 
-	percip = df2[["Station", "percipitation"]]
+	percipFrame = df2[["Station", "percipitation"]]
+
+	coordinates = [['JAFFNA', 'MANNAR','VAVUNIYA','TRINCOMALEE','ANURADHAPURA','MAHA ILLUPPALLAMA','PUTTALAM','BATTICALOA','KURUNEGALA','KATUGASTHOTA','KATUNAYAKA',
+					'COLOMBO','RATMALANA','NUWARA ELIYA','BADULLA','RATNAPURA','GALLE','HAMBANTOTA','POTTUVIL','MONARAGALA','POLONNARUWA','BANDARAWELA','KANKASANTURAI','KANDY'], 
+					['9.68', '8.98','8.75','8.58','8.35','8.12','8.03','7.72','7.47','7.33','7.17',
+					'6.93','6.82','6.96','6.98','6.68','6.03','6.12','6.88','6.5','7.87','6.82','9.48','7.2'],
+					['80.03', '79.92','80.5','81.25','80.38','80.47','79.83','81.7','80.37','80.63','79.88',
+					'79.85','79.88','80.76','81.05','80.4','80.22','81.13','81.83','81.3','81.05','80.99','80.04','80.38']
+					]
+	coordinatesFrame =pd.DataFrame(coordinates, index=['Station', 'lat', 'long']).T
+
+
+	percip = pd.merge(percipFrame, coordinatesFrame, on='Station', how='inner')
 
 	jsonArray = []
 
 	for i in percip.values:
 		data =  { "Station": i[0], 
-				  "Percipitation":i[1] 
+				  "Percipitation":i[1],
+				  "Lattitude": i[2],
+				  "Longitude":i[3] 
 				}
 		y = json.dumps(data)
 		print(y)
