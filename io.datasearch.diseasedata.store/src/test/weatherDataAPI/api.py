@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from datetime import datetime
 import weatherScrapper 
 
@@ -12,7 +12,10 @@ def hello_world():
 @app.route("/test")
 def hello_test():
    print("Executed!")
-   return ("Hello World")
+   obj = {"dataPoints" :[{"add":"Hello_malintha"},{"add":"Hello_chanuka"},{"add":"Hello_dimuthu"}] }
+   addlist = []
+   addlist.append(obj)
+   return jsonify(obj)
 
 @app.route("/weather")
 def weather():

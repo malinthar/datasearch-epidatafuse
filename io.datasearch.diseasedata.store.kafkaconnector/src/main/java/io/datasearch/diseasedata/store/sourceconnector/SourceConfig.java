@@ -37,7 +37,7 @@ public class SourceConfig extends AbstractConfig {
             .define(TOPIC_CONFIG, ConfigDef.Type.STRING,
                     TOPIC_DEFAULT, new NonEmptyStringWithoutControlChars(),
                     ConfigDef.Importance.HIGH, TOPIC_DOC)
-            .define(POLL_INTERVAL, ConfigDef.Type.INT,
+            .define(POLL_INTERVAL, ConfigDef.Type.LONG,
                     POLL_INTERVAL_DEFAULT, ConfigDef.Importance.LOW,
                     POLL_INTERVAL_DOC);
 

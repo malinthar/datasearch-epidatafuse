@@ -1,5 +1,8 @@
 package io.datasearch.diseasedata.store.sourceconnector;
 
+import io.datasearch.diseasedata.store.sourceconnector.api.client.DataPointsClient;
+import io.datasearch.diseasedata.store.sourceconnector.model.DataBatch;
+import io.datasearch.diseasedata.store.sourceconnector.model.DataPoint;
 import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTask;
 import org.slf4j.Logger;
@@ -15,11 +18,10 @@ import java.util.Map;
  * Source Task.
  */
 public class DiseaseDataSourceTask extends SourceTask {
-    private static final Logger logger = LoggerFactory.getLogger(DiseaseDataSourceConnector.class);
+    private static final Logger logger = LoggerFactory.getLogger(DiseaseDataSourceTask.class);
 
     public static final String URL = "url";
     public static final String LAST_READ = "last_read";
-    public static final String POLL_INTERVAL = "interval";
     public static final String LAST_API_OFFSET = "last_api_offset";
     public static final String DEFAULT_FROM_TIME = "1984-05-04T00:00:00.0000000Z";
     private String fromDate = DEFAULT_FROM_TIME;
@@ -64,7 +66,7 @@ public class DiseaseDataSourceTask extends SourceTask {
     private void setupTaskConfig(Map<String, String> props) {
         baseUrl = props.get(SourceConfig.BASE_URL_CONFIG);
         topic = props.get(SourceConfig.TOPIC_CONFIG);
-        interval = Long.parseLong(props.get(POLL_INTERVAL));
+        interval = Long.parseLong(props.get(SourceConfig.POLL_INTERVAL));
     }
 
     @Override
@@ -82,23 +84,24 @@ public class DiseaseDataSourceTask extends SourceTask {
     }
 
     private List<SourceRecord> getSourceRecords() {
-        List<Event> records = getRecords();
+        List<DataPoint> records = getRecords();
         ArrayList<SourceRecord> sourceRecords = new ArrayList<>();
-        for (Event event : records) {
+        for (DataPoint event : records) {
             sourceRecords.add(buildSourceRecord(event, fromDate, apiOffset));
         }
         return sourceRecords;
     }
 
-    List<Event> getRecords() {
-        List<Event> responseRecords = SourceClient.getRecords(baseUrl);
-        return responseRecords;
+    List<DataPoint> getRecords() {
+        DataBatch dataBatch = DataPointsClient.getRecords(baseUrl);
+        return dataBatch.getDataPoints();
     }
 
-    private SourceRecord buildSourceRecord(Event event, String lastRead, Long apiOffset) {
+
+    private SourceRecord buildSourceRecord(DataPoint event, String lastRead, Long apiOffset) {
         Map<String, Object> sourceOffset = buildSourceOffset(lastRead, apiOffset);
         Map<String, Object> sourcePartition = buildSourcePartition();
-        return new SourceRecord(sourcePartition, sourceOffset, topic, Event.SCHEMA, event.toStruct());
+        return new SourceRecord(sourcePartition, sourceOffset, topic, DataPoint.SCHEMA, event.toStruct());
     }
 
     private Map<String, Object> buildSourceOffset(String lastRead, Long apiOffset) {
