@@ -18,7 +18,8 @@ def hello_test():
 def weather():
    dateString = request.args.get('date')
    date = datetime.strptime(dateString.strip(), '%Y/%m/%d').date()
-   data = weatherScrapper.getPercipitation(date.day, 7, 2020)
+   print(date.month, date.year)
+   data = weatherScrapper.getPercipitation(date.day, date.month, date.year)
    return (str(data))
 
 if __name__ == '__main__':
