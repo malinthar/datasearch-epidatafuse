@@ -1,4 +1,4 @@
-package io.datasearch.diseasedata.store.sourceconnector;
+package io.datasearch.diseasedata.store.sourceconnector.model;
 
 
 import org.apache.kafka.connect.data.Schema;
@@ -8,23 +8,23 @@ import org.apache.kafka.connect.data.Struct;
 /**
  * Source Schema.
  */
-public class Event {
+public class DataPoint {
     /**
      * Schema for recieveing events.
      */
-    public static final String TEST_STRING = "TestString";
+    public static final String TEST_STRING = "add";
     public static final Schema SCHEMA = SchemaBuilder.struct()
-            .name("DiseaseDataSource1")
+            .name(DataPoint.class.getSimpleName())
             .field(TEST_STRING, Schema.STRING_SCHEMA);
 
-    private String testString;
+    private String add;
 
-    public Event(String testString) {
-        this.testString = testString;
+    public DataPoint(String add) {
+        this.add = add;
     }
 
     public String getTestString() {
-        return testString;
+        return add;
     }
 
     public Struct toStruct() {

@@ -41,7 +41,25 @@
              <artifactId>feign-core</artifactId>
              <version>${feign.version}</version>
          </dependency>
+         <dependency>
+              <groupId>io.github.openfeign</groupId>
+              <artifactId>feign-gson</artifactId>
+              <version>${feign.version}</version>
+         </dependency>
+          <dependency>
+             <groupId>io.github.openfeign</groupId>
+             <artifactId>feign-slf4j</artifactId>
+             <version>${feign.version}</version>
+             <scope>compile</scope>
+             <exclusions>
+                 <exclusion>
+                     <artifactId>commons-logging</artifactId>
+                     <groupId>commons-logging</groupId>
+                 </exclusion>
+             </exclusions>
+          </dependency>
     </dependencies>
+
      <build>
             <plugins>
                 <plugin><!-- Overridden from parent pom to exclude generated sources -->
