@@ -2,20 +2,19 @@
 simple_feature_types:
   - feature_name: "precipitation"
     records:
-      StationID: 0
-      StationName: 1
-      Latitude: 2
-      Longitude: 3
-      dtg: 4
-      ObservedValue: 5
-      Lat: 2
-      Long: 3
+      StationName: 0
+      Latitude: 3
+      Longitude: 4
+      dtg: 2
+      ObservedValue: 1
+      Lat: 3
+      Long: 4
 
     configurations:
       DateTimeFormat: "yyyyMMdd"
-      FeatureID: "StationID"
+      FeatureID: "StationName"
 
-    data_source: "weather-precipitation-data.csv"
+    data_source: "/Data/percipitation/daily_weather_srilanka-01_1_2013.csv"
 
   - feature_name: "weatherstations"
     records:
