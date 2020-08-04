@@ -48,6 +48,18 @@
         <Class name="io.datasearch.diseasedata.store.dengdipipeline.stream.DengDIKafkaProducer"/>
         <Bug pattern="RV_RETURN_VALUE_IGNORED"/>
     </Match>
+    <Match>
+        <Class name="io.datasearch.diseasedata.store.dengdipipeline.stream.DengDIKafkaConsumer"/>
+        <Bug pattern="DM_DEFAULT_ENCODING"/>
+    </Match>
+    <Match>
+        <Class name="io.datasearch.diseasedata.store.dengdipipeline.stream.KafkaConsumerConfig"/>
+        <Bug pattern="BX_UNBOXING_IMMEDIATELY_REBOXED"/>
+    </Match>
+    <Match>
+        <Class name="io.datasearch.diseasedata.store.dengdipipeline.stream.KafkaConsumerConfig"/>
+        <Bug pattern="DM_BOXED_PRIMITIVE_FOR_PARSING"/>
+    </Match>
 
 
 </FindBugsFilter>

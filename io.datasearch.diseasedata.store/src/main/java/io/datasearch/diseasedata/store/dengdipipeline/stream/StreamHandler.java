@@ -7,24 +7,24 @@ import org.slf4j.LoggerFactory;
  * To handle streams of data sources.
  */
 public class StreamHandler {
-    private DengDIKafkaProducer kafkaProducer;
-    // private DengDIKafkaConsumer kafkaConsumer;
-    private static final Logger logger = LoggerFactory.getLogger(DengDIKafkaProducer.class);
+    //private DengDIKafkaProducer kafkaProducer;
+    private DengDIKafkaConsumer kafkaConsumer;
+    private static final Logger logger = LoggerFactory.getLogger(StreamHandler.class);
 
     public StreamHandler() {
-        createKafkaProducer();
-        //createKafkaConsumer();
+        //createKafkaProducer();
+        createKafkaConsumer();
         try {
-            this.kafkaProducer.initProducer();
+            this.kafkaConsumer.initConsumer();
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
     }
 
-    public void createKafkaProducer() {
-        this.kafkaProducer = new DengDIKafkaProducer();
-    }
-//    public void createKafkaConsumer() {
-//        this.kafkaConsumer = new DengDIKafkaConsumer();
+//    public void createKafkaProducer() {
+//        this.kafkaProducer = new DengDIKafkaProducer();
 //    }
+    public void createKafkaConsumer() {
+        this.kafkaConsumer = new DengDIKafkaConsumer();
+    }
 }
