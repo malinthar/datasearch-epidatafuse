@@ -1,0 +1,13 @@
+simple_feature_types:
+  - feature_name: "precipitation"                       #name of the featuretype (provided in schema configuration)
+    source: "http://localhost:5000/weather"             #RESR API URL.
+    poll_frequency: 7000                                #In milliseconds <second, minute, hour,day,n_days,week,month,year>  frequency at which the new datapoint(s) arrive at the API. (Temporal granularity of the feature)
+    batch_size: 7                                       #Number of new datapoints to poll at a time.
+
+  - feature_name: "temperature"
+    source: "http://localhost:5000/temperature"
+    poll_frequency: 1000
+    batch_size: 1
+
+
+
