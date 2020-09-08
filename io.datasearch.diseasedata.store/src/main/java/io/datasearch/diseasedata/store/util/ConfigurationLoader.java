@@ -42,7 +42,7 @@ public class ConfigurationLoader {
         return getConfigurations(GRANULARITY_MAPPING_CONFIG_DIR);
     }
 
-    public static Map<String,Object> getIngestStreamingConfigurations() {
+    public static Map<String, Object> getIngestStreamingConfigurations() {
         return getConfigurations(INGESTION_STREAMING_CONFIG_DIR);
     }
 

@@ -15,21 +15,21 @@ def hello_test():
    obj = {
    "dataPoints" :[
    {
-       "StationId":"01CB068A"
-       "StationName":"Cinnamon Lake Side Hotel",
-       "Latitude":"6.929543",
-       "Longitude":"79.8492668",
+       "stationID":"01CB068A",
+       "stationName":"Cinnamon Lake Side Hotel",
+       "latitude":"6.929543",
+       "longitude":"79.8492668",
        "dtg":"20130526",
-       "ObservedValue":"0.6"
+       "observedValue":"0.6"
    },
    {
-      "StationId":"01GM0528"
-      "StationName":"Walpita",
-      "Latitude":"7.27",
-      "Longitude":"80",
+      "stationID":"01GM0528",
+      "stationName":"Walpita",
+      "latitude":"7.27",
+      "longitude":"80",
       "dtg":"20130526",
-      "ObservedValue":"4.2"
-   },]
+      "observedValue":"4.2"
+   }]
    }
 
 # ,,,,,0.6

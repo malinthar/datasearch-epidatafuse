@@ -12,14 +12,15 @@ public class DataPoint {
     /**
      * Schema for receiving events.
      */
-    public static final String STATION_ID = "StationID";
-    public static final String STATION_NAME = "StationName";
-    public static final String LATITUDE = "Latitude";
-    public static final String LONGITUDE = "Longitude";
+    public static final String STATION_ID = "stationID";
+    public static final String STATION_NAME = "stationName";
+    public static final String LATITUDE = "latitude";
+    public static final String LONGITUDE = "longitude";
     public static final String DATE = "dtg";
-    public static final String OBSERVED_VALUE = "ObservedValue";
+    public static final String OBSERVED_VALUE = "observedValue";
     public static final Schema SCHEMA = SchemaBuilder.struct()
             .name(DataPoint.class.getSimpleName())
+            .field(STATION_ID, Schema.STRING_SCHEMA)
             .field(STATION_NAME, Schema.STRING_SCHEMA)
             .field(LATITUDE, Schema.STRING_SCHEMA)
             .field(LONGITUDE, Schema.STRING_SCHEMA)
@@ -34,7 +35,7 @@ public class DataPoint {
     private String dtg;
     private String observedValue;
 
-    public DataPoint(String stationID,String stationName,
+    public DataPoint(String stationID, String stationName,
                      String latitude, String longitude,
                      String dtg, String observedValue) {
         this.stationID = stationID;
@@ -45,7 +46,7 @@ public class DataPoint {
         this.observedValue = observedValue;
     }
 
-    public String getStationId() {
+    public String getStationID() {
         return stationID;
     }
 
@@ -71,7 +72,7 @@ public class DataPoint {
 
     public Struct toStruct() {
         Struct struct = new Struct(SCHEMA)
-                .put(STATION_ID, getStationName())
+                .put(STATION_ID, getStationID())
                 .put(STATION_NAME, getStationName())
                 .put(LATITUDE, getLatitude())
                 .put(LONGITUDE, getLongitude())
