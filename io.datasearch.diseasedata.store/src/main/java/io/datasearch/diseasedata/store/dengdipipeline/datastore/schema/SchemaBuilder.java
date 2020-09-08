@@ -1,4 +1,4 @@
-package io.datasearch.diseasedata.store.schema;
+package io.datasearch.diseasedata.store.dengdipipeline.datastore.schema;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;

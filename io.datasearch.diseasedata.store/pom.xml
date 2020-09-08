@@ -23,8 +23,8 @@
                  <artifactId>slf4j-log4j12</artifactId>
              </dependency>
              <dependency>
-                 <groupId>log4j</groupId>
-                 <artifactId>log4j</artifactId>
+                  <groupId>log4j</groupId>
+                  <artifactId>log4j</artifactId>
              </dependency>
              <dependency>
                  <groupId>org.springframework.boot</groupId>
@@ -37,9 +37,9 @@
     </dependencyManagement>
     <dependencies>
             <dependency>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>javax.servlet-api</artifactId>
-                    <version>${javax.servlet.version}</version>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${javax.servlet.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.locationtech.geomesa</groupId>
@@ -103,7 +103,7 @@
                  <version>${snakeyaml.version}</version>
             </dependency>
 
-            <!-- springboot dependencies -->
+            <!-- spring boot dependencies -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
@@ -132,8 +132,53 @@
                 <artifactId>kafka-clients</artifactId>
                 <version>${kafka.clients.version}</version>
             </dependency>
-   </dependencies>
+           <dependency>
+             <groupId>io.siddhi</groupId>
+             <artifactId>siddhi-core</artifactId>
+             <version>${siddhi.version}</version>
+           </dependency>
+           <dependency>
+             <groupId>io.siddhi</groupId>
+             <artifactId>siddhi-query-api</artifactId>
+             <version>${siddhi.version}</version>
+           </dependency>
+           <dependency>
+             <groupId>io.siddhi</groupId>
+             <artifactId>siddhi-query-compiler</artifactId>
+             <version>${siddhi.version}</version>
+           </dependency>
+           <dependency>
+             <groupId>io.siddhi</groupId>
+             <artifactId>siddhi-annotations</artifactId>
+             <version>${siddhi.version}</version>
+           </dependency>
+           <dependency>
+              <groupId>io.siddhi.extension.io.http</groupId>
+              <artifactId>siddhi-io-http</artifactId>
+              <version>${siddhi.http.version}</version>
+              <exclusions>
+                  <exclusion>
+                        <groupId>org.ops4j.pax.logging</groupId>
+                        <artifactId>pax-logging-api</artifactId>
+                  </exclusion>
+                  <exclusion>
+                      <groupId>org.ops4j.pax.logging</groupId>
+                      <artifactId>pax-logging-log4j2</artifactId>
+                  </exclusion>
+              </exclusions>
+           </dependency>
+           <dependency>
+               <groupId>io.siddhi.extension.map.json</groupId>
+               <artifactId>siddhi-map-json</artifactId>
+               <version>${siddhi.map.json.version}</version>
+           </dependency>
+           <dependency>
+               <groupId>com.google.code.gson</groupId>
+               <artifactId>gson</artifactId>
+               <version>${gson.version}</version>
+           </dependency>
 
+   </dependencies>
 
     <build>
         <plugins>

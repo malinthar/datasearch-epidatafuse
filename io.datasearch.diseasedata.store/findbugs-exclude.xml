@@ -17,7 +17,7 @@
         <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
     </Match>
     <Match>
-        <Class name="io.datasearch.diseasedata.store.query.QueryObject"/>
+        <Class name="io.datasearch.diseasedata.store.dengdipipeline.datastore.query.QueryObject"/>
         <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
     </Match>
     <Match>
@@ -59,6 +59,10 @@
     <Match>
         <Class name="io.datasearch.diseasedata.store.dengdipipeline.stream.KafkaConsumerConfig"/>
         <Bug pattern="DM_BOXED_PRIMITIVE_FOR_PARSING"/>
+    </Match>
+    <Match>
+        <Class name="io.datasearch.diseasedata.store.dengdipipeline.stream.SiddhiAppFactory"/>
+        <Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON"/>
     </Match>
 
 

@@ -1,7 +1,9 @@
 package io.datasearch.diseasedata.store.dengdipipeline;
 
+import io.datasearch.diseasedata.store.dengdipipeline.datastore.PipelineDataStore;
+import io.datasearch.diseasedata.store.dengdipipeline.datastore.ingestion.DataIngester;
+import io.datasearch.diseasedata.store.dengdipipeline.datastore.schema.SimpleFeatureTypeSchema;
 import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.FuseEngine;
-import io.datasearch.diseasedata.store.dengdipipeline.ingestion.DataIngester;
 import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.AggregationConfig;
 import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.GranularityRelationConfig;
 import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.IngestConfig;
@@ -9,7 +11,9 @@ import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.Schema
 import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.GranularityMap;
 import io.datasearch.diseasedata.store.dengdipipeline.publish.Publisher;
 import io.datasearch.diseasedata.store.dengdipipeline.stream.StreamHandler;
-import io.datasearch.diseasedata.store.schema.SimpleFeatureTypeSchema;
+import io.siddhi.core.event.Event;
+import io.siddhi.core.util.EventPrinter;
+
 
 import org.geotools.data.DataStore;
 import org.slf4j.Logger;
@@ -26,10 +30,9 @@ import java.util.Map;
  */
 public class DengDIPipeLine {
     private static final Logger logger = LoggerFactory.getLogger(DengDIPipeLine.class);
+
+    private PipelineDataStore pipelineDataStore;
     //Data store for persisting spatio-temporal data.
-    private DataStore dataStore;
-    //Stream handler for handling data
-    private Map<String, SimpleFeatureTypeSchema> simpleFeatureTypeSchemas;
     private StreamHandler streamHandler;
     //aggregator and transformer;
     private FuseEngine fuseEngine;
@@ -48,33 +51,30 @@ public class DengDIPipeLine {
     public DengDIPipeLine(DataStore dataStore, Map<String, SimpleFeatureTypeSchema> schemas,
                           HashMap<String, GranularityRelationConfig> granularityRelationConfigs,
                           HashMap<String, AggregationConfig> aggregationConfigs) {
-        this.dataStore = dataStore;
-        this.simpleFeatureTypeSchemas = schemas;
-        this.streamHandler = new StreamHandler();
-        this.fuseEngine = new FuseEngine(this.dataStore);
+        this.pipelineDataStore = new PipelineDataStore(dataStore, schemas);
+        this.streamHandler = new StreamHandler(this);
+        this.fuseEngine = new FuseEngine(dataStore);
         this.granularityRelationConfigs = granularityRelationConfigs;
         this.aggregationConfigs = aggregationConfigs;
     }
 
     public DataStore getDataStore() {
-        return this.dataStore;
+        return this.pipelineDataStore.getDataStore();
     }
 
     public SimpleFeatureTypeSchema getSchema(String featureTypeName) {
-        return simpleFeatureTypeSchemas.get(featureTypeName);
+        return this.pipelineDataStore.getSchema(featureTypeName);
     }
 
     public FuseEngine getFuseEngine() {
-        if (this.fuseEngine == null) {
-            this.fuseEngine = new FuseEngine(dataStore);
-        }
         return this.fuseEngine;
     }
 
     public void ingest() {
         try {
             DataIngester dataIngester = new DataIngester();
-            dataIngester.insertData(this.getDataStore(), this.simpleFeatureTypeSchemas);
+            dataIngester.insertData(this.getDataStore(),
+                    this.pipelineDataStore.getSchemas());
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
@@ -88,5 +88,8 @@ public class DengDIPipeLine {
         String featureType = "precipitation";
         this.fuseEngine
                 .aggregate(granularityRelationMaps.get(featureType), this.aggregationConfigs.get(featureType));
+    }
+    public void streamingIngest(Event[] events) {
+        EventPrinter.print(events);
     }
 }

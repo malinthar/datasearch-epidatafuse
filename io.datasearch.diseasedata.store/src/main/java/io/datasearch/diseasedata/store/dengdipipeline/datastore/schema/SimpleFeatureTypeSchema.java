@@ -1,4 +1,4 @@
-package io.datasearch.diseasedata.store.schema;
+package io.datasearch.diseasedata.store.dengdipipeline.datastore.schema;
 
 import org.locationtech.geomesa.utils.interop.SimpleFeatureTypes;
 import org.opengis.feature.simple.SimpleFeatureType;

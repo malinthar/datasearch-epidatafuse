@@ -9,13 +9,13 @@ app = Flask(__name__)
 def hello_world():
    return ("Hello World")
 
-@app.route("/test")
+@app.route("/weatherdata")
 def hello_test():
    print("Executed!")
    obj = {
    "dataPoints" :[
    {
-       "stationID":"01CB068A",
+       "stationID":"01CB068A",'trp:name'
        "stationName":"Cinnamon Lake Side Hotel",
        "latitude":"6.929543",
        "longitude":"79.8492668",
@@ -46,6 +46,22 @@ def weather():
    print(date.month, date.year)
    data = weatherScrapper.getPercipitation(date.day, date.month, date.year)
    return (str(data))
+
+@app.route("/temp")
+def temperature():
+    res = {
+           "sensorId":"01CB068A",
+           "temperature":50.5
+    }
+    return jsonify(res)
+
+@app.route("/sweet")
+def sweet():
+    res = {
+        "name": "TestName",
+        "temperature": 56.5
+    }
+    return jsonify(res)
 
 if __name__ == '__main__':
    app.run()

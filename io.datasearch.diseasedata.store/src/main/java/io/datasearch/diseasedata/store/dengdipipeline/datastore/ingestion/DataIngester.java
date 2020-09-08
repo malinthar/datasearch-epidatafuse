@@ -1,7 +1,7 @@
-package io.datasearch.diseasedata.store.dengdipipeline.ingestion;
+package io.datasearch.diseasedata.store.dengdipipeline.datastore.ingestion;
 
-import io.datasearch.diseasedata.store.dengdipipeline.ingestion.util.FeatureData;
-import io.datasearch.diseasedata.store.schema.SimpleFeatureTypeSchema;
+import io.datasearch.diseasedata.store.dengdipipeline.datastore.ingestion.util.FeatureData;
+import io.datasearch.diseasedata.store.dengdipipeline.datastore.schema.SimpleFeatureTypeSchema;
 import io.datasearch.diseasedata.store.util.ConfigurationLoader;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;

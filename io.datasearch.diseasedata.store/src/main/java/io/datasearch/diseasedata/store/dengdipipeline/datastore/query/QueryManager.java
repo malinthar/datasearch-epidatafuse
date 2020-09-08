@@ -1,4 +1,4 @@
-package io.datasearch.diseasedata.store.query;
+package io.datasearch.diseasedata.store.dengdipipeline.datastore.query;
 
 
 import io.datasearch.diseasedata.store.DiseaseDataStore;

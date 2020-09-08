@@ -1,0 +1,8 @@
+sources:
+  - feature_name: "temperature"
+    source_type: "none"
+    paramaters:
+      url: "http://localhost:5000/temp"
+      batch_size: 10
+
+

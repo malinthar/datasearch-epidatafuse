@@ -1,9 +1,9 @@
 package io.datasearch.diseasedata.store.dengdipipeline;
 
+import io.datasearch.diseasedata.store.dengdipipeline.datastore.schema.SchemaBuilder;
+import io.datasearch.diseasedata.store.dengdipipeline.datastore.schema.SimpleFeatureTypeSchema;
 import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.AggregationConfig;
 import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.GranularityRelationConfig;
-import io.datasearch.diseasedata.store.schema.SchemaBuilder;
-import io.datasearch.diseasedata.store.schema.SimpleFeatureTypeSchema;
 import io.datasearch.diseasedata.store.util.ConfigurationLoader;
 import io.datasearch.diseasedata.store.util.DataStoreLoader;
 import org.geotools.data.DataStore;
@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
-
 
 /**
  * Factory for creating pipelines.

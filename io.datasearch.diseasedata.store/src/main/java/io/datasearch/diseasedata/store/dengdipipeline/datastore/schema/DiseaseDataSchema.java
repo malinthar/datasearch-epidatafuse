@@ -1,4 +1,4 @@
-package io.datasearch.diseasedata.store.schema;
+package io.datasearch.diseasedata.store.dengdipipeline.datastore.schema;
 
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
