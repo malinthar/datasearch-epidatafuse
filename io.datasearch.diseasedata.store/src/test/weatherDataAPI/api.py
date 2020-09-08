@@ -12,9 +12,31 @@ def hello_world():
 @app.route("/test")
 def hello_test():
    print("Executed!")
-   obj = {"dataPoints" :[{"add":"Hello_malintha"},{"add":"Hello_chanuka"},{"add":"Hello_dimuthu"}] }
-   addlist = []
-   addlist.append(obj)
+   obj = {
+   "dataPoints" :[
+   {
+       "stationID":"01CB068A",
+       "stationName":"Cinnamon Lake Side Hotel",
+       "latitude":"6.929543",
+       "longitude":"79.8492668",
+       "dtg":"20130526",
+       "observedValue":"0.6"
+   },
+   {
+      "stationID":"01GM0528",
+      "stationName":"Walpita",
+      "latitude":"7.27",
+      "longitude":"80",
+      "dtg":"20130526",
+      "observedValue":"4.2"
+   }]
+   }
+
+# ,,,,,0.6
+# 01GM0528,Walpita,7.27,80,20131206,0
+# 01KG092B,Dodangaslanda,7.57,80.5,20130130,0
+# 01JF0425,Point Pedro,9.83,80.2,20130106,0
+# 01PU313A,Marawila,7.4234916,79.8353622,20130508,4.2
    return jsonify(obj)
 
 @app.route("/weather")

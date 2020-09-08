@@ -15,10 +15,11 @@ public class ConfigurationLoader {
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationLoader.class);
 
     private static final String SCHEMA_CONFIG_DIR = "config-schema.yaml";
-    private static final String INGESTION_CONFIG_DIR = "config-ingest.yaml";
+    private static final String INGESTION_HISTORICAL_CONFIG_DIR = "config-ingest-historical.yaml";
     private static final String QUERY_CONFIG_DIR = "config-queries.yaml";
     private static final String GRANULARITY_CONFIG_DIR = "config-granularity.yaml";
     private static final String GRANULARITY_MAPPING_CONFIG_DIR = "config-granularity-mapping.yaml";
+    private static final String INGESTION_STREAMING_CONFIG_DIR = "config-ingest-streaming.yaml";
 
 
     public static Map<String, Object> getSchemaConfigurations() {
@@ -26,7 +27,7 @@ public class ConfigurationLoader {
     }
 
     public static Map<String, Object> getIngestConfigurations() {
-        return getConfigurations(INGESTION_CONFIG_DIR);
+        return getConfigurations(INGESTION_HISTORICAL_CONFIG_DIR);
     }
 
     public static Map<String, Object> getQueryConfigurations() {
@@ -39,6 +40,10 @@ public class ConfigurationLoader {
 
     public static Map<String, Object> getGranularityMappingConfigurations() {
         return getConfigurations(GRANULARITY_MAPPING_CONFIG_DIR);
+    }
+
+    public static Map<String, Object> getIngestStreamingConfigurations() {
+        return getConfigurations(INGESTION_STREAMING_CONFIG_DIR);
     }
 
     public static Map<String, Object> getConfigurations(String configFileDir) {

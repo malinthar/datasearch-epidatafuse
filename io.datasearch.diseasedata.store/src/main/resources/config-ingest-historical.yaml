@@ -1,4 +1,3 @@
-
 simple_feature_types:
   - feature_name: "precipitation"
     records:
