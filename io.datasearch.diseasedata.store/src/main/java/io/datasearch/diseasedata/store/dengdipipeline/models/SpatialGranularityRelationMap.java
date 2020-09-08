@@ -7,7 +7,7 @@ import java.util.HashMap;
  * spatial map class
  */
 public class SpatialGranularityRelationMap {
-    
+
     private HashMap<String, ArrayList<String>> mappings;
 
     public SpatialGranularityRelationMap() {

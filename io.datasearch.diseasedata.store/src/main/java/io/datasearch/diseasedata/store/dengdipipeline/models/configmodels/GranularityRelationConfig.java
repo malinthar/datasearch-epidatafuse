@@ -31,6 +31,10 @@ public class GranularityRelationConfig {
         return this.relationMappingMethod;
     }
 
+    public void setCustomAttributes(String attrName, String value) {
+        this.customAttributes.put(attrName, value);
+    }
+
     public String getCustomAttribute(String attrName) {
         return customAttributes.get(attrName);
     }

@@ -1,14 +1,18 @@
 package io.datasearch.diseasedata.store.dengdipipeline;
 
 import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.FuseEngine;
+import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.GranularityRelationMapper;
 import io.datasearch.diseasedata.store.dengdipipeline.ingestion.DataIngester;
+import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.GranularityRelationConfig;
 import io.datasearch.diseasedata.store.dengdipipeline.publish.Publisher;
 import io.datasearch.diseasedata.store.dengdipipeline.stream.StreamHandler;
 import io.datasearch.diseasedata.store.schema.SimpleFeatureTypeSchema;
+
 import org.geotools.data.DataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -34,6 +38,7 @@ public class DengDIPipeLine {
         this.dataStore = dataStore;
         this.simpleFeatureTypeSchemas = schemas;
         this.streamHandler = new StreamHandler();
+        this.fuseEngine = new FuseEngine(this.dataStore);
     }
 
     public DataStore getDataStore() {
@@ -46,7 +51,7 @@ public class DengDIPipeLine {
 
     public FuseEngine getFuseEngine() {
         if (this.fuseEngine == null) {
-            this.fuseEngine = new FuseEngine();
+            this.fuseEngine = new FuseEngine(dataStore);
         }
         return this.fuseEngine;
     }
@@ -58,6 +63,23 @@ public class DengDIPipeLine {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
+    }
+
+    public void mapGranularityRelations() {
+        logger.info("h00");
+        GranularityRelationMapper granularityRelationMapper = this.fuseEngine.getGranularityRelationMapper();
+
+        logger.info("h1");
+        this.fuseEngine.setSpatialGranularityConfigs();
+        this.fuseEngine.setTargetGranularities();
+        logger.info("h2");
+
+        HashMap<String, GranularityRelationConfig> relationConfigs = this.fuseEngine.getSpatialGranularityConfigs();
+
+        relationConfigs.forEach((featureType, config) -> {
+            logger.info(featureType + config);
+            granularityRelationMapper.buildSpatialGranularityMap(config);
+        });
     }
 
 //    public void mapGranularityRelations() {

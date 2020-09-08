@@ -61,7 +61,8 @@ public class RequestHandler {
     public String granularityMap() {
         try {
             String pipelineName = "dengue";
-            //dengDIPipeLineMap.get(pipelineName).mapGranularityRelations();
+            logger.info("h01");
+            dengDIPipeLineMap.get(pipelineName).mapGranularityRelations();
             return "Success mapping";
         } catch (Exception e) {
             logger.error(e.getMessage());
