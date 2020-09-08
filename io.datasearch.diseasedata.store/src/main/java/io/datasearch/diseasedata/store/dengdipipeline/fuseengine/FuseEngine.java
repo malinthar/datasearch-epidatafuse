@@ -5,11 +5,9 @@ package io.datasearch.diseasedata.store.dengdipipeline.fuseengine;
  */
 public class FuseEngine {
     //aggregating
-    private Aggregator aggregator;
+    private DataFrameBuilder dataFrameBuilder;
     //granularityConvertor
     private GranularityConvertor granularityConvertor;
-    //Transformer
-    private Transformer transformer;
 
 //    public GranularityConvertor getGranularityConvertor() {
 //        if (this.granularityConvertor == null) {

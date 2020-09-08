@@ -1,10 +1,7 @@
 package io.datasearch.diseasedata.store.dengdipipeline;
 
 import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.FuseEngine;
-import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.GranularityConvertor;
-import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.GranularityRelationMapper;
 import io.datasearch.diseasedata.store.dengdipipeline.ingestion.DataIngester;
-import io.datasearch.diseasedata.store.dengdipipeline.models.granularitymappingmethods.GranularityMap;
 import io.datasearch.diseasedata.store.dengdipipeline.publish.Publisher;
 import io.datasearch.diseasedata.store.dengdipipeline.stream.StreamHandler;
 import io.datasearch.diseasedata.store.schema.SimpleFeatureTypeSchema;
@@ -31,7 +28,7 @@ public class DengDIPipeLine {
     //publisher for publishing data to relevant endpoints
     private Publisher publisher;
 
-    private Map<String, GranularityMap> spatialGranularityMap;
+    //private Map<String, GranularityMap> spatialGranularityMap;
 
     public DengDIPipeLine(DataStore dataStore, Map<String, SimpleFeatureTypeSchema> schemas) {
         this.dataStore = dataStore;
@@ -63,39 +60,39 @@ public class DengDIPipeLine {
         }
     }
 
-    public void mapGranularityRelations() {
-        try {
-            GranularityRelationMapper grmapper = new GranularityRelationMapper(this.dataStore);
-            grmapper.buildGranularityMap();
-            Map<String, GranularityMap> spatialGranularityMap = grmapper.getSpatialGranularityMap();
-
-            this.spatialGranularityMap = spatialGranularityMap;
-
-            spatialGranularityMap.forEach((feature, map) -> {
-                logger.info(feature + " mapper " + map.getClass().getSimpleName());
-            });
-
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    public void convertIntoRequiredGranule(String featureType) {
-
-        String granulityType = "weatherstations";
-        String spatialMappingMethod = this.spatialGranularityMap.get(granulityType).getClass().getSimpleName();
-        String temporalMappingMethod = "";
-
-        logger.info(spatialMappingMethod);
-
-        GranularityConvertor granularityConvertor =
-                new GranularityConvertor(this.dataStore, this.spatialGranularityMap);
-
-        try {
-            granularityConvertor.convert(featureType, spatialMappingMethod, temporalMappingMethod);
-        } catch (Exception e) {
-            logger.info(e.getMessage());
-        }
-
-    }
+//    public void mapGranularityRelations() {
+//        try {
+//            GranularityRelationMapper grmapper = new GranularityRelationMapper(this.dataStore);
+//            grmapper.buildGranularityMap();
+//            Map<String, GranularityMap> spatialGranularityMap = grmapper.getSpatialGranularityMap();
+//
+//            this.spatialGranularityMap = spatialGranularityMap;
+//
+//            spatialGranularityMap.forEach((feature, map) -> {
+//                logger.info(feature + " mapper " + map.getClass().getSimpleName());
+//            });
+//
+//        } catch (Exception e) {
+//            logger.error(e.getMessage());
+//        }
+//    }
+//
+//    public void convertIntoRequiredGranule(String featureType) {
+//
+//        String granulityType = "weatherstations";
+//        String spatialMappingMethod = this.spatialGranularityMap.get(granulityType).getClass().getSimpleName();
+//        String temporalMappingMethod = "";
+//
+//        logger.info(spatialMappingMethod);
+//
+//        GranularityConvertor granularityConvertor =
+//                new GranularityConvertor(this.dataStore, this.spatialGranularityMap);
+//
+//        try {
+//            granularityConvertor.convert(featureType, spatialMappingMethod, temporalMappingMethod);
+//        } catch (Exception e) {
+//            logger.info(e.getMessage());
+//        }
+//
+//    }
 }
