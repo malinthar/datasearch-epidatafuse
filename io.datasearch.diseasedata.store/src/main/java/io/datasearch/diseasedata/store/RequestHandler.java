@@ -61,7 +61,7 @@ public class RequestHandler {
     public String granularityMap() {
         try {
             String pipelineName = "dengue";
-            dengDIPipeLineMap.get(pipelineName).mapGranularityRelations();
+            //dengDIPipeLineMap.get(pipelineName).mapGranularityRelations();
             return "Success mapping";
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -74,12 +74,11 @@ public class RequestHandler {
         try {
             String pipelineName = "dengue";
             String featureType = "precipitation";
-            dengDIPipeLineMap.get(pipelineName).convertIntoRequiredGranule(featureType);
+            //dengDIPipeLineMap.get(pipelineName).convertIntoRequiredGranule(featureType);
             return "Success conversion";
         } catch (Exception e) {
             logger.error(e.getMessage());
             return e.getMessage();
         }
     }
-
 }
