@@ -1,9 +1,11 @@
 package io.datasearch.diseasedata.store.dengdipipeline;
 
+import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.GranularityRelationConfig;
 import io.datasearch.diseasedata.store.schema.SchemaBuilder;
 import io.datasearch.diseasedata.store.schema.SimpleFeatureTypeSchema;
 import io.datasearch.diseasedata.store.util.ConfigurationLoader;
 import io.datasearch.diseasedata.store.util.DataStoreLoader;
+import java.util.HashMap;
 import org.geotools.data.DataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,10 +33,31 @@ public class DengDIPipeLineFactory {
             Map<String, SimpleFeatureTypeSchema> schemas =
                     SchemaBuilder.buildSchema(schemaConfigurations
                             , dataStore);
-            return new DengDIPipeLine(dataStore, schemas);
+
+            HashMap<String, GranularityRelationConfig> granularityConfigs = buildGranularityRelationConfigs();
+
+            return new DengDIPipeLine(dataStore, schemas, granularityConfigs);
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new RuntimeException("Error building schema", e);
         }
+    }
+
+    public static HashMap<String, GranularityRelationConfig> buildGranularityRelationConfigs() {
+        //read from the files and return a config file for each feature:tobe implemented
+
+        HashMap<String, GranularityRelationConfig> granularityConfigs =
+                new HashMap<String, GranularityRelationConfig>();
+
+        String featureTypeName = "precipitation";
+        GranularityRelationConfig config = new GranularityRelationConfig(featureTypeName,
+                "weatherstations", "nearest", "moh", "week");
+
+        config.setCustomAttributes("neighbors", "3");
+        config.setCustomAttributes("maxDistance", "100000");
+
+        granularityConfigs.put(featureTypeName, config);
+
+        return granularityConfigs;
     }
 }

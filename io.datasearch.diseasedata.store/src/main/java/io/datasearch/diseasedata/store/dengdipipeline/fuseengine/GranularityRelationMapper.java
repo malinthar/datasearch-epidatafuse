@@ -1,8 +1,9 @@
 package io.datasearch.diseasedata.store.dengdipipeline.fuseengine;
 
-import io.datasearch.diseasedata.store.dengdipipeline.models.SpatialGranularityRelationMap;
+import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.SpatialGranularityRelationMap;
 import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.GranularityRelationConfig;
 import io.datasearch.diseasedata.store.dengdipipeline.models.granularitymappingmethods.NearestMapper;
+import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.TemporalGranularityMap;
 import io.datasearch.diseasedata.store.query.QueryManager;
 import io.datasearch.diseasedata.store.query.QueryObject;
 import org.geotools.data.DataStore;
@@ -25,8 +26,6 @@ public class GranularityRelationMapper {
     private QueryManager queryManager;
     private static final Logger logger = LoggerFactory.getLogger(GranularityRelationMapper.class);
 
-    private String targetSpatialGranularity;
-    private String targetTemporalGranularity;
     private ArrayList<Map<String, Object>> spatioTemporalGranularityConfigs;
 
     //private SimpleFeatureCollection targetSpatialGranules;
@@ -36,21 +35,15 @@ public class GranularityRelationMapper {
         this.queryManager = new QueryManager();
     }
 
-    public void setTargetGranularities(String targetSpatial, String targetTemporal) {
-        this.targetSpatialGranularity = targetSpatial;
-        this.targetTemporalGranularity = targetTemporal;
-    }
-
     public SpatialGranularityRelationMap buildSpatialGranularityMap(GranularityRelationConfig config) {
-        //String featureType = config.getFeatureTypeName();
+        logger.info("spatial " + config.getFeatureTypeName());
         String spatialGranularity = config.getSpatialGranularity();
         String relationMappingMethod = config.getRelationMappingMethod();
+        String targetSpatialGranularity = config.getTargetSpatialGranularity();
+
         SpatialGranularityRelationMap spatialMap;
 
-//        if (this.targetSpatialGranules == null) {
-//            this.targetSpatialGranules = this.getGranuleSet(this.targetSpatialGranularity);
-//        }
-        SimpleFeatureCollection targetSpatialGranules = this.getGranuleSet(this.targetSpatialGranularity);
+        SimpleFeatureCollection targetSpatialGranules = this.getGranuleSet(targetSpatialGranularity);
 
         SimpleFeatureCollection baseSpatialGranuleSet = this.getGranuleSet(spatialGranularity);
 
@@ -82,5 +75,12 @@ public class GranularityRelationMapper {
             logger.info(e.getMessage());
             return null;
         }
+    }
+
+    // to implement
+    public TemporalGranularityMap buildTemporalMap(GranularityRelationConfig granularityRelationConfig) {
+        logger.info("temporal " + granularityRelationConfig.getFeatureTypeName());
+
+        return new TemporalGranularityMap();
     }
 }

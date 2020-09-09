@@ -1,7 +1,10 @@
 package io.datasearch.diseasedata.store.dengdipipeline.fuseengine;
 
 
+import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.GranularityMap;
+import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.SpatialGranularityRelationMap;
 import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.GranularityRelationConfig;
+import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.TemporalGranularityMap;
 import org.geotools.data.DataStore;
 
 import java.util.HashMap;
@@ -31,31 +34,44 @@ public class FuseEngine {
         return this.granularityRelationMapper;
     }
 
-    public void setTargetGranularities() {
-        this.granularityRelationMapper.setTargetGranularities("moh", "week");
-    }
-
-    public void setSpatialGranularityConfigs() {
-        //read from the file and set the hashmap
-        String featureTypeName = "precipitation";
-        GranularityRelationConfig spatialConfig = new GranularityRelationConfig(featureTypeName,
-                "weatherstations", "nearest");
-
-        spatialConfig.setCustomAttributes("neighbors", "3");
-        spatialConfig.setCustomAttributes("maxDistance", "100000");
-
-        spatialGranularityConfigs.put(featureTypeName, spatialConfig);
-    }
-
     public HashMap<String, GranularityRelationConfig> getSpatialGranularityConfigs() {
         return spatialGranularityConfigs;
     }
 
-//    public GranularityConvertor getGranularityConvertor() {
-//        if (this.granularityConvertor == null) {
-//            this.granularityConvertor = new GranularityConvertor(th);
-//        }
-//        return this.granularityConvertor;
-//    }
+    public HashMap<String, SpatialGranularityRelationMap> buildSpatialGranularityMap(
+            HashMap<String, GranularityRelationConfig> granularityRelationConfigs) {
+
+        HashMap<String, SpatialGranularityRelationMap> relationMaps =
+                new HashMap<String, SpatialGranularityRelationMap>();
+
+        granularityRelationConfigs.forEach((featureType, config) -> {
+            SpatialGranularityRelationMap spatialGranularityRelationMap =
+                    granularityRelationMapper.buildSpatialGranularityMap(config);
+            relationMaps.put(featureType, spatialGranularityRelationMap);
+        });
+
+        return relationMaps;
+    }
+
+
+    public HashMap<String, GranularityMap> buildGranularityMap(
+            HashMap<String, GranularityRelationConfig> granularityRelationConfigs) {
+
+        HashMap<String, GranularityMap> granularityMaps = new HashMap<String, GranularityMap>();
+
+        granularityRelationConfigs.forEach((featureType, GranularityRelationConfig) -> {
+
+            SpatialGranularityRelationMap spatialMap =
+                    this.granularityRelationMapper.buildSpatialGranularityMap(GranularityRelationConfig);
+            TemporalGranularityMap temporalMap =
+                    this.granularityRelationMapper.buildTemporalMap(GranularityRelationConfig);
+
+            GranularityMap granularityMap = new GranularityMap(featureType, spatialMap, temporalMap);
+
+            granularityMaps.put(featureType, granularityMap);
+        });
+
+        return granularityMaps;
+    }
 }
 

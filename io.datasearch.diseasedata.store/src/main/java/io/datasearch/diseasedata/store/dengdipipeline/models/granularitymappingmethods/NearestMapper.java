@@ -1,6 +1,6 @@
 package io.datasearch.diseasedata.store.dengdipipeline.models.granularitymappingmethods;
 
-import io.datasearch.diseasedata.store.dengdipipeline.models.SpatialGranularityRelationMap;
+import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.SpatialGranularityRelationMap;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
