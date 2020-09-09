@@ -1,4 +1,4 @@
-package io.datasearch.diseasedata.store.dengdipipeline.models;
+package io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +7,7 @@ import java.util.HashMap;
  * spatial map class
  */
 public class SpatialGranularityRelationMap {
-    
+
     private HashMap<String, ArrayList<String>> mappings;
 
     public SpatialGranularityRelationMap() {

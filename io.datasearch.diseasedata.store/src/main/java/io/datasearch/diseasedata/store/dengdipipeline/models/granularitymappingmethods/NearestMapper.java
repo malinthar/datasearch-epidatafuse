@@ -1,11 +1,13 @@
 package io.datasearch.diseasedata.store.dengdipipeline.models.granularitymappingmethods;
 
-import io.datasearch.diseasedata.store.dengdipipeline.models.SpatialGranularityRelationMap;
+import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.SpatialGranularityRelationMap;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.locationtech.geomesa.process.query.KNearestNeighborSearchProcess;
 import org.opengis.feature.simple.SimpleFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
@@ -14,6 +16,8 @@ import java.util.ArrayList;
  */
 
 public class NearestMapper {
+    private static final Logger logger = LoggerFactory.getLogger(NearestMapper.class);
+
     public static SpatialGranularityRelationMap buildNearestMap(SimpleFeatureCollection targetGranuleSet,
                                                                 SimpleFeatureCollection baseGranuleSet, int neighbors,
                                                                 double maxDistance) {
@@ -27,6 +31,8 @@ public class NearestMapper {
                         maxDistance);
 
                 spatialMap.addPoint(targetPoint.getID(), nearestNeighbors);
+                String msg = targetPoint.getID() + nearestNeighbors.toString();
+                logger.info(msg);
             }
         } finally {
             featureIt.close();
