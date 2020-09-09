@@ -1,12 +1,11 @@
 package io.datasearch.diseasedata.store.dengdipipeline.fuseengine;
 
 
+import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.GranularityRelationConfig;
 import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.GranularityMap;
 import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.SpatialGranularityRelationMap;
-import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.GranularityRelationConfig;
 import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.TemporalGranularityMap;
 import org.geotools.data.DataStore;
-
 import java.util.HashMap;
 
 /**
@@ -59,12 +58,12 @@ public class FuseEngine {
 
         HashMap<String, GranularityMap> granularityMaps = new HashMap<String, GranularityMap>();
 
-        granularityRelationConfigs.forEach((featureType, GranularityRelationConfig) -> {
+        granularityRelationConfigs.forEach((featureType, granularityRelationConfig) -> {
 
             SpatialGranularityRelationMap spatialMap =
-                    this.granularityRelationMapper.buildSpatialGranularityMap(GranularityRelationConfig);
+                    this.granularityRelationMapper.buildSpatialGranularityMap(granularityRelationConfig);
             TemporalGranularityMap temporalMap =
-                    this.granularityRelationMapper.buildTemporalMap(GranularityRelationConfig);
+                    this.granularityRelationMapper.buildTemporalMap(granularityRelationConfig);
 
             GranularityMap granularityMap = new GranularityMap(featureType, spatialMap, temporalMap);
 

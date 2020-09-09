@@ -2,20 +2,17 @@ package io.datasearch.diseasedata.store.dengdipipeline;
 
 import io.datasearch.diseasedata.store.dengdipipeline.fuseengine.FuseEngine;
 import io.datasearch.diseasedata.store.dengdipipeline.ingestion.DataIngester;
-import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.GranularityMap;
-import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.SpatialGranularityRelationMap;
 import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.AggregationConfig;
 import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.GranularityRelationConfig;
 import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.IngestConfig;
 import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.SchemaConfig;
+import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.GranularityMap;
 import io.datasearch.diseasedata.store.dengdipipeline.publish.Publisher;
 import io.datasearch.diseasedata.store.dengdipipeline.stream.StreamHandler;
 import io.datasearch.diseasedata.store.schema.SimpleFeatureTypeSchema;
-
 import org.geotools.data.DataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.Map;
 

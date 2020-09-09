@@ -5,12 +5,12 @@ import io.datasearch.diseasedata.store.schema.SchemaBuilder;
 import io.datasearch.diseasedata.store.schema.SimpleFeatureTypeSchema;
 import io.datasearch.diseasedata.store.util.ConfigurationLoader;
 import io.datasearch.diseasedata.store.util.DataStoreLoader;
-import java.util.HashMap;
 import org.geotools.data.DataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import java.util.HashMap;
 import java.util.Map;
+
 
 /**
  * Factory for creating pipelines.

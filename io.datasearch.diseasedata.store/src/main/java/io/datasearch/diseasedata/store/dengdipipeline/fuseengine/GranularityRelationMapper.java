@@ -1,8 +1,8 @@
 package io.datasearch.diseasedata.store.dengdipipeline.fuseengine;
 
-import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.SpatialGranularityRelationMap;
 import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.GranularityRelationConfig;
 import io.datasearch.diseasedata.store.dengdipipeline.models.granularitymappingmethods.NearestMapper;
+import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.SpatialGranularityRelationMap;
 import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.TemporalGranularityMap;
 import io.datasearch.diseasedata.store.query.QueryManager;
 import io.datasearch.diseasedata.store.query.QueryObject;
@@ -13,7 +13,6 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Map;
 
