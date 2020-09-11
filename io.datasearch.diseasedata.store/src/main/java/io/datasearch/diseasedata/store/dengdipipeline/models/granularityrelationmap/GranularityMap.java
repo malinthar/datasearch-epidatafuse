@@ -8,13 +8,18 @@ public class GranularityMap {
     SpatialGranularityRelationMap spatialGranularityRelationMap;
     TemporalGranularityMap temporalGranularityMap;
     String featureTypeName;
+    String targetSpatialGranularity;
+    String targetTemporalGranularity;
 
     public GranularityMap(String featureTypeName, SpatialGranularityRelationMap spatialMap,
-                          TemporalGranularityMap temporalMap
+                          TemporalGranularityMap temporalMap, String targetSpatialGranularity,
+                          String targetTemporalGranularity
     ) {
         this.featureTypeName = featureTypeName;
         this.temporalGranularityMap = temporalMap;
         this.spatialGranularityRelationMap = spatialMap;
+        this.targetSpatialGranularity = targetSpatialGranularity;
+        this.targetTemporalGranularity = targetTemporalGranularity;
     }
 
     public String getFeatureTypeName() {
@@ -27,5 +32,13 @@ public class GranularityMap {
 
     public SpatialGranularityRelationMap getSpatialGranularityRelationMap() {
         return spatialGranularityRelationMap;
+    }
+
+    public String getTargetSpatialGranularity() {
+        return targetSpatialGranularity;
+    }
+
+    public String getTargetTemporalGranularity() {
+        return targetTemporalGranularity;
     }
 }

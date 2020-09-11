@@ -10,9 +10,12 @@ import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelation
 import io.datasearch.diseasedata.store.dengdipipeline.publish.Publisher;
 import io.datasearch.diseasedata.store.dengdipipeline.stream.StreamHandler;
 import io.datasearch.diseasedata.store.schema.SimpleFeatureTypeSchema;
+
 import org.geotools.data.DataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,12 +46,14 @@ public class DengDIPipeLine {
     private HashMap<String, GranularityMap> granularityRelationMaps;
 
     public DengDIPipeLine(DataStore dataStore, Map<String, SimpleFeatureTypeSchema> schemas,
-                          HashMap<String, GranularityRelationConfig> granularityRelationConfigs) {
+                          HashMap<String, GranularityRelationConfig> granularityRelationConfigs,
+                          HashMap<String, AggregationConfig> aggregationConfigs) {
         this.dataStore = dataStore;
         this.simpleFeatureTypeSchemas = schemas;
         this.streamHandler = new StreamHandler();
         this.fuseEngine = new FuseEngine(this.dataStore);
         this.granularityRelationConfigs = granularityRelationConfigs;
+        this.aggregationConfigs = aggregationConfigs;
     }
 
     public DataStore getDataStore() {
@@ -77,5 +82,11 @@ public class DengDIPipeLine {
 
     public void mapGranularityRelations() {
         this.granularityRelationMaps = this.fuseEngine.buildGranularityMap(granularityRelationConfigs);
+    }
+
+    public void aggregate() throws IOException {
+        String featureType = "precipitation";
+        this.fuseEngine
+                .aggregate(granularityRelationMaps.get(featureType), this.aggregationConfigs.get(featureType));
     }
 }

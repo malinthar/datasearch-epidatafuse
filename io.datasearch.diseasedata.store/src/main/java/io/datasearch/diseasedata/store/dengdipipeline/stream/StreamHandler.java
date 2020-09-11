@@ -18,6 +18,7 @@ public class StreamHandler {
             logger.error(e.getMessage());
         }
     }
+
     public void createKafkaConsumer() {
         this.kafkaConsumer = new DengDIKafkaConsumer();
     }

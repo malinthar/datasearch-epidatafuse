@@ -1,11 +1,15 @@
 package io.datasearch.diseasedata.store.dengdipipeline.fuseengine;
 
 
+import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.AggregationConfig;
 import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.GranularityRelationConfig;
 import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.GranularityMap;
 import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.SpatialGranularityRelationMap;
 import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.TemporalGranularityMap;
+
 import org.geotools.data.DataStore;
+
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -27,6 +31,7 @@ public class FuseEngine {
     public FuseEngine(DataStore dataStore) {
         this.dataStore = dataStore;
         this.granularityRelationMapper = new GranularityRelationMapper(this.dataStore);
+        this.granularityConvertor = new GranularityConvertor(this.dataStore);
     }
 
     public GranularityRelationMapper getGranularityRelationMapper() {
@@ -65,12 +70,21 @@ public class FuseEngine {
             TemporalGranularityMap temporalMap =
                     this.granularityRelationMapper.buildTemporalMap(granularityRelationConfig);
 
-            GranularityMap granularityMap = new GranularityMap(featureType, spatialMap, temporalMap);
+            String targetSpatialGranularity = granularityRelationConfig.getTargetSpatialGranularity();
+            String targetTemporalGranularity = granularityRelationConfig.getTargetTemporalGranularity();
+
+            GranularityMap granularityMap =
+                    new GranularityMap(featureType, spatialMap, temporalMap, targetSpatialGranularity,
+                            targetTemporalGranularity);
 
             granularityMaps.put(featureType, granularityMap);
         });
 
         return granularityMaps;
+    }
+
+    public void aggregate(GranularityMap granularityMap, AggregationConfig aggregationConfig) throws IOException {
+        this.granularityConvertor.aggregate(granularityMap, aggregationConfig);
     }
 }
 
