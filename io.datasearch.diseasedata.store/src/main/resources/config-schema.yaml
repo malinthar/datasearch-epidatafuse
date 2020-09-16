@@ -5,10 +5,7 @@ hbase.catalog: "dengDIDataStore-test"
 simple_feature_types:
   - feature_name: "precipitation"
     attributes:
-      -  attribute: "StationID:String:index=true"
-         attributeName: "StationID"
-         attributeType: "String"
-      -  attribute: "StationName:String"
+      -  attribute: "StationName:String:index=true"
          attributeName: "StationName"
          attributeType: "String"
       -  attribute: "Latitude:String"
@@ -23,12 +20,8 @@ simple_feature_types:
       -  attribute: "ObservedValue:String"
          attributeName: "ObservedValue"
          attributeType: "String"
-      -  attribute: "*geom:Point:srid=4326"
-         attributeName: "geom"
-         attributeType: "Point"
 
     configurations:
-        GeomFormat: "Point"
         DateTimeFormat: "yyyyMMdd"
         FeatureID: "StationName"
 

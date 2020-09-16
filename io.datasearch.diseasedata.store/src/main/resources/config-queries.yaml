@@ -4,6 +4,11 @@ queries:
    schema : precipitation
    query : StationName = 'KANDY'
 
+  - query_name : query12
+    catalog : dengDIDataStore-test
+    schema : precipitation
+    query : StationName
+
  - query_name : query2
    catalog : dengDIDataStore-test
    schema : weatherstations

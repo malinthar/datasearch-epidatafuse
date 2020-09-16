@@ -1,5 +1,6 @@
 package io.datasearch.diseasedata.store.dengdipipeline.fuseengine;
 
+import io.datasearch.diseasedata.store.dengdipipeline.models.aggregationmethods.AggregateInvoker;
 import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.AggregationConfig;
 import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.GranularityMap;
 import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.SpatialGranularityRelationMap;
@@ -39,17 +40,19 @@ public class GranularityConvertor {
         SimpleFeatureCollection targetGranuleSet = this.getFeatures(targetSpatialGranularity);
         SimpleFeatureCollection featureSet = this.getFeatures(featureTypeName);
 
-        String indexCol = "";
+        String indexCol = config.getIndexCol();
         String aggregateOn = config.getAggregationOn();
         String aggregationMethod = config.getAggregationMethod();
+        String aggregationType = config.getAggregationType();
 
         this.spatialAggregate(targetGranuleSet, featureSet, indexCol, aggregateOn,
-                granularityMap.getSpatialGranularityRelationMap(), aggregationMethod);
+                granularityMap.getSpatialGranularityRelationMap(), aggregationType, aggregationMethod);
     }
 
     public void spatialAggregate(SimpleFeatureCollection targetGranuleSet, SimpleFeatureCollection featureSet,
                                  String indexCol, String aggregateOn,
-                                 SpatialGranularityRelationMap spatialGranularityMap, String aggregationMethod) {
+                                 SpatialGranularityRelationMap spatialGranularityMap, String aggregationType,
+                                 String aggregationMethod) {
 
         SimpleFeatureIterator iterator = targetGranuleSet.features();
 
@@ -58,14 +61,18 @@ public class GranularityConvertor {
             String targetGranule = feature.getID();
 
             ArrayList<String> baseGranuleIds = spatialGranularityMap.getBasePointIds(targetGranule);
-            this.getAggregatingAttributes(baseGranuleIds, featureSet, aggregateOn);
+            HashMap<String, Double> valueSet = this.getAggregatingAttributes(baseGranuleIds, featureSet, aggregateOn);
 
-            //Double aggregatedValue = this.calculateValue();
+            Double aggregatedValue = this.calculateFinalValue(valueSet, aggregationType, aggregationMethod);
+            logger.info(feature.getID() + " " + aggregatedValue.toString());
         }
     }
 
-    public void getAggregatingAttributes(ArrayList<String> granuleIds, SimpleFeatureCollection featureCollection,
-                                         String attributeCol) {
+
+    //given the corresponding base granule ids and feature set get the corresponding value set.
+    public HashMap<String, Double> getAggregatingAttributes(ArrayList<String> granuleIds,
+                                                            SimpleFeatureCollection featureCollection,
+                                                            String attributeCol) {
 
 
         HashMap<String, Double> valueSet = new HashMap<String, Double>();
@@ -88,9 +95,33 @@ public class GranularityConvertor {
             }
         });
 
-        logger.info(valueSet.toString());
+        //logger.info(valueSet.toString());
+        return valueSet;
     }
 
+    private Double calculateFinalValue(HashMap<String, Double> valueSet, String aggregationType,
+                                       String aggregationMethod) {
+        Double finalValue;
+
+        if (aggregationType.equals("aggregation")) {
+            switch (aggregationMethod) {
+                case "mean":
+                    finalValue = AggregateInvoker.mean(valueSet);
+                    break;
+                default:
+                    finalValue = -0.4;
+                    break;
+            }
+
+        } else if (aggregationType.equals("interpolation")) {
+            finalValue = -0.05;
+        } else {
+            finalValue = -0.002;
+        }
+        return finalValue;
+    }
+
+    //get features from the datastore
     public SimpleFeatureCollection getFeatures(String typeName) throws IOException {
         Query query = new Query(typeName);
 
@@ -106,39 +137,4 @@ public class GranularityConvertor {
         SimpleFeatureCollection featureCollection = DataUtilities.collection(featureList);
         return featureCollection;
     }
-
-
-//
-//
-//    public void temporalConversion(String featureType, String temporalMappingMethod) {
-//
-//    }
-//
-//    public void spatialConversion(String featureType, String spatialMappingMethod) {
-//        if (spatialMappingMethod.equals("NearestPointGranularityMap")) {
-//
-//            String granulityType = "weatherstations";
-//            NearestPointGranularityMap weatherStationMap = (NearestPointGranularityMap)
-//                    this.spatialGranularityMap.get(granulityType);
-//            try {
-//                this.nearestPointGranularityMapConvertor(featureType,
-//                        "ObservedValue", granulityType,
-//                        "StationName", weatherStationMap
-//                );
-//            } catch (Exception e) {
-//                logger.info(e.getMessage());
-//            }
-//        }
-//    }
-//
-//
-//    public void nearestPointGranularityMapConvertor(String featureType, String valueAttribute,
-//                                                    String featureGranularityType,
-//                                                    String featureGranularityTypeIndexCol,
-//                                                    NearestPointGranularityMap spatialMap) throws Exception {
-//
-//        NearestPointsAggregator aggregator = new NearestPointsAggregator(this.dataStore);
-//        aggregator.nearestPointGranularityMapConvertor(featureType, valueAttribute,
-//                featureGranularityType, featureGranularityTypeIndexCol, spatialMap);
-//    }
 }
