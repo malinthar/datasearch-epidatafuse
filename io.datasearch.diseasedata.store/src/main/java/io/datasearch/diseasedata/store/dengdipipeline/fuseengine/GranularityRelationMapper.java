@@ -5,12 +5,14 @@ import io.datasearch.diseasedata.store.dengdipipeline.models.granularitymappingm
 import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.SpatialGranularityRelationMap;
 import io.datasearch.diseasedata.store.dengdipipeline.models.granularityrelationmap.TemporalGranularityMap;
 import io.datasearch.diseasedata.store.query.QueryManager;
-import io.datasearch.diseasedata.store.query.QueryObject;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
+import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
+import org.geotools.data.Transaction;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
@@ -65,10 +67,20 @@ public class GranularityRelationMapper {
     public SimpleFeatureCollection getGranuleSet(String granularityName) {
         try {
 
-            Query query = new Query(granularityName);
-            QueryObject queryObj = new QueryObject("dengDIDataStore-test", query, granularityName);
+//            Query query = new Query(granularityName);
+//            QueryObject queryObj = new QueryObject("dengDIDataStore-test", query, granularityName);
+//           ArrayList<SimpleFeature> featureList = this.queryManager.getFeatures(this.dataStore, queryObj);
 
-            ArrayList<SimpleFeature> featureList = this.queryManager.getFeatures(this.dataStore, queryObj);
+            Query query = new Query(granularityName);
+            FeatureReader<SimpleFeatureType, SimpleFeature> reader =
+                    dataStore.getFeatureReader(query, Transaction.AUTO_COMMIT);
+
+            ArrayList<SimpleFeature> featureList = new ArrayList<SimpleFeature>();
+            while (reader.hasNext()) {
+                SimpleFeature feature = (SimpleFeature) reader.next();
+                featureList.add(feature);
+            }
+            reader.close();
             return DataUtilities.collection(featureList);
         } catch (Exception e) {
             logger.info(e.getMessage());

@@ -76,6 +76,7 @@ public class RequestHandler {
             String pipelineName = "dengue";
             String featureType = "precipitation";
             //dengDIPipeLineMap.get(pipelineName).convertIntoRequiredGranule(featureType);
+            dengDIPipeLineMap.get(pipelineName).aggregate();
             return "Success conversion";
         } catch (Exception e) {
             logger.error(e.getMessage());

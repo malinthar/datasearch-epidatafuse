@@ -1,5 +1,6 @@
 package io.datasearch.diseasedata.store.dengdipipeline;
 
+import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.AggregationConfig;
 import io.datasearch.diseasedata.store.dengdipipeline.models.configmodels.GranularityRelationConfig;
 import io.datasearch.diseasedata.store.schema.SchemaBuilder;
 import io.datasearch.diseasedata.store.schema.SimpleFeatureTypeSchema;
@@ -35,8 +36,9 @@ public class DengDIPipeLineFactory {
                             , dataStore);
 
             HashMap<String, GranularityRelationConfig> granularityConfigs = buildGranularityRelationConfigs();
+            HashMap<String, AggregationConfig> aggregationConfigs = buildAggregationConfigs();
 
-            return new DengDIPipeLine(dataStore, schemas, granularityConfigs);
+            return new DengDIPipeLine(dataStore, schemas, granularityConfigs, aggregationConfigs);
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new RuntimeException("Error building schema", e);
@@ -59,5 +61,18 @@ public class DengDIPipeLineFactory {
         granularityConfigs.put(featureTypeName, config);
 
         return granularityConfigs;
+    }
+
+    public static HashMap<String, AggregationConfig> buildAggregationConfigs() {
+        HashMap<String, AggregationConfig> aggregationConfigs = new HashMap<String, AggregationConfig>();
+
+        String featureTypeName = "precipitation";
+        HashMap<String, String> customAttr = new HashMap<String, String>();
+        AggregationConfig config =
+                new AggregationConfig(featureTypeName, "StationName", "aggregation",
+                        "mean", "ObservedValue", customAttr);
+
+        aggregationConfigs.put(featureTypeName, config);
+        return aggregationConfigs;
     }
 }
