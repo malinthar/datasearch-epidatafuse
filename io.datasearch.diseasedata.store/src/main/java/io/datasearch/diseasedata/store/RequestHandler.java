@@ -2,7 +2,7 @@ package io.datasearch.diseasedata.store;
 
 import io.datasearch.diseasedata.store.dengdipipeline.DengDIPipeLine;
 import io.datasearch.diseasedata.store.dengdipipeline.DengDIPipeLineFactory;
-import io.datasearch.diseasedata.store.query.QueryManager;
+import io.datasearch.diseasedata.store.dengdipipeline.datastore.query.QueryManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;

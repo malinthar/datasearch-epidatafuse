@@ -1,7 +1,7 @@
-package io.datasearch.diseasedata.store.dengdipipeline.ingestion.util;
+package io.datasearch.diseasedata.store.dengdipipeline.datastore.ingestion.util;
 
 import io.datasearch.diseasedata.store.DiseaseDataStore;
-import io.datasearch.diseasedata.store.schema.SimpleFeatureTypeSchema;
+import io.datasearch.diseasedata.store.dengdipipeline.datastore.schema.SimpleFeatureTypeSchema;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -97,11 +97,11 @@ public class FeatureData {
                                 record.get(records.get(configurations.get("FeatureID"))));
                         features.add(feature);
                     } catch (Throwable e) {
-                        logger.debug("Invalid weather-data record: " + e.toString() + " " + record.toString());
+                        logger.debug("Invalid" + typeName + "record: " + e.toString() + " " + record.toString());
                     }
                 }
             } catch (IOException e) {
-                throw new RuntimeException("Error reading weather-data:", e);
+                throw new RuntimeException("Error reading" + typeName + ":", e);
             }
             this.features = Collections.unmodifiableList(features);
         }
