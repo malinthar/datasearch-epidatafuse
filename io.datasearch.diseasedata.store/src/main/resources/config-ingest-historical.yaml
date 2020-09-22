@@ -16,6 +16,9 @@ simple_feature_types:
     data_source: "Data/percipitation/daily_weather_srilanka-01_1_2013.csv"
 
 
+    shp_file:
+      FeatureID: "MOH_N"
+
   - feature_name: "weatherstations"
     records:
       StationName: 0
@@ -30,6 +33,9 @@ simple_feature_types:
 
     data_source: "Data/WeatherStations/WeatherStations.csv"
 
+    shp_file:
+      FeatureID: "MOH_N"
+
   - feature_name: "moh"
     records:
       MohName: 0
@@ -39,9 +45,12 @@ simple_feature_types:
       Long: 2
 
     configurations:
-      GeomFormat: "Point"
+      GeomFormat: "Polygon"
       FeatureID: "MohName"
 
     data_source: "Data/MOH/moh.csv"
 
+    shp_file:
+      Source: "Data/ShapeFiles/SL_MOH.shp"
+      FeatureID: "MOH_N"
 
