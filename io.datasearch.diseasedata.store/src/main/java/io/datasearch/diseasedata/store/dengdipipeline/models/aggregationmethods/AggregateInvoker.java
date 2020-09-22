@@ -19,6 +19,32 @@ public class AggregateInvoker {
         return finalValue;
     }
 
+    public static Double sum(HashMap<String, Double> valueSet) {
+        Double finalValue;
+        ArrayList<Double> values = new ArrayList<Double>(valueSet.values());
+        finalValue = calculate(values, "sum");
+        return finalValue;
+    }
+
+    public static Double max(HashMap<String, Double> valueSet) {
+        Double finalValue;
+        ArrayList<Double> values = new ArrayList<Double>(valueSet.values());
+        finalValue = calculate(values, "max");
+        return finalValue;
+    }
+
+    public static Double min(HashMap<String, Double> valueSet) {
+        Double finalValue;
+        ArrayList<Double> values = new ArrayList<Double>(valueSet.values());
+        finalValue = calculate(values, "min");
+        return finalValue;
+    }
+
+    public static Double inverseDistance(HashMap<String, Double> valueSet, HashMap<String, Double> distances) {
+        Double finalValue = 0.0;
+        return finalValue;
+    }
+
     public static double calculate(ArrayList<Double> values, String method) {
         Double calculatedValue = 0.0;
         switch (method) {

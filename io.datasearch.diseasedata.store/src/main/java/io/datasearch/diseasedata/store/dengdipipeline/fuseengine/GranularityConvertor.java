@@ -60,10 +60,19 @@ public class GranularityConvertor {
             SimpleFeature feature = iterator.next();
             String targetGranule = feature.getID();
 
+            //corresponding granule ids for the target according to granularityMap
             ArrayList<String> baseGranuleIds = spatialGranularityMap.getBasePointIds(targetGranule);
+
+            //get the observed or recorded values of each corresponding base granule
             HashMap<String, Double> valueSet = this.getAggregatingAttributes(baseGranuleIds, featureSet, aggregateOn);
 
-            Double aggregatedValue = this.calculateFinalValue(valueSet, aggregationType, aggregationMethod);
+            //get the required custom attributes such as weighting factors for aggregation
+            HashMap<String, Double> customAttributeSet =
+                    this.getCustomAttributes(baseGranuleIds, targetGranule, aggregationMethod);
+
+            Double aggregatedValue =
+                    this.calculateFinalValue(valueSet, aggregationType, aggregationMethod, customAttributeSet);
+
             logger.info(feature.getID() + " " + aggregatedValue.toString());
         }
     }
@@ -99,8 +108,36 @@ public class GranularityConvertor {
         return valueSet;
     }
 
+    private HashMap<String, Double> getCustomAttributes(ArrayList<String> baseGranuleIds, String targetGranule,
+                                                        String aggregationMethod) {
+
+        HashMap<String, Double> customAttributes = new HashMap<String, Double>();
+
+        switch (aggregationMethod) {
+            case "inverseDistance":
+
+                //caluculate distance from the target granule to each base granules.
+                for (String baseGranuleId : baseGranuleIds) {
+
+                    Double distance = this.calculateDistance(baseGranuleId, targetGranule);
+                    customAttributes.put(baseGranuleId, distance);
+                }
+                break;
+            default:
+                break;
+
+        }
+
+        return customAttributes;
+    }
+
+    private Double calculateDistance(String baseGranuleId, String targetGranule) {
+        Pointorg.locationtech.geomesa.process.analytic.Point2PointProcess()
+        return 0.0;
+    }
+
     private Double calculateFinalValue(HashMap<String, Double> valueSet, String aggregationType,
-                                       String aggregationMethod) {
+                                       String aggregationMethod, HashMap<String, Double> customAttributes) {
         Double finalValue;
 
         if (aggregationType.equals("aggregation")) {
@@ -108,6 +145,17 @@ public class GranularityConvertor {
                 case "mean":
                     finalValue = AggregateInvoker.mean(valueSet);
                     break;
+                case "sum":
+                    finalValue = AggregateInvoker.sum(valueSet);
+                    break;
+                case "max":
+                    finalValue = AggregateInvoker.max(valueSet);
+                    break;
+                case "min":
+                    finalValue = AggregateInvoker.min(valueSet);
+                    break;
+                case "inverseDistance":
+                    finalValue = AggregateInvoker.inverseDistance(valueSet, customAttributes);
                 default:
                     finalValue = -0.4;
                     break;
