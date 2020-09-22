@@ -20,8 +20,12 @@ simple_feature_types:
       -  attribute: "ObservedValue:String"
          attributeName: "ObservedValue"
          attributeType: "String"
+      -  attribute: "*geom:Point:srid=4326"
+         attributeName: "geom"
+         attributeType: "Point"
 
     configurations:
+        GeomFormat: "Point"
         DateTimeFormat: "yyyyMMdd"
         FeatureID: "StationName"
 
@@ -55,10 +59,10 @@ simple_feature_types:
       -  attribute: "Longitude:String"
          attributeName: "Longitude"
          attributeType: "String"
-      -  attribute: "*geom:Point:srid=4326"
+      -  attribute: "*geom:Polygon"
          attributeName: "geom"
-         attributeType: "Point"
+         attributeType: "Polygon"
 
     configurations:
-      GeomFormat: "Point"
+      GeomFormat: "Polygon"
       FeatureID: "MohName"
