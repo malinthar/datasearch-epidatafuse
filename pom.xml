@@ -7,17 +7,16 @@
             <artifactId>wso2</artifactId>
             <version>5</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.datasearch.diseasedata.store</groupId>
-    <artifactId>io.datasearch.diseasedata.store.parent</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.datasearch.epidatafuse</groupId>
+    <artifactId>io.datasearch.epidatafuse.parent</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>DataSearch Dengue Store</name>
+    <name>EpiDataFuse parent</name>
 
     <modules>
-        <module>io.datasearch.diseasedata.store.kafkaconnector</module>
-        <module>io.datasearch.diseasedata.store</module>
+        <module>io.datasearch.epidatafuse.core</module>
     </modules>
 
     <properties>
