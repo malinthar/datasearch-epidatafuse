@@ -132,7 +132,7 @@ public class GranularityConvertor {
     }
 
     private Double calculateDistance(String baseGranuleId, String targetGranule) {
-        Pointorg.locationtech.geomesa.process.analytic.Point2PointProcess()
+        //Pointorg.locationtech.geomesa.process.analytic.Point2PointProcess()
         return 0.0;
     }
 
@@ -156,6 +156,7 @@ public class GranularityConvertor {
                     break;
                 case "inverseDistance":
                     finalValue = AggregateInvoker.inverseDistance(valueSet, customAttributes);
+                    break;
                 default:
                     finalValue = -0.4;
                     break;
