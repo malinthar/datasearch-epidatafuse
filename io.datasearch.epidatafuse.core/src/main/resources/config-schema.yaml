@@ -1,0 +1,82 @@
+hbase.zookeepers: "localhost"
+
+hbase.catalog: "dengDIDataStore-test"
+
+simple_feature_types:
+  - feature_name: "precipitation"
+    attributes:
+      -  attribute: "StationName:String:index=true"
+         attributeName: "StationName"
+         attributeType: "String"
+         derived: 0
+      -  attribute: "Latitude:String"
+         attributeName: "Latitude"
+         attributeType: "String"
+         derived: 0
+      -  attribute: "Longitude:String"
+         attributeName: "Longitude"
+         attributeType: "String"
+         derived: 0
+      -  attribute: "dtg:Date"
+         attributeName: "dtg"
+         attributeType: "Date"
+         derived: 0
+      -  attribute: "ObservedValue:String"
+         attributeName: "ObservedValue"
+         attributeType: "String"
+         derived: 0
+      -  attribute: "*geom:Point:srid=4326"
+         attributeName: "geom"
+         attributeType: "Point"
+         derived: 1
+
+    configurations:
+        GeomFormat: "Point"
+        DateTimeFormat: "yyyyMMdd"
+        FeatureID: "StationName"
+
+  - feature_name: "weatherstations"
+    attributes:
+      -  attribute: "StationName:String:index=true"
+         attributeName: "StationName"
+         attributeType: "String"
+         derived: 0
+      -  attribute: "Latitude:String"
+         attributeName: "Latitude"
+         attributeType: "String"
+         derived: 0
+      -  attribute: "Longitude:String"
+         attributeName: "Longitude"
+         attributeType: "String"
+         derived: 0
+      -  attribute: "*geom:Point:srid=4326"
+         attributeName: "geom"
+         attributeType: "Point"
+         derived: 1
+
+    configurations:
+      GeomFormat: "Point"
+      FeatureID: "StationName"
+
+  - feature_name: "moh"
+    attributes:
+      -  attribute: "MohName:String:index=true"
+         attributeName: "MohName"
+         attributeType: "String"
+         derived: 0
+      -  attribute: "Latitude:String"
+         attributeName: "Latitude"
+         attributeType: "String"
+         derived: 0
+      -  attribute: "Longitude:String"
+         attributeName: "Longitude"
+         attributeType: "String"
+         derived: 0
+      -  attribute: "*geom:Polygon"
+         attributeName: "geom"
+         attributeType: "Polygon"
+         derived: 0
+
+    configurations:
+      GeomFormat: "Polygon"
+      FeatureID: "MohName"

@@ -1,0 +1,14 @@
+sources:
+  - feature_name: "precipitation"
+    source_type: "none"
+    parameters:
+      url: "http://localhost:5000/weatherdata"
+      request_frequency: 5
+      batch_size: 10
+
+  - feature_name: "weatherstations"
+    source_type: "none"
+    parameters:
+      url: "http://localhost:5000/weatherstations"
+      request_frequency: 4
+      batch_size: 10
