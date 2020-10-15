@@ -2,6 +2,7 @@ package io.datasearch.epidatafuse.core.dengdipipeline.fuseengine;
 
 import io.datasearch.epidatafuse.core.dengdipipeline.datastore.query.QueryManager;
 import io.datasearch.epidatafuse.core.dengdipipeline.models.configmodels.GranularityRelationConfig;
+import io.datasearch.epidatafuse.core.dengdipipeline.models.granularitymappingmethods.ContainMapper;
 import io.datasearch.epidatafuse.core.dengdipipeline.models.granularitymappingmethods.NearestMapper;
 import io.datasearch.epidatafuse.core.dengdipipeline.models.granularityrelationmap.SpatialGranularityRelationMap;
 import io.datasearch.epidatafuse.core.dengdipipeline.models.granularityrelationmap.TemporalGranularityMap;
@@ -58,6 +59,10 @@ public class GranularityRelationMapper {
                         baseSpatialGranuleSet, neighbors, maxDistance);
                 break;
 
+            case "contain":
+                spatialMap = ContainMapper.buildContainMap(targetSpatialGranules, baseSpatialGranuleSet);
+                break;
+
             default:
                 spatialMap = new SpatialGranularityRelationMap();
         }
@@ -80,6 +85,7 @@ public class GranularityRelationMapper {
             while (reader.hasNext()) {
                 SimpleFeature feature = (SimpleFeature) reader.next();
                 featureList.add(feature);
+                logger.info(feature.toString());
             }
             reader.close();
             return DataUtilities.collection(featureList);

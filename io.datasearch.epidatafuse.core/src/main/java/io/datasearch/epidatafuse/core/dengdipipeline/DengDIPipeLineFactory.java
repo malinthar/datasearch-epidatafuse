@@ -47,15 +47,22 @@ public class DengDIPipeLineFactory {
     public static HashMap<String, GranularityRelationConfig> buildGranularityRelationConfigs() {
         //read from the files and return a config file for each feature:tobe implemented
 
+//        HashMap<String, GranularityRelationConfig> granularityConfigs =
+//                new HashMap<String, GranularityRelationConfig>();
+//
+//        String featureTypeName = "precipitation";
+//        GranularityRelationConfig config = new GranularityRelationConfig(featureTypeName,
+//                "weatherstations", "nearest", "moh", "week");
+//
+//        config.setCustomAttributes("neighbors", "3");
+//        config.setCustomAttributes("maxDistance", "100000");
+
         HashMap<String, GranularityRelationConfig> granularityConfigs =
                 new HashMap<String, GranularityRelationConfig>();
 
         String featureTypeName = "precipitation";
         GranularityRelationConfig config = new GranularityRelationConfig(featureTypeName,
-                "weatherstations", "nearest", "moh", "week");
-
-        config.setCustomAttributes("neighbors", "3");
-        config.setCustomAttributes("maxDistance", "100000");
+                "weatherstations", "contain", "moh", "week");
 
         granularityConfigs.put(featureTypeName, config);
 
