@@ -16,6 +16,7 @@ import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.util.factory.Hints;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -52,6 +53,7 @@ public class SimpleFeatureTransformer {
         List<SimpleFeature> features = new ArrayList<>();
         URL sourceCSVFile;
         SimpleFeatureBuilder builder = new SimpleFeatureBuilder(simpleFeatureTypeSchema.getSimpleFeatureType());
+        GeometryFactory gf = new GeometryFactory();
 
         // Load from csv file
         try {
@@ -101,29 +103,19 @@ public class SimpleFeatureTransformer {
                                     source.getFeatures();
                             FeatureIterator<SimpleFeature> iterator = collection.features();
                             try {
+                                Geometry geom = gf.createPolygon();
                                 while (iterator.hasNext()) {
                                     SimpleFeature f = iterator.next();
-
                                     if (f.getAttribute(shpFile.get("FeatureID")).
                                             toString().equalsIgnoreCase(
                                             (record.get(records.get(configurations.get("FeatureID")))))) {
                                         Geometry tempGeom =
                                                 (Geometry) f.getDefaultGeometryProperty().getValue();
-                                        Geometry geom = JTS.transform(tempGeom, transform);
-                                        if (!geom.isValid()) {
-                                            String name =
-                                                    f.getAttribute(shpFile.get("FeatureID")).toString();
-                                            logger.error(
-                                                    "Invalid geometry shape found on " + name + " moh area.");
-                                            break;
-                                        }
-                                        builder.set((String) attribute.get("attributeName"), geom);
+                                        geom = JTS.transform(tempGeom, transform);
                                         break;
-                                    } else {
-                                        continue;
                                     }
                                 }
-
+                                builder.set((String) attribute.get("attributeName"), geom);
                             } catch (Throwable e) {
                                 logger.debug("Invalid shp file record: " + e.toString()
                                         + " " + record.toString());
