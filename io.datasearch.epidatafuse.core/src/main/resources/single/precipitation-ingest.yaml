@@ -1,0 +1,18 @@
+pipeline_name: "dengue"
+feature_name: "precipitation"
+source_type: "delimited-text"
+source_format: "CSV"
+transformations:
+  - attribute_name : "stationName"
+    transformation: "$1"
+  - attribute_name: "observedValue"
+    transformation: "$2"
+  - attribute_name: "date"
+    transformation: "date($3)"
+  - attribute_name: "spatialGranule"
+    transformation: "$1"
+  - attribute_name: "temporalGranule"
+    transformation: "date($3)"
+data_sources:
+    - "Data/precipitation/daily_weather_srilanka-01_1_2013.csv"
+    - "Data/precipitation/daily_weather_srilanka-01_2_2013.csv"

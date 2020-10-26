@@ -14,8 +14,8 @@ import java.util.Map;
 public class ConfigurationLoader {
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationLoader.class);
 
-    private static final String SCHEMA_CONFIG_DIR = "config-schema.yaml";
-    private static final String INGESTION_HISTORICAL_CONFIG_DIR = "config-ingest-historical.yaml";
+    private static final String SCHEMA_CONFIG_DIR = "schema-config.yaml";
+    private static final String INGESTION_HISTORICAL_CONFIG_DIR = "bulk-ingest-config.yaml";
     private static final String QUERY_CONFIG_DIR = "config-queries.yaml";
     private static final String GRANULARITY_CONFIG_DIR = "config-granularity.yaml";
     private static final String GRANULARITY_MAPPING_CONFIG_DIR = "config-granularity-mapping.yaml";

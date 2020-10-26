@@ -1,0 +1,11 @@
+pipeline_name: "dengue"
+feature_name: "moh"
+source_type: "shp"
+source_format: ""
+transformations:
+  - attribute_name : "mohName"
+    transformation: "1"
+  - attribute_name: "geom"
+    transformation: "2"
+data_sources:
+  - "data/moh/shapefile/SL_MOH.shp"

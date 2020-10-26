@@ -13,19 +13,19 @@
         <Bug pattern="EC_UNRELATED_CLASS_AND_INTERFACE"/>
     </Match>
     <Match>
-        <Class name="io.datasearch.epidatafuse.core.DiseaseDataStore"/>
+        <Class name="io.datasearch.epidatafuse.core.DiseaseDataStoreService"/>
         <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
     </Match>
     <Match>
-        <Class name="io.datasearch.epidatafuse.core.dengdipipeline.datastore.query.QueryObject"/>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.datastore.query.QueryObject"/>
         <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
     </Match>
     <Match>
-        <Class name="io.datasearch.epidatafuse.core.dengdipipeline.fuseengine.FuseEngine"/>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.fuseengine.FuseEngine"/>
         <Bug pattern="UUF_UNUSED_FIELD"/>
     </Match>
     <Match>
-        <Class name="io.datasearch.epidatafuse.core.dengdipipeline.fuseengine.FuseEngine"/>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.fuseengine.FuseEngine"/>
         <Bug pattern="UWF_UNWRITTEN_FIELD"/>
     </Match>
     <Match>
@@ -33,35 +33,35 @@
         <Bug pattern="URF_UNREAD_FIELD"/>
     </Match>
     <Match>
-        <Class name="io.datasearch.epidatafuse.core.dengdipipeline.fuseengine.GranularityConvertor"/>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.fuseengine.GranularityConvertor"/>
         <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
     </Match>
     <Match>
-        <Class name="io.datasearch.epidatafuse.core.dengdipipeline.DengDIPipeLine"/>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.FusionPipeline"/>
         <Bug pattern="BC_UNCONFIRMED_CAST_OF_RETURN_VALUE"/>
     </Match>
     <Match>
-        <Class name="io.datasearch.epidatafuse.core.dengdipipeline.fuseengine.GranularityConvertor"/>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.fuseengine.GranularityConvertor"/>
         <Bug pattern="BC_UNCONFIRMED_CAST_OF_RETURN_VALUE"/>
     </Match>
     <Match>
-        <Class name="io.datasearch.epidatafuse.core.dengdipipeline.stream.DengDIKafkaProducer"/>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.stream.DengDIKafkaProducer"/>
         <Bug pattern="RV_RETURN_VALUE_IGNORED"/>
     </Match>
     <Match>
-        <Class name="io.datasearch.epidatafuse.core.dengdipipeline.stream.DengDIKafkaConsumer"/>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.stream.DengDIKafkaConsumer"/>
         <Bug pattern="DM_DEFAULT_ENCODING"/>
     </Match>
     <Match>
-        <Class name="io.datasearch.epidatafuse.core.dengdipipeline.stream.KafkaConsumerConfig"/>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.stream.KafkaConsumerConfig"/>
         <Bug pattern="BX_UNBOXING_IMMEDIATELY_REBOXED"/>
     </Match>
     <Match>
-        <Class name="io.datasearch.epidatafuse.core.dengdipipeline.stream.KafkaConsumerConfig"/>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.stream.KafkaConsumerConfig"/>
         <Bug pattern="DM_BOXED_PRIMITIVE_FOR_PARSING"/>
     </Match>
     <Match>
-        <Class name="io.datasearch.epidatafuse.core.dengdipipeline.stream.SiddhiAppFactory"/>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.stream.SiddhiAppFactory"/>
         <Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON"/>
     </Match>
     <Match>
@@ -103,17 +103,17 @@
     </Match>
 
     <Match>
-        <Class name="io.datasearch.epidatafuse.core.dengdipipeline.models.datamodels.AbstractSpatioTemporalFeatureType"/>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.model.datamodel.AbstractSpatioTemporalFeatureType"/>
         <Bug pattern="URF_UNREAD_FIELD"/>
     </Match>
 
     <Match>
-        <Class name="io.datasearch.epidatafuse.core.dengdipipeline.models.datamodels.SpatioTemporalFeatureType"/>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.model.datamodel.SpatioTemporalFeatureType"/>
         <Bug pattern="UWF_UNWRITTEN_FIELD"/>
     </Match>
 
     <Match>
-        <Class name="io.datasearch.epidatafuse.core.dengdipipeline.models.datamodels.SpatioTemporalFeatureType"/>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.model.datamodel.SpatioTemporalFeatureType"/>
         <Bug pattern="NP_UNWRITTEN_FIELD"/>
     </Match>
 

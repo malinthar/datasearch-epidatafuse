@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Read and Constructs CSV files.
+ * Read and Constructs CSV files. Delete when done.
  */
 public class CSVConstructor {
 
