@@ -37,16 +37,21 @@ public class GranularityConvertor {
         String featureTypeName = config.getFeatureTypeName();
         String targetSpatialGranularity = granularityMap.getTargetSpatialGranularity();
 
+        //features are taken directly from the database without temporal aggregation
         SimpleFeatureCollection targetGranuleSet = this.getFeatures(targetSpatialGranularity);
         SimpleFeatureCollection featureSet = this.getFeatures(featureTypeName);
 
         String indexCol = config.getIndexCol();
         String aggregateOn = config.getAggregationOn();
-        String aggregationMethod = config.getAggregationMethod();
+        String aggregationMethod = config.getSpatialAggregationMethod();
         String aggregationType = config.getAggregationType();
 
         this.spatialAggregate(targetGranuleSet, featureSet, indexCol, aggregateOn,
                 granularityMap.getSpatialGranularityRelationMap(), aggregationType, aggregationMethod);
+    }
+
+    public void temporalAggregate() {
+
     }
 
     public void spatialAggregate(SimpleFeatureCollection targetGranuleSet, SimpleFeatureCollection featureSet,

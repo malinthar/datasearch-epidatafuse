@@ -47,22 +47,23 @@ public class DengDIPipeLineFactory {
     public static HashMap<String, GranularityRelationConfig> buildGranularityRelationConfigs() {
         //read from the files and return a config file for each feature:tobe implemented
 
-//        HashMap<String, GranularityRelationConfig> granularityConfigs =
-//                new HashMap<String, GranularityRelationConfig>();
-//
-//        String featureTypeName = "precipitation";
-//        GranularityRelationConfig config = new GranularityRelationConfig(featureTypeName,
-//                "weatherstations", "nearest", "moh", "week");
-//
-//        config.setCustomAttributes("neighbors", "3");
-//        config.setCustomAttributes("maxDistance", "100000");
-
         HashMap<String, GranularityRelationConfig> granularityConfigs =
                 new HashMap<String, GranularityRelationConfig>();
 
         String featureTypeName = "precipitation";
         GranularityRelationConfig config = new GranularityRelationConfig(featureTypeName,
-                "weatherstations", "contain", "moh", "week");
+                "weatherstations", "day", "nearest",
+                "all", "moh", "week");
+
+        config.setCustomAttributes("neighbors", "3");
+        config.setCustomAttributes("maxDistance", "100000");
+
+//        HashMap<String, GranularityRelationConfig> granularityConfigs =
+//                new HashMap<String, GranularityRelationConfig>();
+
+//        String featureTypeName = "precipitation";
+//        GranularityRelationConfig config = new GranularityRelationConfig(featureTypeName,
+//                "weatherstations", "contain", "moh", "week");
 
         granularityConfigs.put(featureTypeName, config);
 
@@ -76,7 +77,8 @@ public class DengDIPipeLineFactory {
         HashMap<String, String> customAttr = new HashMap<String, String>();
         AggregationConfig config =
                 new AggregationConfig(featureTypeName, "StationName", "aggregation",
-                        "mean", "ObservedValue", customAttr);
+                        "mean", "mean", "ObservedValue",
+                        customAttr);
 
         aggregationConfigs.put(featureTypeName, config);
         return aggregationConfigs;

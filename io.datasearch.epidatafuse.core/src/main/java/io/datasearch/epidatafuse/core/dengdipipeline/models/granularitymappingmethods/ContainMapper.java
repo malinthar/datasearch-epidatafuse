@@ -1,13 +1,14 @@
 package io.datasearch.epidatafuse.core.dengdipipeline.models.granularitymappingmethods;
 
-
 import io.datasearch.epidatafuse.core.dengdipipeline.models.granularityrelationmap.SpatialGranularityRelationMap;
-import java.util.ArrayList;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
-import org.opengis.feature.simple.SimpleFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+/**
+ * containing objects mapping method
+ */
 
 public class ContainMapper {
     private static final Logger logger = LoggerFactory.getLogger(ContainMapper.class);

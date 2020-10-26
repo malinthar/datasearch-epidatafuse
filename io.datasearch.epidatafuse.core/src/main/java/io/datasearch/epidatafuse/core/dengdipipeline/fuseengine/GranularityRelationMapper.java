@@ -41,7 +41,7 @@ public class GranularityRelationMapper {
     public SpatialGranularityRelationMap buildSpatialGranularityMap(GranularityRelationConfig config) {
         logger.info("spatial " + config.getFeatureTypeName());
         String spatialGranularity = config.getSpatialGranularity();
-        String relationMappingMethod = config.getRelationMappingMethod();
+        String relationMappingMethod = config.getSpatialRelationMappingMethod();
         String targetSpatialGranularity = config.getTargetSpatialGranularity();
 
         SpatialGranularityRelationMap spatialMap;
@@ -99,6 +99,13 @@ public class GranularityRelationMapper {
     public TemporalGranularityMap buildTemporalMap(GranularityRelationConfig granularityRelationConfig) {
         logger.info("temporal " + granularityRelationConfig.getFeatureTypeName());
 
-        return new TemporalGranularityMap();
+        String baseTemporalGranularity = granularityRelationConfig.getTemporalGranularity();
+        String targetTemporalGranularity = granularityRelationConfig.getTargetTemporalGranularity();
+        String featureTypeName = granularityRelationConfig.getFeatureTypeName();
+        String temporalRelationMappingMethod = granularityRelationConfig.getTemporalRelationMappingMethod();
+
+        return new TemporalGranularityMap(
+                baseTemporalGranularity, targetTemporalGranularity, featureTypeName,
+                temporalRelationMappingMethod);
     }
 }

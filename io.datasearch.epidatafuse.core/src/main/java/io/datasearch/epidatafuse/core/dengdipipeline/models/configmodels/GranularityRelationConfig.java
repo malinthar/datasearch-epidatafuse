@@ -9,18 +9,23 @@ public class GranularityRelationConfig {
 
     private String featureTypeName;
     private String spatialGranularity;
+    private String temporalGranularity;
     private String targetSpatialGranularity;
     private String targetTemporalGranularity;
 
-    private String relationMappingMethod;
+    private String spatialRelationMappingMethod;
+    private String temporalRelationMappingMethod;
     private HashMap<String, String> customAttributes;
 
-    public GranularityRelationConfig(String featureTypeName, String spatialGranularity, String relationMappingMethod,
+    public GranularityRelationConfig(String featureTypeName, String spatialGranularity, String temporalGranularity,
+                                     String spatialRelationMappingMethod, String temporalRelationMappingMethod,
                                      String targetSpatial, String targetTemporal) {
         this.customAttributes = new HashMap<String, String>();
         this.featureTypeName = featureTypeName;
         this.spatialGranularity = spatialGranularity;
-        this.relationMappingMethod = relationMappingMethod;
+        this.temporalGranularity = temporalGranularity;
+        this.spatialRelationMappingMethod = spatialRelationMappingMethod;
+        this.temporalRelationMappingMethod = temporalRelationMappingMethod;
         this.targetSpatialGranularity = targetSpatial;
         this.targetTemporalGranularity = targetTemporal;
     }
@@ -33,8 +38,16 @@ public class GranularityRelationConfig {
         return this.spatialGranularity;
     }
 
-    public String getRelationMappingMethod() {
-        return this.relationMappingMethod;
+    public String getTemporalGranularity() {
+        return this.temporalGranularity;
+    }
+
+    public String getSpatialRelationMappingMethod() {
+        return this.spatialRelationMappingMethod;
+    }
+
+    public String getTemporalRelationMappingMethod() {
+        return this.temporalRelationMappingMethod;
     }
 
     public String getTargetSpatialGranularity() {
