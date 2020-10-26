@@ -3,12 +3,13 @@ baseGranularity:
   temporal: "week"
 
 mappings:
-  - feature: "weatherstations"
+  - featureTypeName: "weatherstations"
     spatial:
-      spatialGranularityType: "point"
       spatialGranularity: "weatherstations"
       spatialMapping: "nearest"
     temporal:
-      temporalGranularityType: "duration"
       temporalGranularity: "day"
       temporalMapping: "mean"
+    customAttributes:
+      neighbors: 3
+      maxDistance: 10000
