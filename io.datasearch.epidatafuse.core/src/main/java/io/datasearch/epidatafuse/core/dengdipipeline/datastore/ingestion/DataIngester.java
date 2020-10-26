@@ -10,6 +10,7 @@ import org.geotools.data.DataUtilities;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.simple.SimpleFeatureStore;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.opengis.feature.simple.SimpleFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ public class DataIngester {
     private static final Logger logger = LoggerFactory.getLogger(DataIngester.class.getName());
     private SimpleFeatureTransformer simpleFeatureTransformer = new SimpleFeatureTransformer();
     private EventTransformer eventTransfomer = new EventTransformer();
-
+    GeometryFactory gf = new GeometryFactory();
     //todo: Handling exception?
     public List<SimpleFeature> generateSimpleFeatures(Map<String, Object> configurations,
                                                       SimpleFeatureTypeSchema simpleFeatureTypeSchema) {
@@ -64,13 +65,20 @@ public class DataIngester {
         SimpleFeatureSource featureSource = dataStore.getFeatureSource(
                 (String) ingestionConfig.get("feature_name"));
         SimpleFeatureStore featureStore = (SimpleFeatureStore) featureSource;
-
+        int counter = 0;
         for (SimpleFeature feature : simpleFeatures) {
-            SimpleFeatureCollection collection = DataUtilities.collection(feature);
-            featureStore.addFeatures(collection);
+            if (feature.getDefaultGeometry().equals(gf.createMultiPolygon()) ||
+                    feature.getDefaultGeometry().equals(gf.createPolygon()) ||
+                    feature.getDefaultGeometry().equals(gf.createPoint())) {
+                continue;
+            } else {
+                SimpleFeatureCollection collection = DataUtilities.collection(feature);
+                featureStore.addFeatures(collection);
+                counter += 1;
+                continue;
+            }
         }
-
-        logger.info("Added " + simpleFeatures.size() + " new data points into " +
+        logger.info("Added " + counter + " new data points into " +
                 ingestionConfig.get("feature_name"));
     }
 
