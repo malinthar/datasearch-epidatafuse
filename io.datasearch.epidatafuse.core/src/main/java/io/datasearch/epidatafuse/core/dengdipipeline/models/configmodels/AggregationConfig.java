@@ -41,7 +41,9 @@ public class AggregationConfig {
         return spatialAggregationMethod;
     }
 
-    public String getTemporalAggregationMethod(){ return temporalAggregationMethod; }
+    public String getTemporalAggregationMethod() {
+        return temporalAggregationMethod;
+    }
 
     public String getAggregationOn() {
         return aggregationOn;

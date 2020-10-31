@@ -1,6 +1,6 @@
 hbase.zookeepers: "localhost"
 
-hbase.catalog: "dengDIDataStore-test"
+hbase.catalog: "dengDIDataStore-temporal"
 
 simple_feature_types:
   - feature_name: "precipitation"
@@ -72,11 +72,11 @@ simple_feature_types:
          attributeName: "Longitude"
          attributeType: "String"
          derived: 0
-      -  attribute: "*geom:Polygon"
+      -  attribute: "*geom:Point:srid=4326"
          attributeName: "geom"
-         attributeType: "Polygon"
+         attributeType: "Point"
          derived: 0
 
     configurations:
-      GeomFormat: "Polygon"
+      GeomFormat: "Point"
       FeatureID: "MohName"

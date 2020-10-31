@@ -13,7 +13,7 @@ simple_feature_types:
       DateTimeFormat: "yyyyMMdd"
       FeatureID: "StationName"
 
-    data_source: "Data/percipitation/daily_weather_srilanka-01_1_2013.csv"
+    data_source: "Data/percipitation/daily_weather_srilanka-01_3_2013.csv"
 
   - feature_name: "weatherstations"
     records:
@@ -38,12 +38,8 @@ simple_feature_types:
       Long: 2
 
     configurations:
-      GeomFormat: "Polygon"
+      GeomFormat: "Point"
       FeatureID: "MohName"
 
     data_source: "Data/MOH/moh.csv"
-
-    shp_file:
-      Source: "Data/ShapeFiles/SL_MOH.shp"
-      FeatureID: "MOH_N"
 
