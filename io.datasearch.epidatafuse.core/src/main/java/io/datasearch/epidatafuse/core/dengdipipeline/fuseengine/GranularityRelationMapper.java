@@ -2,6 +2,7 @@ package io.datasearch.epidatafuse.core.dengdipipeline.fuseengine;
 
 import io.datasearch.epidatafuse.core.dengdipipeline.datastore.query.QueryManager;
 import io.datasearch.epidatafuse.core.dengdipipeline.models.configmodels.GranularityRelationConfig;
+import io.datasearch.epidatafuse.core.dengdipipeline.models.granularitymappingmethods.ContainMapper;
 import io.datasearch.epidatafuse.core.dengdipipeline.models.granularitymappingmethods.NearestMapper;
 import io.datasearch.epidatafuse.core.dengdipipeline.models.granularityrelationmap.SpatialGranularityRelationMap;
 import io.datasearch.epidatafuse.core.dengdipipeline.models.granularityrelationmap.TemporalGranularityMap;
@@ -40,7 +41,7 @@ public class GranularityRelationMapper {
     public SpatialGranularityRelationMap buildSpatialGranularityMap(GranularityRelationConfig config) {
         logger.info("spatial " + config.getFeatureTypeName());
         String spatialGranularity = config.getSpatialGranularity();
-        String relationMappingMethod = config.getRelationMappingMethod();
+        String relationMappingMethod = config.getSpatialRelationMappingMethod();
         String targetSpatialGranularity = config.getTargetSpatialGranularity();
 
         SpatialGranularityRelationMap spatialMap;
@@ -56,6 +57,10 @@ public class GranularityRelationMapper {
 
                 spatialMap = NearestMapper.buildNearestMap(targetSpatialGranules,
                         baseSpatialGranuleSet, neighbors, maxDistance);
+                break;
+
+            case "contain":
+                spatialMap = ContainMapper.buildContainMap(targetSpatialGranules, baseSpatialGranuleSet);
                 break;
 
             default:
@@ -80,6 +85,7 @@ public class GranularityRelationMapper {
             while (reader.hasNext()) {
                 SimpleFeature feature = (SimpleFeature) reader.next();
                 featureList.add(feature);
+                logger.info(feature.toString());
             }
             reader.close();
             return DataUtilities.collection(featureList);
@@ -93,6 +99,13 @@ public class GranularityRelationMapper {
     public TemporalGranularityMap buildTemporalMap(GranularityRelationConfig granularityRelationConfig) {
         logger.info("temporal " + granularityRelationConfig.getFeatureTypeName());
 
-        return new TemporalGranularityMap();
+        String baseTemporalGranularity = granularityRelationConfig.getTemporalGranularity();
+        String targetTemporalGranularity = granularityRelationConfig.getTargetTemporalGranularity();
+        String featureTypeName = granularityRelationConfig.getFeatureTypeName();
+        String temporalRelationMappingMethod = granularityRelationConfig.getTemporalRelationMappingMethod();
+
+        return new TemporalGranularityMap(
+                baseTemporalGranularity, targetTemporalGranularity, featureTypeName,
+                temporalRelationMappingMethod);
     }
 }

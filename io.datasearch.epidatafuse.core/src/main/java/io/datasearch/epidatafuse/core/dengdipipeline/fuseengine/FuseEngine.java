@@ -70,11 +70,14 @@ public class FuseEngine {
             TemporalGranularityMap temporalMap =
                     this.granularityRelationMapper.buildTemporalMap(granularityRelationConfig);
 
+            String baseSpatialGranularity = granularityRelationConfig.getSpatialGranularity();
+            String baseTemporalGranularity = granularityRelationConfig.getTemporalGranularity();
             String targetSpatialGranularity = granularityRelationConfig.getTargetSpatialGranularity();
             String targetTemporalGranularity = granularityRelationConfig.getTargetTemporalGranularity();
 
             GranularityMap granularityMap =
-                    new GranularityMap(featureType, spatialMap, temporalMap, targetSpatialGranularity,
+                    new GranularityMap(featureType, spatialMap, temporalMap, baseSpatialGranularity,
+                            baseTemporalGranularity, targetSpatialGranularity,
                             targetTemporalGranularity);
 
             granularityMaps.put(featureType, granularityMap);

@@ -4,6 +4,8 @@ import io.datasearch.epidatafuse.core.dengdipipeline.models.aggregationmethods.A
 import io.datasearch.epidatafuse.core.dengdipipeline.models.configmodels.AggregationConfig;
 import io.datasearch.epidatafuse.core.dengdipipeline.models.granularityrelationmap.GranularityMap;
 import io.datasearch.epidatafuse.core.dengdipipeline.models.granularityrelationmap.SpatialGranularityRelationMap;
+import io.datasearch.epidatafuse.core.dengdipipeline.models.granularityrelationmap.TemporalGranularityMap;
+
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureReader;
@@ -11,14 +13,18 @@ import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.filter.text.cql2.CQL;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.filter.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 
 /**
  * For granularity conversion.
@@ -34,19 +40,91 @@ public class GranularityConvertor {
 
     public void aggregate(GranularityMap granularityMap, AggregationConfig config) throws IOException {
 
-        String featureTypeName = config.getFeatureTypeName();
+
+        String baseSpatialGranularity = granularityMap.getBaseSpatialGranularity();
         String targetSpatialGranularity = granularityMap.getTargetSpatialGranularity();
 
-        SimpleFeatureCollection targetGranuleSet = this.getFeatures(targetSpatialGranularity);
-        SimpleFeatureCollection featureSet = this.getFeatures(featureTypeName);
+        SimpleFeatureCollection baseSpatialGranuleSet = this.getFeatures(baseSpatialGranularity);
+        SimpleFeatureCollection targetSpatialGranuleSet = this.getFeatures(targetSpatialGranularity);
+
+        //features are taken directly from the database without temporal aggregation
+        //SimpleFeatureCollection featureSet = this.getFeatures(featureTypeName);
 
         String indexCol = config.getIndexCol();
         String aggregateOn = config.getAggregationOn();
-        String aggregationMethod = config.getAggregationMethod();
+        String aggregationMethod = config.getSpatialAggregationMethod();
         String aggregationType = config.getAggregationType();
 
-        this.spatialAggregate(targetGranuleSet, featureSet, indexCol, aggregateOn,
+        SimpleFeatureCollection temporallyAggregatedFeatures =
+                this.temporalAggregate(granularityMap.getTemporalGranularityMap(), config, baseSpatialGranuleSet);
+
+        this.spatialAggregate(targetSpatialGranuleSet, temporallyAggregatedFeatures, indexCol, aggregateOn,
                 granularityMap.getSpatialGranularityRelationMap(), aggregationType, aggregationMethod);
+    }
+
+    public SimpleFeatureCollection temporalAggregate(TemporalGranularityMap temporalGranularityMap,
+                                                     AggregationConfig config,
+                                                     SimpleFeatureCollection baseSpatialGranuleSet) {
+
+        String featureTypeName = config.getFeatureTypeName();
+        String indexCol = config.getIndexCol();
+        String aggregateOn = config.getAggregationOn();
+        String aggregationMethod = config.getTemporalAggregationMethod();
+
+//        String targetTemporalGranularity = temporalGranularityMap.getTargetTemporalGranularity();
+//        String baseTemporalGranularity = temporalGranularityMap.getBaseTemporalGranularity();
+//        String relationMappingMethod = temporalGranularityMap.getRelationMappingMethod();
+        long relationValue = temporalGranularityMap.getRelationValue();
+
+//        LocalDateTime currentTimestamp = LocalDateTime.now();
+        LocalDateTime currentTimestamp = LocalDateTime.of(2013, 1, 4, 8, 00, 00, 00);
+        LocalDateTime startingTimestamp = currentTimestamp.minusHours(relationValue);
+
+        logger.info(currentTimestamp.toString());
+        logger.info(startingTimestamp.toString());
+
+        SimpleFeatureIterator iterator = baseSpatialGranuleSet.features();
+
+        ArrayList<SimpleFeature> aggregatedFeatures = new ArrayList<SimpleFeature>();
+
+        while (iterator.hasNext()) {
+
+            SimpleFeature baseSpatialGranule = iterator.next();
+            String baseSpatialGranuleID = baseSpatialGranule.getID();
+
+            ArrayList<SimpleFeature> featuresToAggregate =
+                    this.getFeaturesBetweenDates(featureTypeName, startingTimestamp.toString(),
+                            currentTimestamp.toString(), indexCol, baseSpatialGranuleID);
+
+            if (featuresToAggregate.size() > 0) {
+
+                HashMap<String, Double> valueSet = new HashMap<String, Double>();
+                SimpleFeature aggregatedFeature = null;
+
+                for (SimpleFeature feature : featuresToAggregate) {
+
+                    String dtg = feature.getAttribute("dtg").toString();
+                    aggregatedFeature = feature;
+                    try {
+                        Double value = Double.parseDouble(feature.getAttribute(aggregateOn).toString());
+                        valueSet.put(dtg, value);
+                    } catch (Exception e) {
+                        continue;
+                    }
+                }
+
+                Double aggregatedValue = this.calculateFinalValue(valueSet, "aggregation",
+                        aggregationMethod, null);
+
+                aggregatedFeature.setAttribute(aggregateOn, aggregatedValue);
+                logger.info(aggregatedFeature.toString());
+                aggregatedFeatures.add(aggregatedFeature);
+            }
+        }
+
+        SimpleFeatureCollection aggregatedFeatureCollection = DataUtilities.collection(aggregatedFeatures);
+
+        return aggregatedFeatureCollection;
     }
 
     public void spatialAggregate(SimpleFeatureCollection targetGranuleSet, SimpleFeatureCollection featureSet,
@@ -185,5 +263,36 @@ public class GranularityConvertor {
         reader.close();
         SimpleFeatureCollection featureCollection = DataUtilities.collection(featureList);
         return featureCollection;
+    }
+
+
+    public ArrayList<SimpleFeature> getFeaturesBetweenDates(String typeName, String startingDate, String endDate,
+                                                            String indexCol,
+                                                            String distinctID) {
+        try {
+            Filter filter = CQL.toFilter(
+                    indexCol + "='" + distinctID +
+                            "' AND dtg DURING " + startingDate + ":00.000/" + endDate + ":00.000");
+
+//            Filter filter = CQL.toFilter("dtg DURING " + startingDate + ":00.000/" + endDate + ":00.000");
+            Query query = new Query(typeName, filter);
+            //query.getHints().put(QueryHints.EXACT_COUNT(), Boolean.TRUE);
+
+            FeatureReader<SimpleFeatureType, SimpleFeature> reader =
+                    this.dataStore.getFeatureReader(query, Transaction.AUTO_COMMIT);
+
+            ArrayList<SimpleFeature> featureList = new ArrayList<SimpleFeature>();
+
+            while (reader.hasNext()) {
+                SimpleFeature feature = (SimpleFeature) reader.next();
+                featureList.add(feature);
+            }
+
+            reader.close();
+            return featureList;
+
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
