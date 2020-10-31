@@ -23,8 +23,8 @@ public class StreamHandler {
     public StreamHandler(DengDIPipeLine pipeline) {
         try {
             this.pipeline = pipeline;
-            //generateSourceConnections();
-            //startSourceConnections();
+            generateSourceConnections();
+            startSourceConnections();
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
