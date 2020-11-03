@@ -76,7 +76,8 @@ public class DengDIPipeLineFactory {
         String featureTypeName = "precipitation";
         HashMap<String, String> customAttr = new HashMap<String, String>();
         AggregationConfig config =
-                new AggregationConfig(featureTypeName, "StationName", "aggregation",
+                new AggregationConfig(featureTypeName, "StationName",
+                        false, false,
                         "mean", "mean", "ObservedValue",
                         customAttr);
 
