@@ -8,18 +8,21 @@ import java.util.HashMap;
 public class AggregationConfig {
     private String featureTypeName;
     private String indexCol;
-    private String aggregationType;
+    private Boolean isASpatialInterpolation;
+    private Boolean isATemporalInterpolation;
     private String spatialAggregationMethod;
     private String temporalAggregationMethod;
     private String aggregationOn;
     private HashMap<String, String> customConfigs = new HashMap<String, String>();
 
-    public AggregationConfig(String featureTypeName, String indexCol, String aggregationType,
+    public AggregationConfig(String featureTypeName, String indexCol, Boolean isASpatialInterpolation,
+                             Boolean isATemporalInterpolation,
                              String spatialAggregationMethod, String temporalAggregationMethod,
                              String aggregationOn, HashMap<String, String> customConfig) {
         this.featureTypeName = featureTypeName;
         this.indexCol = indexCol;
-        this.aggregationType = aggregationType;
+        this.isASpatialInterpolation = isASpatialInterpolation;
+        this.isATemporalInterpolation = isATemporalInterpolation;
         this.spatialAggregationMethod = spatialAggregationMethod;
         this.temporalAggregationMethod = temporalAggregationMethod;
         this.aggregationOn = aggregationOn;
@@ -33,8 +36,12 @@ public class AggregationConfig {
         return indexCol;
     }
 
-    public String getAggregationType() {
-        return aggregationType;
+    public Boolean isASpatialInterpolation() {
+        return isASpatialInterpolation;
+    }
+
+    public Boolean isATemporalInterpolation() {
+        return isATemporalInterpolation;
     }
 
     public String getSpatialAggregationMethod() {
