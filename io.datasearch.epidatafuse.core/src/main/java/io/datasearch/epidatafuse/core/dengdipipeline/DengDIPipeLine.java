@@ -3,6 +3,7 @@ package io.datasearch.epidatafuse.core.dengdipipeline;
 import io.datasearch.epidatafuse.core.dengdipipeline.datastore.PipelineDataStore;
 import io.datasearch.epidatafuse.core.dengdipipeline.datastore.schema.SimpleFeatureTypeSchema;
 import io.datasearch.epidatafuse.core.dengdipipeline.fuseengine.FuseEngine;
+import io.datasearch.epidatafuse.core.dengdipipeline.fuseengine.Scheduler;
 import io.datasearch.epidatafuse.core.dengdipipeline.models.configmodels.AggregationConfig;
 import io.datasearch.epidatafuse.core.dengdipipeline.models.configmodels.GranularityRelationConfig;
 import io.datasearch.epidatafuse.core.dengdipipeline.models.configmodels.IngestConfig;
@@ -11,6 +12,7 @@ import io.datasearch.epidatafuse.core.dengdipipeline.models.granularityrelationm
 import io.datasearch.epidatafuse.core.dengdipipeline.publish.Publisher;
 import io.datasearch.epidatafuse.core.dengdipipeline.stream.StreamHandler;
 import io.siddhi.core.event.Event;
+
 import org.geotools.data.DataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
 
 /**
  * DengDIPipeline is the processing unit for streaming and historical data.
@@ -44,12 +47,15 @@ public class DengDIPipeLine {
     //this stores granularity maps for each feature build according to the configs
     private HashMap<String, GranularityMap> granularityRelationMaps;
 
+    private Timer timer = new Timer();
+    private Scheduler scheduler = new Scheduler();
+
     public DengDIPipeLine(DataStore dataStore, Map<String, SimpleFeatureTypeSchema> schemas,
                           HashMap<String, GranularityRelationConfig> granularityRelationConfigs,
                           HashMap<String, AggregationConfig> aggregationConfigs) {
         this.pipelineDataStore = new PipelineDataStore(dataStore, schemas);
         this.streamHandler = new StreamHandler(this);
-        this.fuseEngine = new FuseEngine(dataStore);
+        this.fuseEngine = new FuseEngine(dataStore, granularityRelationConfigs, aggregationConfigs);
         this.granularityRelationConfigs = granularityRelationConfigs;
         this.aggregationConfigs = aggregationConfigs;
     }
@@ -62,25 +68,27 @@ public class DengDIPipeLine {
         return this.pipelineDataStore.getSchema(featureTypeName);
     }
 
-    public FuseEngine getFuseEngine() {
-        return this.fuseEngine;
-    }
-
     public void ingest() {
         this.pipelineDataStore.bulkIngest();
     }
 
     public void mapGranularityRelations() {
-        this.granularityRelationMaps = this.fuseEngine.buildGranularityMap(granularityRelationConfigs);
+//        this.granularityRelationMaps = this.fuseEngine.buildGranularityMap(granularityRelationConfigs);
+        this.granularityRelationMaps = this.fuseEngine.setGranularityRelationMaps();
     }
 
     public void aggregate() throws IOException {
-        String featureType = "precipitation";
-        this.fuseEngine
-                .aggregate(granularityRelationMaps.get(featureType), this.aggregationConfigs.get(featureType));
+//        String featureType = "precipitation";
+//        this.fuseEngine
+//                .aggregate(granularityRelationMaps.get(featureType), this.aggregationConfigs.get(featureType));
+        this.fuseEngine.invokeAggregationProcess();
     }
 
     public void streamingIngest(Event[] events, String featureType) {
         pipelineDataStore.streamingIngest(events, featureType);
+    }
+
+    public void scheduleTasks(long period) {
+        this.timer.schedule(scheduler, 0, period);
     }
 }
