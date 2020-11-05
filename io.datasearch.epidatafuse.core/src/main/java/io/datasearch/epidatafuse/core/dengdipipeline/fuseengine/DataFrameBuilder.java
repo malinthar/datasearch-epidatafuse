@@ -1,15 +1,16 @@
 package io.datasearch.epidatafuse.core.dengdipipeline.fuseengine;
 
-import io.datasearch.epidatafuse.core.dengdipipeline.DengDIPipeLine;
+
 import io.datasearch.epidatafuse.core.dengdipipeline.models.datamodels.AggregatedCollection;
-import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.FileWriter;
+import java.util.ArrayList;
 
 /**
  * For aggregating data.

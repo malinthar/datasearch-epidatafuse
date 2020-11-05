@@ -1,8 +1,9 @@
 package io.datasearch.epidatafuse.core.dengdipipeline.models.datamodels;
 
-import java.util.ArrayList;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.opengis.feature.simple.SimpleFeatureType;
+
+import java.util.ArrayList;
 
 /**
  * Data model for temporal aggregated feature collection

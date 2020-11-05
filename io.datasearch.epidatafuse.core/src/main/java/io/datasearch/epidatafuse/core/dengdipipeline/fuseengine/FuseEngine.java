@@ -7,13 +7,13 @@ import io.datasearch.epidatafuse.core.dengdipipeline.models.granularityrelationm
 import io.datasearch.epidatafuse.core.dengdipipeline.models.granularityrelationmap.SpatialGranularityRelationMap;
 import io.datasearch.epidatafuse.core.dengdipipeline.models.granularityrelationmap.TemporalGranularityMap;
 
-import java.util.Timer;
 import org.geotools.data.DataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Timer;
 
 /**
  * For data fusion.
@@ -102,10 +102,10 @@ public class FuseEngine {
     }
 
     public void aggregate(GranularityMap granularityMap, AggregationConfig aggregationConfig) throws IOException {
-        SpatioTemporallyAggregatedCollection SpatioTemporallyAggregatedCollection =
+        SpatioTemporallyAggregatedCollection spatioTemporallyAggregatedCollection =
                 this.granularityConvertor.aggregate(granularityMap, aggregationConfig);
 
-        this.dataFrameBuilder.buildDataFrame(SpatioTemporallyAggregatedCollection);
+        this.dataFrameBuilder.buildDataFrame(spatioTemporallyAggregatedCollection);
     }
 
     public Scheduler getScheduler() {
