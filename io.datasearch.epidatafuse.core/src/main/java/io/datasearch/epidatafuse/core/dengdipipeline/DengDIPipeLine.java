@@ -81,14 +81,12 @@ public class DengDIPipeLine {
 //        String featureType = "precipitation";
 //        this.fuseEngine
 //                .aggregate(granularityRelationMaps.get(featureType), this.aggregationConfigs.get(featureType));
-        this.fuseEngine.invokeAggregationProcess();
+//        this.fuseEngine.invokeAggregationProcess();
+
+        this.fuseEngine.scheduleTasks(20000);
     }
 
     public void streamingIngest(Event[] events, String featureType) {
         pipelineDataStore.streamingIngest(events, featureType);
-    }
-
-    public void scheduleTasks(long period) {
-        this.timer.schedule(scheduler, 0, period);
     }
 }
