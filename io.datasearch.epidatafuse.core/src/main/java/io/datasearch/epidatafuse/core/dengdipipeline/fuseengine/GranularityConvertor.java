@@ -8,7 +8,6 @@ import io.datasearch.epidatafuse.core.dengdipipeline.models.granularityrelationm
 import io.datasearch.epidatafuse.core.dengdipipeline.models.granularityrelationmap.SpatialGranularityRelationMap;
 import io.datasearch.epidatafuse.core.dengdipipeline.models.granularityrelationmap.TemporalGranularityMap;
 
-
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureReader;
@@ -17,7 +16,9 @@ import org.geotools.data.Transaction;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.type.AttributeTypeImpl;
 import org.geotools.filter.text.cql2.CQL;
+//import org.geotools.referencing.GeodeticCalculator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
@@ -31,7 +32,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-
+import java.util.List;
 
 /**
  * For granularity conversion.
@@ -187,7 +188,8 @@ public class GranularityConvertor {
 
             //get the required custom attributes such as weighting factors for aggregation
             HashMap<String, Double> customAttributeSet =
-                    this.getCustomAttributes(baseGranuleIds, targetGranule, aggregationMethod);
+                    this.getCustomAttributes(granularityMap.getBaseSpatialGranularity(), baseGranuleIds,
+                            granularityMap.getTargetSpatialGranularity(), targetGranule, aggregationMethod);
 
             Double aggregatedValue =
                     this.calculateFinalValue(valueSet, isASpatialInterpolation, aggregationMethod, customAttributeSet);
@@ -266,10 +268,53 @@ public class GranularityConvertor {
         return valueSet;
     }
 
-    private HashMap<String, Double> getCustomAttributes(ArrayList<String> baseGranuleIds, String targetGranule,
+    private HashMap<String, Double> getCustomAttributes(String baseGranularity, ArrayList<String> baseGranuleIds,
+                                                        String targetGranularity, String targetGranule,
                                                         String aggregationMethod) {
 
         HashMap<String, Double> customAttributes = new HashMap<String, Double>();
+        ArrayList<SimpleFeature> baseGranules = new ArrayList<SimpleFeature>();
+        SimpleFeature targetGranuleFeature = null;
+
+        String baseGranularityIndexCol = getFeatureIndexColName(baseGranularity);
+        String targetGranularityIndexCol = getFeatureIndexColName(targetGranularity);
+
+        try {
+
+            for (String baseGranuleId : baseGranuleIds) {
+
+                Filter filter = CQL.toFilter(baseGranularityIndexCol + " = '" + baseGranuleId + "'");
+                Query query = new Query(baseGranularity, filter);
+
+                FeatureReader<SimpleFeatureType, SimpleFeature> reader =
+                        this.dataStore.getFeatureReader(query, Transaction.AUTO_COMMIT);
+
+
+                while (reader.hasNext()) {
+                    SimpleFeature sf = reader.next();
+                    baseGranules.add(sf);
+                }
+            }
+
+            Filter filter = CQL.toFilter(targetGranularityIndexCol + " = '" + targetGranule + "'");
+            Query query = new Query(targetGranularity, filter);
+
+            FeatureReader<SimpleFeatureType, SimpleFeature> reader =
+                    this.dataStore.getFeatureReader(query, Transaction.AUTO_COMMIT);
+
+            while (reader.hasNext()) {
+                SimpleFeature sf = reader.next();
+                targetGranuleFeature = sf;
+            }
+
+            reader.close();
+
+        } catch (Exception e) {
+
+        }
+
+        logger.info(targetGranuleFeature.toString());
+        logger.info(baseGranules.toString());
 
         switch (aggregationMethod) {
             case "inverseDistance":
@@ -290,6 +335,8 @@ public class GranularityConvertor {
     }
 
     private Double calculateDistance(String baseGranuleId, String targetGranule) {
+//        GeodeticCalculator geodeticCalculator = new GeodeticCalculator();
+        //geodeticCalculator.setStartingPosition();
         //Pointorg.locationtech.geomesa.process.analytic.Point2PointProcess()
         return 0.0;
     }
@@ -346,7 +393,6 @@ public class GranularityConvertor {
         return featureCollection;
     }
 
-
     public ArrayList<SimpleFeature> getFeaturesBetweenDates(String typeName, String startingDate, String endDate,
                                                             String indexCol,
                                                             String distinctID) {
@@ -384,5 +430,19 @@ public class GranularityConvertor {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public String getFeatureIndexColName(String featureTypeName) {
+        String indexCol = "";
+        try {
+            List attributeTypes = this.dataStore.getSchema(featureTypeName).getTypes();
+            AttributeTypeImpl attr = (AttributeTypeImpl) attributeTypes.get(0);
+            indexCol = attr.getName().toString();
+            String a = "";
+        } catch (Exception e) {
+
+        }
+
+        return indexCol;
     }
 }

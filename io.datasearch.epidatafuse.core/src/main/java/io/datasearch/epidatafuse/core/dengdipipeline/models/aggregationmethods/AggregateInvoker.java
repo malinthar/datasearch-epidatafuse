@@ -1,10 +1,15 @@
 package io.datasearch.epidatafuse.core.dengdipipeline.models.aggregationmethods;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * aggregation methods
@@ -42,6 +47,25 @@ public class AggregateInvoker {
 
     public static Double inverseDistance(HashMap<String, Double> valueSet, HashMap<String, Double> distances) {
         Double finalValue = 0.0;
+        Double inverseDistanceSum = 0.0;
+
+        for (Double value : distances.values()) {
+            inverseDistanceSum += (1.0 / value);
+        }
+
+        Iterator it = valueSet.entrySet().iterator();
+
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
+            String key = (String) pair.getKey();
+            Double value = (Double) pair.getValue();
+
+            Double distance = distances.get(key);
+            Double weight = ((1.0 / distance) / inverseDistanceSum);
+
+            finalValue += value * weight;
+        }
+
         return finalValue;
     }
 
