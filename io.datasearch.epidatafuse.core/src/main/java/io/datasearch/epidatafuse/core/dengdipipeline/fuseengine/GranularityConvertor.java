@@ -2,7 +2,7 @@ package io.datasearch.epidatafuse.core.dengdipipeline.fuseengine;
 
 import io.datasearch.epidatafuse.core.dengdipipeline.models.aggregationmethods.AggregateInvoker;
 import io.datasearch.epidatafuse.core.dengdipipeline.models.configmodels.AggregationConfig;
-import io.datasearch.epidatafuse.core.dengdipipeline.models.datamodels.SpatiallyAggregatedCollection;
+import io.datasearch.epidatafuse.core.dengdipipeline.models.datamodels.SpatioTemporallyAggregatedCollection;
 import io.datasearch.epidatafuse.core.dengdipipeline.models.datamodels.TemporallyAggregatedCollection;
 import io.datasearch.epidatafuse.core.dengdipipeline.models.granularityrelationmap.GranularityMap;
 import io.datasearch.epidatafuse.core.dengdipipeline.models.granularityrelationmap.SpatialGranularityRelationMap;
@@ -45,7 +45,8 @@ public class GranularityConvertor {
         this.dataStore = dataStore;
     }
 
-    public void aggregate(GranularityMap granularityMap, AggregationConfig config) throws IOException {
+    public SpatioTemporallyAggregatedCollection aggregate(GranularityMap granularityMap, AggregationConfig config)
+            throws IOException {
 
 
         String baseSpatialGranularity = granularityMap.getBaseSpatialGranularity();
@@ -63,16 +64,21 @@ public class GranularityConvertor {
         Boolean isASpatialInterpolation = config.isASpatialInterpolation();
 
         TemporallyAggregatedCollection temporallyAggregatedFeatures =
-                this.temporalAggregate(granularityMap.getTemporalGranularityMap(), config, baseSpatialGranuleSet);
+                this.temporalAggregate(granularityMap, config, baseSpatialGranuleSet);
 
 
-        this.spatialAggregate(targetSpatialGranuleSet, temporallyAggregatedFeatures, indexCol, aggregateOn,
-                granularityMap, isASpatialInterpolation, aggregationMethod);
+        SpatioTemporallyAggregatedCollection spatioTemporallyAggregatedCollection =
+                this.spatialAggregate(targetSpatialGranuleSet, temporallyAggregatedFeatures, indexCol, aggregateOn,
+                        granularityMap, isASpatialInterpolation, aggregationMethod);
+
+        return spatioTemporallyAggregatedCollection;
     }
 
-    public TemporallyAggregatedCollection temporalAggregate(TemporalGranularityMap temporalGranularityMap,
+    public TemporallyAggregatedCollection temporalAggregate(GranularityMap granularityMap,
                                                             AggregationConfig config,
                                                             SimpleFeatureCollection baseSpatialGranuleSet) {
+
+        TemporalGranularityMap temporalGranularityMap = granularityMap.getTemporalGranularityMap();
 
         String featureTypeName = config.getFeatureTypeName();
         String indexCol = config.getIndexCol();
@@ -80,9 +86,9 @@ public class GranularityConvertor {
         String aggregationMethod = config.getTemporalAggregationMethod();
         Boolean isATemporalInterpolation = config.isATemporalInterpolation();
 
+        String baseSpatialGranularity = granularityMap.getBaseSpatialGranularity();
+
         String targetTemporalGranularity = temporalGranularityMap.getTargetTemporalGranularity();
-//        String baseTemporalGranularity = temporalGranularityMap.getBaseTemporalGranularity();
-//        String relationMappingMethod = temporalGranularityMap.getRelationMappingMethod();
         long relationValue = temporalGranularityMap.getRelationValue();
 
 //        LocalDateTime currentTimestamp = LocalDateTime.now();
@@ -139,6 +145,7 @@ public class GranularityConvertor {
                 new TemporallyAggregatedCollection(
                         featureType,
                         aggregatedFeatureCollection,
+                        baseSpatialGranularity,
                         targetTemporalGranularity,
                         currentTimestamp.toString()
                 );
@@ -146,12 +153,14 @@ public class GranularityConvertor {
         return temporallyAggregatedCollection;
     }
 
-    public SpatiallyAggregatedCollection spatialAggregate(SimpleFeatureCollection targetGranuleSet,
-                                                          TemporallyAggregatedCollection temporallyAggregatedfeatureSet,
-                                                          String indexCol, String aggregateOn,
-                                                          GranularityMap granularityMap,
-                                                          Boolean isASpatialInterpolation,
-                                                          String aggregationMethod) {
+    public SpatioTemporallyAggregatedCollection spatialAggregate(
+            SimpleFeatureCollection targetGranuleSet,
+            TemporallyAggregatedCollection temporallyAggregatedfeatureSet,
+            String indexCol, String aggregateOn,
+            GranularityMap granularityMap,
+            Boolean isASpatialInterpolation,
+            String aggregationMethod
+    ) {
 
         SimpleFeatureType featureType = temporallyAggregatedfeatureSet.getFeatureType();
         SimpleFeatureCollection featureSet = temporallyAggregatedfeatureSet.getFeatureCollection();
@@ -163,6 +172,8 @@ public class GranularityConvertor {
         ArrayList<SimpleFeature> aggregatedFeatures = new ArrayList<SimpleFeature>();
 
         SimpleFeatureIterator iterator = targetGranuleSet.features();
+
+        String formatedDtgString = dtg;
 
         while (iterator.hasNext()) {
             SimpleFeature feature = iterator.next();
@@ -187,12 +198,17 @@ public class GranularityConvertor {
             aggregatedFeature.setAttribute(aggregateOn, aggregatedValue);
 
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+            DateFormat dateStringFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+
             Date date;
+
             try {
                 date = format.parse(dtg);
+                formatedDtgString = dateStringFormat.format(date);
             } catch (Exception e) {
                 e.getMessage();
                 date = null;
+                formatedDtgString = null;
             }
             aggregatedFeature.setAttribute("dtg", date);
             logger.info(aggregatedFeature.toString());
@@ -200,17 +216,23 @@ public class GranularityConvertor {
             aggregatedFeatures.add(aggregatedFeature);
         }
 
+        ArrayList<String> attributeList = new ArrayList<String>();
+        attributeList.add(indexCol);
+        attributeList.add(aggregateOn);
+        attributeList.add("dtg");
+
         SimpleFeatureCollection aggregatedFeatureCollection = DataUtilities.collection(aggregatedFeatures);
 
-        SpatiallyAggregatedCollection spatiallyAggregatedCollection =
-                new SpatiallyAggregatedCollection(
-                        featureType.getTypeName(),
+        SpatioTemporallyAggregatedCollection spatioTemporallyAggregatedCollection =
+                new SpatioTemporallyAggregatedCollection(
+                        featureType,
                         aggregatedFeatureCollection,
                         granularityMap.getTargetSpatialGranularity(),
                         granularityMap.getTargetTemporalGranularity(),
-                        dtg
+                        formatedDtgString,
+                        attributeList
                 );
-        return spatiallyAggregatedCollection;
+        return spatioTemporallyAggregatedCollection;
     }
 
 

@@ -19,8 +19,6 @@ public class Scheduler extends TimerTask {
     }
 
     public void run() {
-//        Date now = now = new Date();
-//        logger.info(now.toString());
         this.fuseEngine.invokeAggregationProcess();
     }
 }
