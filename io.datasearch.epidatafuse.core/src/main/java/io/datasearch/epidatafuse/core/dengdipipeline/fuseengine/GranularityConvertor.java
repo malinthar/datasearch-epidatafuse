@@ -18,7 +18,7 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.type.AttributeTypeImpl;
 import org.geotools.filter.text.cql2.CQL;
-//import org.geotools.referencing.GeodeticCalculator;
+import org.locationtech.jts.geom.Geometry;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
@@ -194,7 +194,8 @@ public class GranularityConvertor {
             Double aggregatedValue =
                     this.calculateFinalValue(valueSet, isASpatialInterpolation, aggregationMethod, customAttributeSet);
 
-            //logger.info(targetGranule + " " + aggregatedValue.toString() + " " + dtg);
+            String info = (targetGranule + " " + aggregatedValue.toString() + " " + dtg);
+            logger.info(info);
 
             SimpleFeature aggregatedFeature = featureBuilder.buildFeature(targetGranule);
             aggregatedFeature.setAttribute(aggregateOn, aggregatedValue);
@@ -213,7 +214,7 @@ public class GranularityConvertor {
                 formatedDtgString = null;
             }
             aggregatedFeature.setAttribute("dtg", date);
-            logger.info(aggregatedFeature.toString());
+//            logger.info(aggregatedFeature.toString());
 
             aggregatedFeatures.add(aggregatedFeature);
         }
@@ -255,10 +256,13 @@ public class GranularityConvertor {
 
         granuleIds.forEach((granule) -> {
             try {
-                SimpleFeature feature = featureSet.get(granule);
-                String valueString = (String) feature.getAttribute(attributeCol);
-                Double value = Double.parseDouble(valueString);
-                valueSet.put(granule, value);
+                // check whether granule is in the featureset
+                if (featureSet.get(granule) != null) {
+                    SimpleFeature feature = featureSet.get(granule);
+                    String valueString = (String) feature.getAttribute(attributeCol);
+                    Double value = Double.parseDouble(valueString);
+                    valueSet.put(granule, value);
+                }
             } catch (Exception e) {
                 valueSet.put(granule, null);
             }
@@ -320,10 +324,12 @@ public class GranularityConvertor {
             case "inverseDistance":
 
                 //caluculate distance from the target granule to each base granules.
-                for (String baseGranuleId : baseGranuleIds) {
+                for (SimpleFeature baseGranule : baseGranules) {
 
-                    Double distance = this.calculateDistance(baseGranuleId, targetGranule);
-                    customAttributes.put(baseGranuleId, distance);
+                    Double distance = this.calculateDistance(baseGranule, targetGranuleFeature);
+//                   String info = targetGranuleFeature.getID() + "-" + baseGranule.getID() + ":" + distance.toString();
+
+                    customAttributes.put(baseGranule.getID(), distance);
                 }
                 break;
             default:
@@ -334,11 +340,18 @@ public class GranularityConvertor {
         return customAttributes;
     }
 
-    private Double calculateDistance(String baseGranuleId, String targetGranule) {
+    private Double calculateDistance(SimpleFeature granule1, SimpleFeature granule2) {
 //        GeodeticCalculator geodeticCalculator = new GeodeticCalculator();
         //geodeticCalculator.setStartingPosition();
         //Pointorg.locationtech.geomesa.process.analytic.Point2PointProcess()
-        return 0.0;
+
+        Geometry g1 = (Geometry) granule1.getDefaultGeometry();
+        Geometry g2 = (Geometry) granule2.getDefaultGeometry();
+        logger.info(g1.getCentroid().toString());
+
+        Double distance = g1.distance(g2);
+
+        return distance;
     }
 
     private Double calculateFinalValue(HashMap<String, Double> valueSet, Boolean isAnAggregate,
