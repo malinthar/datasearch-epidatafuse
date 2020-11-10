@@ -389,8 +389,22 @@ public class GranularityConvertor {
         return finalValue;
     }
 
+    public SimpleFeatureCollection getFeatures(String featureTypeName) throws IOException {
+        SimpleFeatureCollection features = this.getFeaturesFromDatastore(featureTypeName);
+
+//        SimpleFeatureType featureType = this.getFeatureType(featureTypeName);
+//        String spatialGranularity = featureType.getUserData().get("spatialGranularity").toString();
+//        String temporalGranularity = featureType.getUserData().get("temporalGranularity").toString();
+//
+//        SpatioTemporalFeatureType featureCollection =
+//                new SpatioTemporalFeatureType(featureType, features, temporalGranularity, spatialGranularity);
+//        return  featureCollection;
+
+        return features;
+    }
+
     //get features from the datastore
-    public SimpleFeatureCollection getFeatures(String typeName) throws IOException {
+    public SimpleFeatureCollection getFeaturesFromDatastore(String typeName) throws IOException {
         Query query = new Query(typeName);
 
         FeatureReader<SimpleFeatureType, SimpleFeature> reader =
