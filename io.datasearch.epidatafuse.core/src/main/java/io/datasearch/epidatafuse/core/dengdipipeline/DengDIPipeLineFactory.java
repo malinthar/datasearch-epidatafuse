@@ -78,7 +78,7 @@ public class DengDIPipeLineFactory {
         AggregationConfig config =
                 new AggregationConfig(featureTypeName, "StationName",
                         false, false,
-                        "mean", "mean", "ObservedValue",
+                        "inverseDistance", "mean", "ObservedValue",
                         customAttr);
 
         aggregationConfigs.put(featureTypeName, config);
