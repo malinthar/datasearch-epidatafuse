@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Epidatafuse-core-test-suite" preserve-order="true">
+    <test name="epidatafuse-core-tests" parallel="classes" thread-count="1">
+        <classes>
+            <class name="io.datasearch.epidatafuse.core.RequestHandler"/>
+        </classes>
+    </test>
+</suite>

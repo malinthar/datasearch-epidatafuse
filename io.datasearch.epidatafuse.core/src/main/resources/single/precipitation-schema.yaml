@@ -1,0 +1,23 @@
+pipeline_name: "dengue"
+feature_name: "precipitation"
+attributes:
+  - attribute_name: "stationName"
+    attribute_type: "String"
+  - attribute_name: "observedValue"
+    attribute_type: "Float"
+  - attribute_name: "dtg"
+    attribute_type: "Date"
+granularity_config:
+  spatial_granularity: "weather_station"
+  temporal_granularity: "day"
+  target_spatial_granularity: "moh"
+  target_temporal_granularity: "week"
+  mapping_method:
+    spatial_mapping_method:
+      method_name: "Nearest"
+      mapping_arguments:
+        - argument_name: "neighbors"
+          argument_valule: "3"
+        - argument_name: "maxDistance"
+          argument_value: "100000"
+    temporal_mapping_method:

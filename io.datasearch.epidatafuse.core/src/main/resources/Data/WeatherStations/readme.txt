@@ -1,1 +1,0 @@
-This contains lattitude and longitude of the weatherstations

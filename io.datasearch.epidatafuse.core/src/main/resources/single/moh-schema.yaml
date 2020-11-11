@@ -1,0 +1,8 @@
+pipeline_name: "dengue"
+feature_name: "moh"
+attributes:
+  -  attributeName: "mohName"
+     attributeType: "String"
+  -  attributeName: "geom"
+     attributeType: "Polygon"
+uuid_attribute_name: "mohName"

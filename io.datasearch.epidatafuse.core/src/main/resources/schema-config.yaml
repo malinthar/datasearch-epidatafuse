@@ -1,0 +1,64 @@
+pipelineName: "dengue"
+simple_feature_types:
+  - feature_name: "precipitation"
+    attributes:
+      - attribute_name: "stationName"
+        attribute_type: "String"
+      - attribute_name: "observedValue"
+        attribute_type: "Float"
+      - attribute_name: "dtg"
+        attribute_type: "Date"
+
+    granularity_config:
+      spatial_granularity: "weatherStation"
+      temporal_granularity: "day"
+      target_spatial_granularity: "moh"
+      target_temporal_granularity: "week"
+      mapping_method:
+        method_name: "Nearest"
+
+  - feature_name: "dengueCases"
+    attributes:
+      - attribute_name: "mohArea"
+        attribute_type: "String"
+      - attribute_name: "observedValue"
+        attribute_type: "Integer"
+      - attribute_name: "date"
+        attribute_type: "Date"
+    granularity_config:
+      spatial_granularity: "moh"
+      temporal_granularity: "week"
+      target_spatial_granularity: "moh"
+      target_temporal_granularity: "week"
+      mapping_method:
+
+spatial_granularities:
+  - feature_name: "weatherStation"
+    attributes:
+      - attribute_name: "stationName"
+        attribute_type: "String"
+      - attribute_name: "longitude"
+        attribute_type: "Float"
+      - attribute_name: "latitude"
+        attribute_type: "Float"
+      - attribute_name: "geom"
+        attribute_type: "Point"
+    additional_configurations:
+      geom_format: "Point"
+      feature_id: "stationName"
+
+  - feature_name: "moh"
+    attributes:
+      -  attributeName: "mohName"
+         attributeType: "String"
+      -  attributeName: "Latitude"
+         attributeType: "String"
+      -  attributeName: "Longitude"
+         attributeType: "String"
+      -  attributeName: "geom"
+         attributeType: "Polygon"
+    additional_configurations:
+      geom_format: "Polygon"
+      feature_id: "MohName"
+
+temporal_granularities:
