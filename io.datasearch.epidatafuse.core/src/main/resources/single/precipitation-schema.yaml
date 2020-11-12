@@ -10,7 +10,7 @@ attributes:
   - attribute_name: "dtg"
     attribute_type: "Date"
 granularity_config:
-  spatial_granularity: "weather_station"
+  spatial_granularity: "weatherstation"
   temporal_granularity: "day"
   target_spatial_granularity: "moh"
   target_temporal_granularity: "week"

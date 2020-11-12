@@ -1,7 +1,7 @@
 <metadata xml:lang="en">
 	<Esri>
-		<CreaDate>20201111</CreaDate>
-		<CreaTime>18070300</CreaTime>
+		<CreaDate>20201112</CreaDate>
+		<CreaTime>06455600</CreaTime>
 		<ArcGISFormat>1.0</ArcGISFormat>
 		<SyncOnce>FALSE</SyncOnce>
 		<DataProperties>
@@ -10,7 +10,7 @@
 				<imsContentType Sync="TRUE">002</imsContentType>
 				<itemSize Sync="TRUE">0.000</itemSize>
 				<itemLocation>
-					<linkage Sync="TRUE">file://\\arcgis\Z\data\arcgisserver\directories\arcgisjobs\tasks_gpserver\j383cb5bf93a84d348f85e7992a3966d9\scratch\output\feature_collection.shp</linkage>
+					<linkage Sync="TRUE">file://\\arcgis\Z\data\arcgisserver\directories\arcgisjobs\tasks_gpserver\j0a59b3c0589b49e59b697659414b6a2b\scratch\output\feature_collection.shp</linkage>
 					<protocol Sync="TRUE">Local Area Network</protocol>
 				</itemLocation>
 			</itemProps>
@@ -22,14 +22,14 @@
 				<peXml Sync="TRUE">&lt;ProjectedCoordinateSystem xsi:type='typens:ProjectedCoordinateSystem' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:typens='http://www.esri.com/schemas/ArcGIS/2.6.0'&gt;&lt;WKT&gt;PROJCS[&amp;quot;WGS_1984_Web_Mercator_Auxiliary_Sphere&amp;quot;,GEOGCS[&amp;quot;GCS_WGS_1984&amp;quot;,DATUM[&amp;quot;D_WGS_1984&amp;quot;,SPHEROID[&amp;quot;WGS_1984&amp;quot;,6378137.0,298.257223563]],PRIMEM[&amp;quot;Greenwich&amp;quot;,0.0],UNIT[&amp;quot;Degree&amp;quot;,0.0174532925199433]],PROJECTION[&amp;quot;Mercator_Auxiliary_Sphere&amp;quot;],PARAMETER[&amp;quot;False_Easting&amp;quot;,0.0],PARAMETER[&amp;quot;False_Northing&amp;quot;,0.0],PARAMETER[&amp;quot;Central_Meridian&amp;quot;,0.0],PARAMETER[&amp;quot;Standard_Parallel_1&amp;quot;,0.0],PARAMETER[&amp;quot;Auxiliary_Sphere_Type&amp;quot;,0.0],UNIT[&amp;quot;Meter&amp;quot;,1.0],AUTHORITY[&amp;quot;EPSG&amp;quot;,3857]]&lt;/WKT&gt;&lt;XOrigin&gt;-20037700&lt;/XOrigin&gt;&lt;YOrigin&gt;-30241100&lt;/YOrigin&gt;&lt;XYScale&gt;148923141.92838538&lt;/XYScale&gt;&lt;ZOrigin&gt;-100000&lt;/ZOrigin&gt;&lt;ZScale&gt;10000&lt;/ZScale&gt;&lt;MOrigin&gt;-100000&lt;/MOrigin&gt;&lt;MScale&gt;10000&lt;/MScale&gt;&lt;XYTolerance&gt;0.001&lt;/XYTolerance&gt;&lt;ZTolerance&gt;0.001&lt;/ZTolerance&gt;&lt;MTolerance&gt;0.001&lt;/MTolerance&gt;&lt;HighPrecision&gt;true&lt;/HighPrecision&gt;&lt;WKID&gt;102100&lt;/WKID&gt;&lt;LatestWKID&gt;3857&lt;/LatestWKID&gt;&lt;/ProjectedCoordinateSystem&gt;</peXml>
 			</coordRef>
 			<lineage>
-				<Process ToolSource="z:\home\ags\arcgis\server\framework\runtime\arcgis\Resources\ArcToolbox\toolboxes\Data Management Tools.tbx\CopyFeatures" Date="20201111" Time="180703">CopyFeatures layer0 Z:\data\arcgisserver\directories\arcgisjobs\tasks_gpserver\j383cb5bf93a84d348f85e7992a3966d9\scratch\output\feature_collection.shp # # # #</Process>
+				<Process ToolSource="z:\home\ags\arcgis\server\framework\runtime\arcgis\Resources\ArcToolbox\toolboxes\Data Management Tools.tbx\CopyFeatures" Date="20201112" Time="064556">CopyFeatures layer0 Z:\data\arcgisserver\directories\arcgisjobs\tasks_gpserver\j0a59b3c0589b49e59b697659414b6a2b\scratch\output\feature_collection.shp # # # #</Process>
 			</lineage>
-			<LayerFile>{"type":"CIMLayerDocument","version":"2.6.0","build":24234,"layers":["CIMPATH=internal_map/feature_collection.xml"],"layerDefinitions":[{"type":"CIMFeatureLayer","name":"feature_collection","uRI":"CIMPATH=internal_map/feature_collection.xml","sourceModifiedTime":{"type":"TimeInstant"},"useSourceMetadata":true,"description":"feature_collection","expanded":true,"layerType":"Operational","showLegends":true,"visibility":true,"displayCacheType":"Permanent","maxDisplayCacheAge":5,"showPopups":true,"serviceLayerID":-1,"refreshRate":-1,"refreshRateUnit":"esriTimeUnitsSeconds","autoGenerateFeatureTemplates":true,"featureTable":{"type":"CIMFeatureTable","displayField":"stationNam","editable":true,"dataConnection":{"type":"CIMStandardDataConnection","workspaceConnectionString":"DATABASE=Z:\\data\\arcgisserver\\directories\\arcgisjobs\\tasks_gpserver\\j383cb5bf93a84d348f85e7992a3966d9\\scratch\\output","workspaceFactory":"Shapefile","dataset":"feature_collection","datasetType":"esriDTFeatureClass"},"studyAreaSpatialRel":"esriSpatialRelUndefined","searchOrder":"esriSearchOrderSpatial"},"htmlPopupEnabled":true,"selectable":true,"featureCacheType":"Session","displayFiltersType":"ByScale","renderer":{"type":"CIMSimpleRenderer","patch":"Default","symbol":{"type":"CIMSymbolReference","symbol":{"type":"CIMPointSymbol","symbolLayers":[{"type":"CIMVectorMarker","enable":true,"anchorPointUnits":"Relative","dominantSizeAxis3D":"Z","size":4,"billboardMode3D":"FaceNearPlane","frame":{"xmin":-2,"ymin":-2,"xmax":2,"ymax":2},"markerGraphics":[{"type":"CIMMarkerGraphic","geometry":{"curveRings":[[[1.2246467991473532e-16,2],{"a":[[1.2246467991473532e-16,2],[0,0],0,1]}]]},"symbol":{"type":"CIMPolygonSymbol","symbolLayers":[{"type":"CIMSolidStroke","enable":true,"capStyle":"Round","joinStyle":"Round","lineStyle3D":"Strip","miterLimit":10,"width":0.69999999999999996,"color":{"type":"CIMRGBColor","values":[0,0,0,100]}},{"type":"CIMSolidFill","enable":true,"color":{"type":"CIMRGBColor","values":[101.31,44.3699999999999974,147.900000000000006,100]}}]}}],"respectFrame":true}],"haloSize":1,"scaleX":1,"angleAlignment":"Display"}}},"scaleSymbols":true,"snappable":true}]}</LayerFile>
+			<LayerFile>{"type":"CIMLayerDocument","version":"2.6.0","build":24234,"layers":["CIMPATH=internal_map/feature_collection.xml"],"layerDefinitions":[{"type":"CIMFeatureLayer","name":"feature_collection","uRI":"CIMPATH=internal_map/feature_collection.xml","sourceModifiedTime":{"type":"TimeInstant"},"useSourceMetadata":true,"description":"feature_collection","expanded":true,"layerType":"Operational","showLegends":true,"visibility":true,"displayCacheType":"Permanent","maxDisplayCacheAge":5,"showPopups":true,"serviceLayerID":-1,"refreshRate":-1,"refreshRateUnit":"esriTimeUnitsSeconds","autoGenerateFeatureTemplates":true,"featureTable":{"type":"CIMFeatureTable","displayField":"stationNam","editable":true,"dataConnection":{"type":"CIMStandardDataConnection","workspaceConnectionString":"DATABASE=Z:\\data\\arcgisserver\\directories\\arcgisjobs\\tasks_gpserver\\j0a59b3c0589b49e59b697659414b6a2b\\scratch\\output","workspaceFactory":"Shapefile","dataset":"feature_collection","datasetType":"esriDTFeatureClass"},"studyAreaSpatialRel":"esriSpatialRelUndefined","searchOrder":"esriSearchOrderSpatial"},"htmlPopupEnabled":true,"selectable":true,"featureCacheType":"Session","displayFiltersType":"ByScale","renderer":{"type":"CIMSimpleRenderer","patch":"Default","symbol":{"type":"CIMSymbolReference","symbol":{"type":"CIMPointSymbol","symbolLayers":[{"type":"CIMVectorMarker","enable":true,"anchorPointUnits":"Relative","dominantSizeAxis3D":"Z","size":4,"billboardMode3D":"FaceNearPlane","frame":{"xmin":-2,"ymin":-2,"xmax":2,"ymax":2},"markerGraphics":[{"type":"CIMMarkerGraphic","geometry":{"curveRings":[[[1.2246467991473532e-16,2],{"a":[[1.2246467991473532e-16,2],[0,0],0,1]}]]},"symbol":{"type":"CIMPolygonSymbol","symbolLayers":[{"type":"CIMSolidStroke","enable":true,"capStyle":"Round","joinStyle":"Round","lineStyle3D":"Strip","miterLimit":10,"width":0.69999999999999996,"color":{"type":"CIMRGBColor","values":[0,0,0,100]}},{"type":"CIMSolidFill","enable":true,"color":{"type":"CIMRGBColor","values":[90.7099999999999937,58.5200000000000031,130.050000000000011,100]}}]}}],"respectFrame":true}],"haloSize":1,"scaleX":1,"angleAlignment":"Display"}}},"scaleSymbols":true,"snappable":true}]}</LayerFile>
 		</DataProperties>
-		<SyncDate>20201111</SyncDate>
-		<SyncTime>18070300</SyncTime>
-		<ModDate>20201111</ModDate>
-		<ModTime>18070300</ModTime>
+		<SyncDate>20201112</SyncDate>
+		<SyncTime>06455600</SyncTime>
+		<ModDate>20201112</ModDate>
+		<ModTime>06455600</ModTime>
 	</Esri>
 	<dataIdInfo>
 		<envirDesc Sync="TRUE">Microsoft Windows 7 Version 6.1 (Build 7601) Service Pack 1; Esri ArcGIS 12.6.0.24234</envirDesc>
@@ -164,5 +164,5 @@
 			</attr>
 		</detailed>
 	</eainfo>
-	<mdDateSt Sync="TRUE">20201111</mdDateSt>
+	<mdDateSt Sync="TRUE">20201112</mdDateSt>
 </metadata>

@@ -74,7 +74,8 @@ public class SimpleFeatureTransformer {
             for (String dataSource : ingestConfig.getDataSources()) {
                 try {
                     URL sourceFileUrl = getClass().getClassLoader().getResource(dataSource);
-                    CSVParser parser = CSVParser.parse(sourceFileUrl, DEFAULT_CHARSET, CSV_FORMAT.get(sourceFormat));
+                    CSVParser parser = CSVParser.parse(sourceFileUrl, DEFAULT_CHARSET,
+                            CSV_FORMAT.get(sourceFormat).withHeader().withSkipHeaderRecord());
                     counter += transformCSV(simpleFeatureTypeSchema, writer, parser, transformations);
                 } catch (Exception e) {
                     logger.error(e.getMessage());
@@ -144,7 +145,7 @@ public class SimpleFeatureTransformer {
             }
             writer.write();
             counter++;
-            logger.info("Added new Feature," + next.toString() + "to" + schema.getSimpleFeatureTypeName());
+            logger.info("Added new Feature," + next.toString() + " to " + schema.getSimpleFeatureTypeName());
         }
         return counter;
     }
@@ -156,120 +157,3 @@ public class SimpleFeatureTransformer {
         return featureID;
     }
 }
-//                    } catch (Exception e) {
-//                        throw new Exception("Record" + record.get(ATTRIBUTE_NAME_KEY) +
-//                    " could not be added: Invalid transformation of attribute.get(ATTRIBUTE_NAME_KEY)", e);
-//                    }
-
-//    private static final String SOURCE_TYPE_KEY = "source_type";
-//    private static final String FEATURE_NAME_KEY = "feature_name";
-//    private static final String SOURCE_FORMAT_KEY = "source_format";
-//    private static final String DATA_SOURCE_KEY = "data_sources";
-
-//DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(simpleFeatureTypeSchema.
-//            getAdditionalConfigurations().get("DateTimeFormat"), Locale.US);
-
-//        URL sourceCSVFile;
-//        DateTimeFormatter dateFormat = null; //todo: give a default value
-//        GeometryFactory geometryFactory = new GeometryFactory();
-//
-//        Map<String, Integer> records = (Map<String, Integer>) ingestConfig.get("records");
-//        Map<String, String> configurations = (Map<String, String>) ingestConfig.get("configurations");
-//
-//        try {
-//            sousourceFile = getClass().getClassLoader().getResource((String) ingestConfig.get("data_source"));
-//        } catch (Exception e) {
-//            throw new RuntimeException("Couldn't load resource " + ingestConfig.get("data_source"));
-//        }
-//
-//        // Datetime Formatter
-//        if (simpleFeatureTypeSchema.getAdditionalConfigurations().get("DateTimeFormat") != null) {
-//            dateFormat = DateTimeFormatter.ofPattern(simpleFeatureTypeSchema.
-//                    getAdditionalConfigurations().get("DateTimeFormat"), Locale.US);
-//        }
-//
-//        // parser corresponding to the CSV format
-//        try (CSVParser parser = CSVParser.parse(sourceCSVFile, StandardCharsets.UTF_8, CSVFormat.EXCEL)) {
-//            for (CSVRecord record : parser) {
-//                try {
-//                    // pull out the fields corresponding to our simple feature attributes
-//                    for (Map<String, String> attribute : simpleFeatureTypeSchema.getAttributes()) {
-//                        if ("Date".equalsIgnoreCase((attribute.get("attributeType")))) {
-//                            builder.set(attribute.get("attributeName"), Date.from(LocalDate.parse(
-//                                    record.get(records.get(attribute.get("attributeName"))),
-//                                    dateFormat).atStartOfDay(ZoneOffset.UTC).toInstant()));
-//                        } else if ("Point".equals(attribute.get("attributeType"))) {
-//                            double latitude = Double.parseDouble(
-//                                    record.get(records.get("Lat")));
-//                            double longitude = Double.parseDouble(
-//                                    record.get(records.get("Long")));
-//                            builder.set(attribute.get("attributeName"),
-//                                    "POINT (" + longitude + " " + latitude + ")");
-//                        } else if ("MultiPolygon".equals(attribute.get("attributeType")) ||
-//                                "Polygon".equals(attribute.get("attributeType"))) {
-//
-//                            Map<String, String> shapeFile = (Map<String, String>) ingestConfig.get("shp_file");
-//
-//                            //A map to create a temporary data store
-//                            Map<String, Object> dataStoreFinderUrlMap = new HashMap<>();
-//                            dataStoreFinderUrlMap.put("url",
-//                                    getClass().getClassLoader().getResource(shapeFile.get("Source")));
-//                            DataStore dataStore = DataStoreFinder.getDataStore(dataStoreFinderUrlMap);
-//                            FeatureSource<SimpleFeatureType, SimpleFeature> source =
-//                                    dataStore.getFeatureSource(simpleFeatureTypeSchema.getTypeName());
-//
-//                            SimpleFeatureType schema = source.getSchema();
-//                            CoordinateReferenceSystem dataCRS = schema.getCoordinateReferenceSystem();
-//                            CoordinateReferenceSystem worldCRS = DefaultGeographicCRS.WGS84;
-//
-//                            /**
-//                             *@lenient(true) If the coordinate operations should be created even when there is
-//                             * no information available for a datum shift
-//                             */
-//                            boolean lenient = true;
-//                            MathTransform mathTransform = CRS.findMathTransform(dataCRS, worldCRS, lenient);
-//                            FeatureCollection<SimpleFeatureType, SimpleFeature> collection = source.getFeatures();
-//                            FeatureIterator<SimpleFeature> iterator = collection.features();
-//
-//                            try {
-//                                Geometry geom = geometryFactory.creategetTypeNamePolygon();
-//                                while (iterator.hasNext()) {
-//                                    SimpleFeature feature = iterator.next();
-//                                    if (feature.getAttribute(shapeFile.get("FeatureID")).
-//                                            toString().equalsIgnoreCase(
-//                                            (record.get(records.get(configurations.get("FeatureID")))))) {
-//                                        Geometry tempGeom =
-//                                                (Geometry) feature.getDefaultGeometryProperty().getValue();
-//                                        geom = JTS.transform(tempGeom, mathTransform);
-//                                        break;
-//                                    } DataStore dataStore = DataStoreFinder.getDataStore(dataStoreFinderUrlMap);
-//                            FeatureSource<SimpleFeatureType, SimpleFeature> source =
-//                                    dataStore.getFeatureSource(simpleFeatureTypeSchema.getTypeName());
-//                                }
-//                                builder.set(attribute.get("attributeName"), geom);
-//                            } catch (Throwable e) {
-//                                logger.debug("Invalid shp file record: " + e.toString()
-//                                        + " " + record.toString());
-//                            } finally {
-//                                iterator.close();
-//                                dataStore.dispose();
-//                            }
-//                        } else {
-//                            builder.set((String) attribute.get("attributeName"),
-//                                    record.get(records.get(attribute.get("attributeName"))));
-//                        }
-//                    }
-//                    builder.featureUserData(Hints.USE_PROVIDED_FID, java.lang.Boolean.TRUE);
-//                    SimpleFeature feature = builder.buildFeature(
-//                            record.get(records.get(simpleFeatureTypeSchema.
-//                                    getAdditionalConfigurations().get("FeatureID"))));
-//                    features.add(feature);
-//                } catch (Throwable e) {
-//                    logger.debug("Invalid" + simpleFeatureTypeSchema.getTypeName() +
-//                            "record: " + e.toString() + " " + record.toString());
-//                }
-//            }
-//            return features;
-//        } catch (IOException e) {
-//            throw new RuntimeException("Error reading" + simpleFeatureTypeSchema.getTypeName() + ":", e);
-//        }
