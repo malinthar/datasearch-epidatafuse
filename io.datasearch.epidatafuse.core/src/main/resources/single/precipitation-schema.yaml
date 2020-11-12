@@ -1,6 +1,8 @@
 pipeline_name: "dengue"
 feature_name: "precipitation"
 attributes:
+  - attribute_name: "stationID"
+    attribute_type: "String"
   - attribute_name: "stationName"
     attribute_type: "String"
   - attribute_name: "observedValue"

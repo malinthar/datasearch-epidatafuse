@@ -11,4 +11,4 @@ attributes:
      attribute_type: "Float"
   -  attribute_name: "geom"
      attribute_type: "Point"
-uuid_attribute_name: "stationName"
+uuid_attribute_name: "stationID"
