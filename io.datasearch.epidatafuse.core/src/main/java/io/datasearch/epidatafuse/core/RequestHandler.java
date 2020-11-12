@@ -267,7 +267,7 @@ public class RequestHandler {
 
     @RequestMapping("/testinit")
     public String testInit() {
-        String message = "Successfuly responded";
+        String message = "Successfully responded";
         Map<String, Object> data = new HashMap<>();
         Response response = new Response(true, false, message, data);
         ObjectMapper mapper = new ObjectMapper();

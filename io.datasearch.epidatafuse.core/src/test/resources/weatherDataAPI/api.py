@@ -13,6 +13,7 @@ def hello_world():
 def hello_test():
    print("Executed!")
    res = {
+       "stationID" :"28u3rfknfcv",
        "stationName":"Cinnamon Lake Side Hotel",
        "observedValue":"0.6",
        "dtg":"20130526",
