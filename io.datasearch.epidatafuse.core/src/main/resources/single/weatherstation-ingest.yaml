@@ -1,0 +1,15 @@
+pipeline_name: "dengue"
+feature_name: "weatherstation"
+source_type: "shp"
+source_format: ''
+transformations:
+  - attribute_name: "stationName"
+    transformation: "1"
+  - attribute_name: "stationID"
+    transformation: "2"
+  - attribute_name: "latitude"
+    transformation: "3"
+  - attribute_name: "longitude"
+    transformation: "4"
+data_sources:
+  - "data/weatherstation/shapefile/sl_weatherstation.shp"

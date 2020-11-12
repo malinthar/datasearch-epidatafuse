@@ -1,7 +1,7 @@
 pipeline_name: "dengue"
 feature_name: "precipitation"
 source_type: "delimited-text"
-source_format: "CSV"
+source_format: "Excel"
 transformations:
   - attribute_name: "stationID"
     transformation: "1"
