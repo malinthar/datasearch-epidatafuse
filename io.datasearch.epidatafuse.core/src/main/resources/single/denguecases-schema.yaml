@@ -1,0 +1,20 @@
+pipeline_name: "dengue"
+feature_name: "denguecases"
+attributes:
+  - attribute_name: "mohID"
+    attribute_type: "String"
+  - attribute_name: "mohName"
+    attribute_type: "String"
+  - attribute_name: "dtg"
+    attribute_type: "Date"
+  - attribute_name: "week"
+    attribute_type: "Integer"
+  - attribute_name: "casesCount"
+    attribute_type: "Integer"
+
+granularity_config:
+  spatial_granularity: "moh"
+  temporal_granularity: "week"
+  target_spatial_granularity: "moh"
+  target_temporal_granularity: "week"
+  mapping_method:
