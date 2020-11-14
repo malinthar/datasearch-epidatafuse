@@ -56,6 +56,9 @@ public class PipelineDataStore {
     public Map<String, SimpleFeatureTypeSchema> getSchemas() {
         return this.featureSFTSchemas;
     }
+    public Map<String, SimpleFeatureTypeSchema> getGranularitySchemas() {
+        return this.granularitySFTSchemas;
+    }
 
     public void bulkIngest(IngestionConfig ingestionConfig) {
         try {

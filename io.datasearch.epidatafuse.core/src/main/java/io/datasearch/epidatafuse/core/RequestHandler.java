@@ -10,6 +10,7 @@ import io.datasearch.epidatafuse.core.util.ConfigurationLoader;
 import io.datasearch.epidatafuse.core.util.FeatureConfig;
 import io.datasearch.epidatafuse.core.util.IngestConfig;
 import io.datasearch.epidatafuse.core.util.IngestionConfig;
+import io.datasearch.epidatafuse.core.util.PipelineInfo;
 import io.datasearch.epidatafuse.core.util.SchemaConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,6 +41,7 @@ public class RequestHandler {
     private static final String INGESTION_SUCCESS_MESSAGE = "Ingestion successful!";
     private static final String VARIABLE_TYPE_IDENTIFIER = "variable";
     private static final String GRANULARITY_TYPE_IDENTIFIER = "granularity";
+    private static final String PIPELINE_NAMES_KEY = "pipeline_names";
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private static ObjectMapper mapper = new ObjectMapper();
 
@@ -279,5 +283,39 @@ public class RequestHandler {
             logger.error("Could not write response", e.getMessage());
         }
         return jsonString;
+    }
+
+    @RequestMapping("/getPipelineInfo")
+    public String getPipelineInfo(@RequestBody Map<String, Object> payload) {
+        Response response;
+        try {
+            if (payload.get(PIPELINE_NAMES_KEY) != null) {
+                List<PipelineInfo> pipelines = new ArrayList<>();
+                List<String> pipelineNames = (ArrayList<String>) payload.get(PIPELINE_NAMES_KEY);
+                for (String pipelineName : pipelineNames) {
+                    pipelines.add(ServerContext.getPipeline(pipelineName).getInfo());
+                }
+
+                if (pipelines.size() > 0) {
+                    Map<String, Object> responseData = new HashMap<>();
+                    pipelines.forEach(pipelineInfo -> responseData.put(pipelineInfo.getPipelineName(), pipelineInfo));
+                    response =
+                            new Response(true, false, INGESTION_SUCCESS_MESSAGE, responseData);
+                } else {
+                    response =
+                            new Response(false, true, INGESTION_ERROR_MESSAGE, new HashMap<>());
+                }
+            } else {
+                response =
+                        new Response(false, true, PIPELINE_NAME_EMPTY_ERROR_MESSAGE, new HashMap<>());
+            }
+            return mapper.writeValueAsString(response);
+        } catch (Exception e) {
+            if (e instanceof JsonProcessingException) {
+                return SERVER_ERROR_MESSAGE;
+            } else {
+                return ADD_NEW_FEATURE_ERROR_MESSAGE;
+            }
+        }
     }
 }

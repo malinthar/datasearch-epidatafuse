@@ -11,6 +11,7 @@ import io.datasearch.epidatafuse.core.fusionpipeline.stream.StreamHandler;
 import io.datasearch.epidatafuse.core.util.FeatureConfig;
 import io.datasearch.epidatafuse.core.util.IngestConfig;
 import io.datasearch.epidatafuse.core.util.IngestionConfig;
+import io.datasearch.epidatafuse.core.util.PipelineInfo;
 import io.datasearch.epidatafuse.core.util.SchemaConfig;
 import io.siddhi.core.event.Event;
 import org.geotools.data.DataStore;
@@ -27,7 +28,6 @@ import java.util.Map;
  */
 public class FusionPipeline {
     private static final Logger logger = LoggerFactory.getLogger(FusionPipeline.class);
-
     private PipelineDataStore pipelineDataStore;
     private StreamHandler streamHandler;
     private FuseEngine fuseEngine;
@@ -109,5 +109,10 @@ public class FusionPipeline {
 
     public void streamingIngest(Event[] events, String featureType) {
         pipelineDataStore.streamingIngest(events, featureType);
+    }
+
+    public PipelineInfo getInfo() {
+        return new PipelineInfo(this.pipelineName, this.pipelineDataStore.getSchemas(),
+                this.pipelineDataStore.getGranularitySchemas(), granularityRelationConfigs, aggregationConfigs);
     }
 }
