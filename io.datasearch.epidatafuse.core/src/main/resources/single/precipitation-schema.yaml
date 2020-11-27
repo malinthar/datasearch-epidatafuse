@@ -14,12 +14,23 @@ granularity_config:
   temporal_granularity: "day"
   target_spatial_granularity: "moh"
   target_temporal_granularity: "week"
-  mapping_method:
+  granularity_mapping:
     spatial_mapping_method:
-      method_name: "Nearest"
-      mapping_arguments:
-        - argument_name: "neighbors"
-          argument_valule: "3"
-        - argument_name: "maxDistance"
-          argument_value: "100000"
+      granule_mapping:
+        method_name: "Nearest"
+        mapping_arguments:
+          - argument_name: "neighbors"
+            argument_valule: "3"
+          - argument_name: "maxDistance"
+            argument_value: "100000"
+      granule_aggregation:
+
     temporal_mapping_method:
+      granule_mapping:
+        method_name: "Nearest"
+        mapping_arguments:
+          - argument_name: "neighbors"
+            argument_valule: "3"
+          - argument_name: "maxDistance"
+            argument_value: "100000"
+        granule_aggregation:
