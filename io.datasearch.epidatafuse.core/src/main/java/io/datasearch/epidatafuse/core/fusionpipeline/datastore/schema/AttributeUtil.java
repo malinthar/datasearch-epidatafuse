@@ -46,9 +46,10 @@ public class AttributeUtil {
                     MULTI_POLYGON, GEOMETRY_COLLECTION, GEOMETRY, LIST, MAP, BYTES);
     private static final List<String> GEOMETRIC_TYPE_LIST = Arrays.asList(GEOMETRY,
             GEOMETRY_COLLECTION, POINT, POLYGON, LINESTRING, MULTI_POINT, MULTI_LINE_STRING, MULTI_POLYGON);
-    private static final Map<String, String> ATTRIBUTE_TYPE_MAP = new HashMap<>();
+    private static final Map<String, String> ATTRIBUTE_TYPE_MAP;
 
     static {
+        ATTRIBUTE_TYPE_MAP = new HashMap<>();
         ATTRIBUTE_TYPE_LIST.forEach(attribute -> ATTRIBUTE_TYPE_MAP.put(attribute, attribute));
     }
 
