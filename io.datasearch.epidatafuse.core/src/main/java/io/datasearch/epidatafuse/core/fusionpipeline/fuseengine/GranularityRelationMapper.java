@@ -39,53 +39,41 @@ public class GranularityRelationMapper {
     }
 
     public SpatialGranularityRelationMap buildSpatialGranularityMap(GranularityRelationConfig config) {
-        logger.info("spatial " + config.getFeatureTypeName());
+        logger.info("Building spatial granularity map for " + config.getFeatureTypeName() + " feature..");
+        SpatialGranularityRelationMap spatialMap;
         String spatialGranularity = config.getSpatialGranularity();
         String relationMappingMethod = config.getSpatialRelationMappingMethod();
         String targetSpatialGranularity = config.getTargetSpatialGranularity();
-
-        SpatialGranularityRelationMap spatialMap;
-
         SimpleFeatureCollection targetSpatialGranules = this.getGranuleSet(targetSpatialGranularity);
-
         SimpleFeatureCollection baseSpatialGranuleSet = this.getGranuleSet(spatialGranularity);
 
         switch (relationMappingMethod) {
-            case "nearest":
-                int neighbors = Integer.parseInt(config.getMappingAttribute("neighbors"));
-                double maxDistance = Double.parseDouble(config.getMappingAttribute("maxDistance"));
-
+            case NearestMapper.MAPPER_NAME:
+                int neighbors = Integer.parseInt(config.getMappingAttribute(NearestMapper.ARG_NEIGHBORS));
+                double maxDistance = Double.parseDouble(config.getMappingAttribute(NearestMapper.ARG_MAX_DISTANCE));
                 spatialMap = NearestMapper.buildNearestMap(targetSpatialGranules,
                         baseSpatialGranuleSet, neighbors, maxDistance);
                 break;
 
-            case "contain":
+            case ContainMapper.MAPPER_NAME:
                 spatialMap = ContainMapper.buildContainMap(targetSpatialGranules, baseSpatialGranuleSet);
                 break;
 
             default:
                 spatialMap = new SpatialGranularityRelationMap();
         }
-
         return spatialMap;
     }
 
     public SimpleFeatureCollection getGranuleSet(String granularityName) {
         try {
-
-//            Query query = new Query(granularityName);
-//            QueryObject queryObj = new QueryObject("dengDIDataStore-test", query, granularityName);
-//           ArrayList<SimpleFeature> featureList = this.queryManager.getFeatures(this.dataStore, queryObj);
-
             Query query = new Query(granularityName);
             FeatureReader<SimpleFeatureType, SimpleFeature> reader =
                     dataStore.getFeatureReader(query, Transaction.AUTO_COMMIT);
-
-            ArrayList<SimpleFeature> featureList = new ArrayList<SimpleFeature>();
+            ArrayList<SimpleFeature> featureList = new ArrayList<>();
             while (reader.hasNext()) {
-                SimpleFeature feature = (SimpleFeature) reader.next();
+                SimpleFeature feature = reader.next();
                 featureList.add(feature);
-                logger.info(feature.toString());
             }
             reader.close();
             return DataUtilities.collection(featureList);
@@ -95,7 +83,7 @@ public class GranularityRelationMapper {
         }
     }
 
-    // to implement
+    // todo:to implement
     public TemporalGranularityMap buildTemporalMap(GranularityRelationConfig granularityRelationConfig) {
         logger.info("temporal " + granularityRelationConfig.getFeatureTypeName());
 

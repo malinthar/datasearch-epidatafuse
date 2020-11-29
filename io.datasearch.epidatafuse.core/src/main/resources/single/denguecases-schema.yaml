@@ -17,4 +17,7 @@ granularity_config:
   temporal_granularity: "week"
   target_spatial_granularity: "moh"
   target_temporal_granularity: "week"
-  mapping_method:
+  granularity_mapping:
+aggregation_config:
+
+

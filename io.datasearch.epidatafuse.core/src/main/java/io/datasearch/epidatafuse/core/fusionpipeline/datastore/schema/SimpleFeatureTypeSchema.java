@@ -34,7 +34,6 @@ public class SimpleFeatureTypeSchema implements DiseaseDataSchema {
         return this.simpleFeatureTypeName;
     }
 
-    @Override
     public SimpleFeatureType getSimpleFeatureType() {
         return simpleFeatureType;
     }

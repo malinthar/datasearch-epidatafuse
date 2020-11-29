@@ -2,8 +2,7 @@ package io.datasearch.epidatafuse.core;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.datasearch.epidatafuse.core.fusionpipeline.FusionPipeLineFactory;
-import io.datasearch.epidatafuse.core.fusionpipeline.FusionPipeline;
+import io.datasearch.epidatafuse.core.fusionpipeline.FusionPipeLineController;
 import io.datasearch.epidatafuse.core.fusionpipeline.datastore.query.QueryManager;
 import io.datasearch.epidatafuse.core.fusionpipeline.util.PipelineUtil;
 import io.datasearch.epidatafuse.core.util.ConfigurationLoader;
@@ -11,7 +10,6 @@ import io.datasearch.epidatafuse.core.util.FeatureConfig;
 import io.datasearch.epidatafuse.core.util.IngestConfig;
 import io.datasearch.epidatafuse.core.util.IngestionConfig;
 import io.datasearch.epidatafuse.core.util.PipelineInfo;
-import io.datasearch.epidatafuse.core.util.SchemaConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -47,30 +45,13 @@ public class RequestHandler {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private static ObjectMapper mapper = new ObjectMapper();
 
-    @RequestMapping(value = "/createPipelineFromConfigFiles")
-    public String createPipelineFromConfigFiles() {
-        try {
-            SchemaConfig schemaConfig = new SchemaConfig(ConfigurationLoader.getSchemaConfigurations());
-            if (schemaConfig.getPipelineName() != null) {
-                FusionPipeline pipeLine = FusionPipeLineFactory.createFusionPipeLine(schemaConfig);
-                ServerContext.addPipeline(schemaConfig.getPipelineName(), pipeLine);
-                return "Success!";
-            } else {
-                return "Invalid configuration!";
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return e.getMessage();
-        }
-    }
-
     @RequestMapping(value = "/createPipeline", method = RequestMethod.POST)
     public String createPipeline(@RequestBody Map<String, Object> payload) {
         Response response;
         try {
             if (payload.get(PipelineUtil.PIPELINE_NAME_KEY) != null) {
                 String pipelineName = (String) payload.get(PipelineUtil.PIPELINE_NAME_KEY);
-                FusionPipeLineFactory.createFusionPipeLine(pipelineName);
+                FusionPipeLineController.createFusionPipeLine(pipelineName);
                 response =
                         new Response(true, false, PIPELINE_CREATION_SUCCESS_MESSAGE, new HashMap<>());
             } else {
@@ -94,7 +75,7 @@ public class RequestHandler {
             if (payload.get(PipelineUtil.PIPELINE_NAME_KEY) != null) {
                 String pipelineName = (String) payload.get(PipelineUtil.PIPELINE_NAME_KEY);
                 FeatureConfig featureConfig = new FeatureConfig(payload, VARIABLE_TYPE_IDENTIFIER);
-                Boolean status = FusionPipeLineFactory.addNewFeature(pipelineName, featureConfig);
+                Boolean status = FusionPipeLineController.addNewFeature(pipelineName, featureConfig);
                 if (status) {
                     response =
                             new Response(true, false, ADD_NEW_FEATURE_SUCCESS_MESSAGE, new HashMap<>());
@@ -122,7 +103,7 @@ public class RequestHandler {
             if (payload.get(PipelineUtil.PIPELINE_NAME_KEY) != null) {
                 String pipelineName = (String) payload.get(PipelineUtil.PIPELINE_NAME_KEY);
                 FeatureConfig featureConfig = new FeatureConfig(payload, GRANULARITY_TYPE_IDENTIFIER);
-                Boolean status = FusionPipeLineFactory.addNewFeature(pipelineName, featureConfig);
+                Boolean status = FusionPipeLineController.addNewFeature(pipelineName, featureConfig);
                 if (status) {
                     return "success!";
                 } else {
@@ -144,7 +125,7 @@ public class RequestHandler {
             if (payload.get(PipelineUtil.PIPELINE_NAME_KEY) != null) {
                 String pipelineName = (String) payload.get(PipelineUtil.PIPELINE_NAME_KEY);
                 IngestConfig ingestConfig = new IngestConfig(payload);
-                Boolean status = FusionPipeLineFactory.ingestToFeature(pipelineName, ingestConfig);
+                Boolean status = FusionPipeLineController.ingestToFeature(pipelineName, ingestConfig);
                 if (status) {
                     response =
                             new Response(true, false, INGESTION_SUCCESS_MESSAGE, new HashMap<>());
@@ -173,7 +154,7 @@ public class RequestHandler {
             if (payload.get(PipelineUtil.PIPELINE_NAME_KEY) != null) {
                 String pipelineName = (String) payload.get(PipelineUtil.PIPELINE_NAME_KEY);
                 IngestConfig ingestConfig = new IngestConfig(payload);
-                Boolean status = FusionPipeLineFactory.ingestToGranularity(pipelineName, ingestConfig);
+                Boolean status = FusionPipeLineController.ingestToGranularity(pipelineName, ingestConfig);
                 if (status) {
                     response =
                             new Response(true, false, INGESTION_SUCCESS_MESSAGE, new HashMap<>());
@@ -201,7 +182,7 @@ public class RequestHandler {
         try {
             if (payload.get(PipelineUtil.PIPELINE_NAME_KEY) != null) {
                 String pipelineName = (String) payload.get(PipelineUtil.PIPELINE_NAME_KEY);
-                Boolean status = FusionPipeLineFactory.initPipeline(pipelineName);
+                Boolean status = FusionPipeLineController.initPipeline(pipelineName);
                 if (status) {
                     return "Success!";
                 } else {
@@ -216,6 +197,7 @@ public class RequestHandler {
         }
     }
 
+    //todo: format properly
     @RequestMapping("/ingest")
     public String ingest() {
         try {
@@ -235,7 +217,6 @@ public class RequestHandler {
         try {
             String pipelineName = "dengue";
             logger.info("h01");
-            ServerContext.getPipeline(pipelineName).mapGranularityRelations();
             ServerContext.getPipeline(pipelineName).mapGranularityRelations();
             return "Success mapping";
         } catch (Exception e) {
@@ -271,21 +252,16 @@ public class RequestHandler {
         }
     }
 
-    @RequestMapping("/testinit")
-    public String testInit() {
-        String message = "Successfully responded";
-        Map<String, Object> data = new HashMap<>();
-        Response response = new Response(true, false, message, data);
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonString;
-        try {
-            jsonString = mapper.writeValueAsString(response);
-        } catch (Exception e) {
-            jsonString = "Server error!";
-            logger.error("Could not write response", e.getMessage());
-        }
-        return jsonString;
-    }
+//    @RequestMapping("/removePipeline")
+//    public String removePipeline(String[] params) {
+//        try {
+//            queryManager.runQueries(ServerContext.getPipeline(pipelineName).dispose());
+//            return "Success!";
+//        } catch (Exception e) {
+//            logger.error(e.getMessage());
+//            return e.getMessage();
+//        }
+//    }
 
     @RequestMapping("/getPipelineInfo")
     public String getPipelineInfo(@RequestBody Map<String, Object> payload) {
@@ -320,4 +296,38 @@ public class RequestHandler {
             }
         }
     }
+
+    @RequestMapping("/testinit")
+    public String testInit() {
+        String message = "Successfully responded";
+        Map<String, Object> data = new HashMap<>();
+        Response response = new Response(true, false, message, data);
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString;
+        try {
+            jsonString = mapper.writeValueAsString(response);
+        } catch (Exception e) {
+            jsonString = "Server error!";
+            logger.error("Could not write response", e.getMessage());
+        }
+        return jsonString;
+    }
+
+//    @Deprecated
+//    @RequestMapping(value = "/createPipelineFromConfigFiles")
+//    public String createPipelineFromConfigFiles() {
+//        try {
+//            SchemaConfig schemaConfig = new SchemaConfig(ConfigurationLoader.getSchemaConfigurations());
+//            if (schemaConfig.getPipelineName() != null) {
+//                FusionPipeline pipeLine = FusionPipeLineController.createFusionPipeLine(schemaConfig);
+//                ServerContext.addPipeline(schemaConfig.getPipelineName(), pipeLine);
+//                return "Success!";
+//            } else {
+//                return "Invalid configuration!";
+//            }
+//        } catch (Exception e) {
+//            logger.error(e.getMessage());
+//            return e.getMessage();
+//        }
+//    }
 }

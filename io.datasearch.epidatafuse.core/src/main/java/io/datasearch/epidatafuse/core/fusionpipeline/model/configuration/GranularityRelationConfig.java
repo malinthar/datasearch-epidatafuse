@@ -13,7 +13,7 @@ public class GranularityRelationConfig {
     private static final String TEMPORAL_GRANULARITY_KEY = "temporal_granularity";
     private static final String TARGET_SPATIAL_GRANULARITY_KEY = "target_spatial_granularity";
     private static final String TARGET_TEMPORAL_GRANULARITY_KEY = "target_temporal_granularity";
-    private static final String MAPPING_METHOD_KEY = "mapping_method";
+    private static final String GRANULARITY_MAPPING_KEY = "granularity_mapping";
     private static final String MAPPING_METHOD_NAME_KEY = "method_name";
     private static final String MAPPING_ARGUMENTS_KEY = "mapping_arguments";
     private static final String MAPPING_ARGUMENT_NAME_KEY = "argument_name";
@@ -40,17 +40,18 @@ public class GranularityRelationConfig {
         this.temporalGranularity = (String) granularityConfig.get(TEMPORAL_GRANULARITY_KEY);
         this.targetSpatialGranularity = (String) granularityConfig.get(TARGET_SPATIAL_GRANULARITY_KEY);
         this.targetTemporalGranularity = (String) granularityConfig.get(TARGET_TEMPORAL_GRANULARITY_KEY);
-        if (granularityConfig.get(MAPPING_METHOD_KEY) != null) {
-            Map<String, Object> mappingMethod = (Map<String, Object>) granularityConfig.get(MAPPING_METHOD_KEY);
+
+        if (granularityConfig.get(GRANULARITY_MAPPING_KEY) != null) {
+            Map<String, Object> mappingMethod = (Map<String, Object>) granularityConfig.get(GRANULARITY_MAPPING_KEY);
             if (mappingMethod != null) {
                 Map<String, Object> spatialMap = (Map<String, Object>) mappingMethod.get(SPATIAL_MAPPING_METHOD_KEY);
                 Map<String, Object> temporalMap = (Map<String, Object>) mappingMethod.get(TEMPORAL_MAPPING_METHOD_KEY);
                 if (spatialMap != null) {
                     this.spatialRelationMappingMethod = (String) spatialMap.get(MAPPING_METHOD_NAME_KEY);
-                    List<Map<String, String>> arguments =
+                    List<Map<String, String>> spatialArguments =
                             (List<Map<String, String>>) spatialMap.get(MAPPING_ARGUMENTS_KEY);
-                    if (arguments != null) {
-                        for (Map<String, String> argument : arguments) {
+                    if (spatialArguments != null) {
+                        for (Map<String, String> argument : spatialArguments) {
                             customSpatialMappingAttributes.put(argument.get(MAPPING_ARGUMENT_NAME_KEY),
                                     argument.get(MAPPING_ARGUMENT_VALUE_KEY));
                         }
@@ -58,10 +59,10 @@ public class GranularityRelationConfig {
                 }
                 if (temporalMap != null) {
                     this.temporalRelationMappingMethod = (String) temporalMap.get(MAPPING_METHOD_NAME_KEY);
-                    List<Map<String, String>> arguments =
+                    List<Map<String, String>> temporalArguments =
                             (List<Map<String, String>>) temporalMap.get(MAPPING_ARGUMENTS_KEY);
-                    if (arguments != null) {
-                        for (Map<String, String> argument : arguments) {
+                    if (temporalArguments != null) {
+                        for (Map<String, String> argument : temporalArguments) {
                             customTemporalMappingAttributes.put(argument.get(MAPPING_ARGUMENT_NAME_KEY),
                                     argument.get(MAPPING_ARGUMENT_VALUE_KEY));
                         }
@@ -69,7 +70,6 @@ public class GranularityRelationConfig {
                 }
             }
         }
-
     }
 
     public String getFeatureTypeName() {
@@ -100,11 +100,8 @@ public class GranularityRelationConfig {
         return this.targetTemporalGranularity;
     }
 
-    public void setMappingAttribute(String attrName, String value) {
-        this.customSpatialMappingAttributes.put(attrName, value);
-    }
-
     public String getMappingAttribute(String attrName) {
         return customSpatialMappingAttributes.get(attrName);
     }
+
 }

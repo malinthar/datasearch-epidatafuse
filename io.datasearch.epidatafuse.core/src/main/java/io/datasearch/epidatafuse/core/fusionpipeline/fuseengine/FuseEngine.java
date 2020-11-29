@@ -62,7 +62,7 @@ public class FuseEngine {
     public Map<String, GranularityMap> buildGranularityMap(
             Map<String, GranularityRelationConfig> granularityRelationConfigs) {
 
-        Map<String, GranularityMap> granularityMaps = new HashMap<String, GranularityMap>();
+        Map<String, GranularityMap> granularityMaps = new HashMap<>();
         granularityRelationConfigs.forEach((featureType, granularityRelationConfig) -> {
             SpatialGranularityRelationMap spatialMap =
                     this.granularityRelationMapper.buildSpatialGranularityMap(granularityRelationConfig);

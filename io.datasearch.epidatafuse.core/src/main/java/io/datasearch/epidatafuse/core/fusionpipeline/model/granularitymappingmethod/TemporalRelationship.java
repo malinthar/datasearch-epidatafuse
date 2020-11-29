@@ -17,7 +17,6 @@ public class TemporalRelationship {
     private static Table<String, String, Integer> relationshipTable = HashBasedTable.create();
 
     static {
-
         relationshipTable.put("day", "hour", 24);
         relationshipTable.put("week", "day", 168);
         relationshipTable.put("month", "day", 720);
@@ -33,7 +32,6 @@ public class TemporalRelationship {
         } else {
             value = 0;
         }
-
         return value;
     }
 }
