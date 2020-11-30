@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * nearest mapping method
@@ -17,6 +19,17 @@ import java.util.ArrayList;
 
 public class NearestMapper {
     private static final Logger logger = LoggerFactory.getLogger(NearestMapper.class);
+    public static final String MAPPER_NAME = "Nearest";
+    public static final String ARG_NEIGHBORS = "neighbors";
+    public static final String ARG_MAX_DISTANCE = "maxDistance";
+    private static final Integer DEFAULT_NEIGHBORS = 1;
+    private static final Integer DEFAULT_MAX_DISTANCE = 0;
+    private static final Map<String, Object> ARGUMENTS = new HashMap<>();
+
+    static {
+        ARGUMENTS.put(ARG_NEIGHBORS, DEFAULT_NEIGHBORS);
+        ARGUMENTS.put(ARG_MAX_DISTANCE, DEFAULT_MAX_DISTANCE);
+    }
 
     public static SpatialGranularityRelationMap buildNearestMap(SimpleFeatureCollection targetGranuleSet,
                                                                 SimpleFeatureCollection baseGranuleSet, int neighbors,
@@ -64,5 +77,9 @@ public class NearestMapper {
         } finally {
             featureIt.close();
         }
+    }
+
+    public static Map<String, Object> getArguments() {
+        return ARGUMENTS;
     }
 }

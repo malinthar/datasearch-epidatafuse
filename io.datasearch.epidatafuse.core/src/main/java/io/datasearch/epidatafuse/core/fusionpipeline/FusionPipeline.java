@@ -62,9 +62,11 @@ public class FusionPipeline {
     }
 
     public void addFeature(
-            SimpleFeatureTypeSchema schema, GranularityRelationConfig granularityRelationConfig) {
+            SimpleFeatureTypeSchema schema, GranularityRelationConfig granularityRelationConfig,
+            AggregationConfig aggregationConfig) {
         this.pipelineDataStore.addFeatureSchema(schema);
         this.granularityRelationConfigs.put(schema.getSimpleFeatureTypeName(), granularityRelationConfig);
+        this.aggregationConfigs.put(schema.getSimpleFeatureTypeName(), aggregationConfig);
     }
 
     public void addGranularity(SimpleFeatureTypeSchema schema) {

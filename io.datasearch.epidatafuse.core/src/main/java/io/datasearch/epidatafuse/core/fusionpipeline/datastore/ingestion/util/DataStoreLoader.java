@@ -1,6 +1,6 @@
 package io.datasearch.epidatafuse.core.fusionpipeline.datastore.ingestion.util;
 
-import io.datasearch.epidatafuse.core.fusionpipeline.FusionPipeLineFactory;
+import io.datasearch.epidatafuse.core.fusionpipeline.FusionPipeLineController;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.geotools.data.DataAccessFactory;
@@ -19,7 +19,7 @@ public class DataStoreLoader {
     //Get DataStoreAccess parameters info
     private static final DataAccessFactory.Param[] parameters =
             new HBaseDataStoreFactory().getParametersInfo();
-    private static final Logger logger = LoggerFactory.getLogger(FusionPipeLineFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(FusionPipeLineController.class);
 
     //todo: use  a context , rename to createDataStore
     public static DataStore findDataStore(String[] args) {

@@ -125,6 +125,7 @@ public class SimpleFeatureTransformer {
             }
 
         }
+        writer.close();
         return counter;
     }
 
@@ -138,10 +139,10 @@ public class SimpleFeatureTransformer {
             for (Map<String, String> attribute : schema.getAttributes()) {
                 String attributeName = attribute.get(ATTRIBUTE_NAME_KEY);
                 String attributeType = attribute.get(ATTRIBUTE_TYPE_KEY);
-                int columnIndex = Integer.parseInt(transformations.get(attributeName));
-                String attributeValue = record.get(columnIndex);
+                int transformationIndex = Integer.parseInt(transformations.get(attributeName));
+                String attributeValue = record.get(transformationIndex);
                 Object value = AttributeUtil.convert(attributeValue, attributeType);
-                next.setAttribute(attribute.get(ATTRIBUTE_NAME_KEY), value);
+                next.setAttribute(attributeName, value);
             }
             writer.write();
             counter++;

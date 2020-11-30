@@ -16,21 +16,30 @@ granularity_config:
   target_temporal_granularity: "week"
   granularity_mapping:
     spatial_mapping_method:
-      granule_mapping:
         method_name: "Nearest"
         mapping_arguments:
           - argument_name: "neighbors"
             argument_valule: "3"
           - argument_name: "maxDistance"
             argument_value: "100000"
-      granule_aggregation:
-
     temporal_mapping_method:
-      granule_mapping:
-        method_name: "Nearest"
+        method_name: "default"
         mapping_arguments:
-          - argument_name: "neighbors"
-            argument_valule: "3"
-          - argument_name: "maxDistance"
-            argument_value: "100000"
-        granule_aggregation:
+
+aggregation_config:
+  aggregated_attributes:
+    - "observedValue"
+  spatial_aggregation:
+    method_name: "InverseDistance"
+    aggregation_arguments:
+      - argument_name: "weight"
+        argument_valule: "2"
+  temporal_aggregation:
+    method_name: "mean"
+    aggregation_arguments:
+
+
+
+
+
+
