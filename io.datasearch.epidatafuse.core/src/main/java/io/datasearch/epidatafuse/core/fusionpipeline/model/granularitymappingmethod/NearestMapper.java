@@ -31,48 +31,61 @@ public class NearestMapper {
         ARGUMENTS.put(ARG_MAX_DISTANCE, DEFAULT_MAX_DISTANCE);
     }
 
+    /**
+     * For each target granule find the nearest base granules based on a reference point.
+     *
+     * @param targetGranuleSet set of target granules
+     * @param baseGranuleSet   set of base granules
+     * @param neighbors        maximum number of nearest neighbors
+     * @param maxDistance      maximum distance for a neighbor
+     * @return a map of target granule and base granules
+     */
     public static SpatialGranularityRelationMap buildNearestMap(SimpleFeatureCollection targetGranuleSet,
-                                                                SimpleFeatureCollection baseGranuleSet, int neighbors,
+                                                                SimpleFeatureCollection baseGranuleSet,
+                                                                int neighbors,
                                                                 double maxDistance) {
         SpatialGranularityRelationMap spatialMap = new SpatialGranularityRelationMap();
         SimpleFeatureIterator featureIt = targetGranuleSet.features();
-
         try {
             while (featureIt.hasNext()) {
                 SimpleFeature targetPoint = featureIt.next();
-                ArrayList<String> nearestNeighbors = getNearestPoints(targetPoint, baseGranuleSet, neighbors,
-                        maxDistance);
-
-                spatialMap.addPoint(targetPoint.getID(), nearestNeighbors);
+                ArrayList<String> nearestNeighbors =
+                        getNearestPoints(targetPoint, baseGranuleSet, neighbors, maxDistance);
+                spatialMap.addTargetToBasesMapping(targetPoint.getID(), nearestNeighbors);
                 String msg = targetPoint.getID() + nearestNeighbors.toString();
                 logger.info(msg);
             }
         } finally {
             featureIt.close();
         }
-
         return spatialMap;
     }
 
+    /**
+     * Given a reference point returns the nearest neighbors.
+     *
+     * @param targetPoint
+     * @param pointList
+     * @param neighbors
+     * @param maxDistance
+     * @return
+     */
     private static ArrayList<String> getNearestPoints(
             SimpleFeature targetPoint, SimpleFeatureCollection pointList, int neighbors, Double maxDistance) {
 
         ArrayList<String> nearestNeighbors = new ArrayList<>();
-
+//        if(targetPoint.getDefaultGeometryProperty().getType() )
         SimpleFeatureCollection targetPointCollection = DataUtilities.collection(targetPoint);
-
         KNearestNeighborSearchProcess kNNProcess = new KNearestNeighborSearchProcess();
         SimpleFeatureCollection neighborPoints = kNNProcess.execute(targetPointCollection, pointList,
                 neighbors, 50000.0, maxDistance);
         SimpleFeatureIterator featureIt = neighborPoints.features();
-
         try {
             while (featureIt.hasNext()) {
                 SimpleFeature sf = featureIt.next();
                 //logger.info(featureID + " : " + sf.getID());
                 nearestNeighbors.add(sf.getID());
             }
-
             return nearestNeighbors;
         } finally {
             featureIt.close();

@@ -25,7 +25,7 @@ public class FusionPipeLineController {
 
     public static void createFusionPipeLine(String pipelineName) {
         try {
-            DataStore dataStore = createDataStore(pipelineName + "7");
+            DataStore dataStore = createDataStore(pipelineName + "8");
             Map<String, SimpleFeatureTypeSchema> featureSFTSchemas = new HashMap<>();
             Map<String, SimpleFeatureTypeSchema> granularitySFTSchemas = new HashMap<>();
             Map<String, GranularityRelationConfig> granularityRelationConfigs = new HashMap<>();

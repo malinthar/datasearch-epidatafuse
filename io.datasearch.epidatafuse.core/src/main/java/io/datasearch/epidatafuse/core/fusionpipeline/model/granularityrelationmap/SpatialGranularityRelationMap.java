@@ -2,28 +2,29 @@ package io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationm
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * spatial map class
  */
 public class SpatialGranularityRelationMap {
 
-    private HashMap<String, ArrayList<String>> mappings;
+    private Map<String, ArrayList<String>> targetToBasesMap;
 
     public SpatialGranularityRelationMap() {
-        this.mappings = new HashMap<String, ArrayList<String>>();
+        this.targetToBasesMap = new HashMap<>();
     }
 
-    public void addPoint(String targetGranuleId, ArrayList<String> baseGranuleIdSet) {
-        this.mappings.put(targetGranuleId, baseGranuleIdSet);
+    public void addTargetToBasesMapping(String targetGranuleId, ArrayList<String> baseGranuleIdSet) {
+        this.targetToBasesMap.put(targetGranuleId, baseGranuleIdSet);
     }
 
-    public ArrayList<String> getBasePointIds(String targetGranuleId) {
-        ArrayList<String> basePoints = this.mappings.get(targetGranuleId);
-        return basePoints;
+    public ArrayList<String> getBaseGranuleIds(String targetGranuleId) {
+        ArrayList<String> baseGranules = this.targetToBasesMap.get(targetGranuleId);
+        return baseGranules;
     }
 
-    public HashMap<String, ArrayList<String>> getMap() {
-        return this.mappings;
+    public Map<String, ArrayList<String>> getMap() {
+        return this.targetToBasesMap;
     }
 }
