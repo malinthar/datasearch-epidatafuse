@@ -182,7 +182,7 @@ public class GranularityConvertor {
             String targetGranule = feature.getID();
 
             //corresponding granule ids for the target according to granularityMap
-            ArrayList<String> baseGranuleIds = spatialGranularityMap.getBasePointIds(targetGranule);
+            ArrayList<String> baseGranuleIds = spatialGranularityMap.getBaseGranuleIds(targetGranule);
 
             //get the observed or recorded values of each corresponding base granule
             HashMap<String, Double> valueSet = this.getAggregatingAttributes(baseGranuleIds, featureSet, aggregateOn);

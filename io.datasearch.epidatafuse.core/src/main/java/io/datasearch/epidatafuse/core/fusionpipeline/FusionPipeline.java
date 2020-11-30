@@ -115,6 +115,7 @@ public class FusionPipeline {
 
     public PipelineInfo getInfo() {
         return new PipelineInfo(this.pipelineName, this.pipelineDataStore.getSchemas(),
-                this.pipelineDataStore.getGranularitySchemas(), granularityRelationConfigs, aggregationConfigs);
+                this.pipelineDataStore.getGranularitySchemas(),
+                this.granularityRelationConfigs, this.aggregationConfigs);
     }
 }
