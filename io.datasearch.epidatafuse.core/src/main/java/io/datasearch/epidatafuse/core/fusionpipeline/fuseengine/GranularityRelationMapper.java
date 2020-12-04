@@ -4,6 +4,7 @@ import io.datasearch.epidatafuse.core.fusionpipeline.datastore.query.QueryManage
 import io.datasearch.epidatafuse.core.fusionpipeline.model.configuration.GranularityRelationConfig;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmethod.ContainMapper;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmethod.NearestMapper;
+import io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmethod.WithinRadiusMapper;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.SpatialGranularityRelationMap;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.TemporalGranularityMap;
 import org.geotools.data.DataStore;
@@ -58,7 +59,9 @@ public class GranularityRelationMapper {
             case ContainMapper.MAPPER_NAME:
                 spatialMap = ContainMapper.buildContainMap(targetSpatialGranules, baseSpatialGranuleSet);
                 break;
-
+            case WithinRadiusMapper.MAPPER_NAME:
+                spatialMap = WithinRadiusMapper.buildWithinRadiusMap(targetSpatialGranules, baseSpatialGranuleSet);
+                break;
             default:
                 spatialMap = new SpatialGranularityRelationMap();
         }
