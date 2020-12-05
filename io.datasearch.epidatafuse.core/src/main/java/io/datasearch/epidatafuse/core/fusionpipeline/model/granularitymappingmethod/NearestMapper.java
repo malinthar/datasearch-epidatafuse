@@ -30,7 +30,7 @@ public class NearestMapper {
     public static final String ARG_NEIGHBORS = "neighbors";
     public static final String ARG_MAX_DISTANCE = "maxDistance";
     private static final Integer DEFAULT_NEIGHBORS = 1;
-    private static final Integer DEFAULT_MAX_DISTANCE = 0;
+    private static final Double DEFAULT_MAX_DISTANCE = 10.0;
     private static final Map<String, Object> ARGUMENTS = new HashMap<>();
 
     static {
@@ -38,22 +38,37 @@ public class NearestMapper {
         ARGUMENTS.put(ARG_MAX_DISTANCE, DEFAULT_MAX_DISTANCE);
     }
 
+
     /**
      * For each target granule find the nearest base granules based on a reference point.
      *
      * @param targetGranuleSet set of target granules
      * @param baseGranuleSet   set of base granules
-     * @param neighbors        maximum number of nearest neighbors
-     * @param maxDistance      maximum distance for a neighbor
-     * @return a map of target granule and base granules
+     * @param mappingArguments custom arguments for mapping
+     * @param baseUUID         Identifier for base granules
+     * @param targetUUID       Identifier for target granules
+     * @return
      */
     public static SpatialGranularityRelationMap buildNearestMap(SimpleFeatureCollection targetGranuleSet,
                                                                 SimpleFeatureCollection baseGranuleSet,
-                                                                int neighbors,
-                                                                double maxDistance) {
+                                                                Map<String, Object> mappingArguments,
+                                                                String baseUUID,
+                                                                String targetUUID) {
+        int neighbors;
+        double maxDistance;
+        if (mappingArguments.get(ARG_NEIGHBORS) != null) {
+            neighbors = (Integer) mappingArguments.get(ARG_NEIGHBORS);
+        } else {
+            neighbors = DEFAULT_NEIGHBORS;
+        }
+        if (mappingArguments.get(ARG_MAX_DISTANCE) != null) {
+            maxDistance = (Double) mappingArguments.get(ARG_MAX_DISTANCE);
+        } else {
+            maxDistance = DEFAULT_MAX_DISTANCE;
+        }
 
-        SimpleFeatureCollection targetGranuleSetAsPoints = convertGeometryToPoints(targetGranuleSet);
-        SimpleFeatureCollection baseGranuleSetAsPoints = convertGeometryToPoints(baseGranuleSet);
+        SimpleFeatureCollection targetGranuleSetAsPoints = convertGeometryToPoints(targetGranuleSet, targetUUID);
+        SimpleFeatureCollection baseGranuleSetAsPoints = convertGeometryToPoints(baseGranuleSet, baseUUID);
 
         SpatialGranularityRelationMap spatialMap = new SpatialGranularityRelationMap();
 //        SimpleFeatureIterator featureIt = targetGranuleSet.features();
@@ -63,10 +78,9 @@ public class NearestMapper {
             while (featureIt.hasNext()) {
                 SimpleFeature targetPoint = featureIt.next();
                 ArrayList<String> nearestNeighbors =
-                        getNearestPoints(targetPoint, baseGranuleSetAsPoints, neighbors, maxDistance);
-                spatialMap.addTargetToBasesMapping(targetPoint.getID(), nearestNeighbors);
-                String msg =
-                        targetPoint.getID() + " " + targetPoint.getAttribute(1).toString() + nearestNeighbors.size();
+                        getNearestPoints(targetPoint, baseGranuleSetAsPoints, neighbors, maxDistance, baseUUID);
+                spatialMap.addTargetToBasesMapping((String) targetPoint.getAttribute(targetUUID), nearestNeighbors);
+                String msg = targetPoint.getAttribute(targetUUID) + " " + nearestNeighbors.size();
                 logger.info(msg);
             }
         } finally {
@@ -85,7 +99,8 @@ public class NearestMapper {
      * @return
      */
     private static ArrayList<String> getNearestPoints(
-            SimpleFeature targetPoint, SimpleFeatureCollection pointList, int neighbors, Double maxDistance) {
+            SimpleFeature targetPoint, SimpleFeatureCollection pointList,
+            int neighbors, Double maxDistance, String baseUUID) {
 
         ArrayList<String> nearestNeighbors = new ArrayList<>();
 //        if(targetPoint.getDefaultGeometryProperty().getType() )
@@ -98,7 +113,7 @@ public class NearestMapper {
             while (featureIt.hasNext()) {
                 SimpleFeature sf = featureIt.next();
                 //logger.info(featureID + " : " + sf.getID());
-                nearestNeighbors.add(sf.getID());
+                nearestNeighbors.add((String) sf.getAttribute(baseUUID));
             }
             return nearestNeighbors;
         } finally {
@@ -110,12 +125,13 @@ public class NearestMapper {
         return ARGUMENTS;
     }
 
-    private static SimpleFeatureCollection convertGeometryToPoints(SimpleFeatureCollection geomCollection) {
+    private static SimpleFeatureCollection convertGeometryToPoints(SimpleFeatureCollection geomCollection,
+                                                                   String uuid) {
         ArrayList<SimpleFeature> pointCollectionArray = new ArrayList<SimpleFeature>();
         SimpleFeatureIterator featureIt = geomCollection.features();
 
         StringBuilder tempFeatureAttributes = new StringBuilder();
-        tempFeatureAttributes.append(AttributeUtil.getAttribute("id", "String"));
+        tempFeatureAttributes.append(AttributeUtil.getAttribute(uuid, "String"));
         tempFeatureAttributes.append(",");
         tempFeatureAttributes.append(AttributeUtil.getAttribute("geom", "Point"));
 
@@ -128,13 +144,10 @@ public class NearestMapper {
             SimpleFeature next = featureIt.next();
             Geometry geom = (Geometry) next.getDefaultGeometry();
             Point centroidPoint = geom.getCentroid();
-            String featureID = next.getID();
-
+            String featureID = (String) next.getAttribute(uuid);
             builder.add(featureID);
             builder.add(centroidPoint);
-
             SimpleFeature temp = builder.buildFeature(featureID);
-
             pointCollectionArray.add(temp);
         }
         SimpleFeatureCollection pointCollection = DataUtilities.collection(pointCollectionArray);

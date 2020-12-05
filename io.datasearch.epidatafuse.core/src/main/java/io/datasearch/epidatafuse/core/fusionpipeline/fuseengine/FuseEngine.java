@@ -1,13 +1,12 @@
 package io.datasearch.epidatafuse.core.fusionpipeline.fuseengine;
 
+import io.datasearch.epidatafuse.core.fusionpipeline.datastore.PipelineDataStore;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.configuration.AggregationConfig;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.configuration.GranularityRelationConfig;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.datamodel.SpatioTemporallyAggregatedCollection;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.GranularityMap;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.SpatialGranularityRelationMap;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.TemporalGranularityMap;
-
-import org.geotools.data.DataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +28,7 @@ public class FuseEngine {
     //granularityRelationMapper
     private GranularityRelationMapper granularityRelationMapper;
 
-    private DataStore dataStore;
+    private PipelineDataStore dataStore;
 
     private Scheduler scheduler;
 
@@ -40,11 +39,11 @@ public class FuseEngine {
 
     private Timer timer = new Timer();
 
-    public FuseEngine(DataStore dataStore, Map<String, GranularityRelationConfig> granularityRelationConfigs,
+    public FuseEngine(PipelineDataStore dataStore, Map<String, GranularityRelationConfig> granularityRelationConfigs,
                       Map<String, AggregationConfig> aggregationConfigs) {
         this.dataStore = dataStore;
         this.granularityRelationMapper = new GranularityRelationMapper(this.dataStore);
-        this.granularityConvertor = new GranularityConvertor(this.dataStore);
+        this.granularityConvertor = new GranularityConvertor(this.dataStore.getDataStore());
         this.granularityRelationConfigs = granularityRelationConfigs;
         this.aggregationConfigs = aggregationConfigs;
         this.dataFrameBuilder = new DataFrameBuilder();

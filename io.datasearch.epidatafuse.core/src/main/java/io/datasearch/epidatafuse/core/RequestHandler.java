@@ -215,8 +215,7 @@ public class RequestHandler {
     @RequestMapping("/granularityMap")
     public String granularityMap() {
         try {
-            String pipelineName = "dengue-dec5";
-            logger.info("h01");
+            String pipelineName = "dengue";
             ServerContext.getPipeline(pipelineName).mapGranularityRelations();
             return "Success mapping";
         } catch (Exception e) {

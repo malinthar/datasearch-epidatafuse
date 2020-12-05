@@ -1,5 +1,6 @@
 package io.datasearch.epidatafuse.core.fusionpipeline.fuseengine;
 
+import io.datasearch.epidatafuse.core.fusionpipeline.datastore.PipelineDataStore;
 import io.datasearch.epidatafuse.core.fusionpipeline.datastore.query.QueryManager;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.configuration.GranularityRelationConfig;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmethod.ContainMapper;
@@ -7,7 +8,6 @@ import io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmet
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmethod.WithinRadiusMapper;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.SpatialGranularityRelationMap;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.TemporalGranularityMap;
-import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class GranularityRelationMapper {
 
-    private DataStore dataStore;
+    private PipelineDataStore dataStore;
     private QueryManager queryManager;
     private static final Logger logger = LoggerFactory.getLogger(GranularityRelationMapper.class);
 
@@ -34,7 +34,7 @@ public class GranularityRelationMapper {
 
     //private SimpleFeatureCollection targetSpatialGranules;
 
-    public GranularityRelationMapper(DataStore dataStore) {
+    public GranularityRelationMapper(PipelineDataStore dataStore) {
         this.dataStore = dataStore;
         this.queryManager = new QueryManager();
     }
@@ -45,15 +45,15 @@ public class GranularityRelationMapper {
         String spatialGranularity = config.getSpatialGranularity();
         String relationMappingMethod = config.getSpatialRelationMappingMethod();
         String targetSpatialGranularity = config.getTargetSpatialGranularity();
+        String targetUUID = this.dataStore.getGranularitySchema(targetSpatialGranularity).getUuidAttributeName();
+        String baseUUID = this.dataStore.getGranularitySchema(spatialGranularity).getUuidAttributeName();
         SimpleFeatureCollection targetSpatialGranules = this.getGranuleSet(targetSpatialGranularity);
         SimpleFeatureCollection baseSpatialGranuleSet = this.getGranuleSet(spatialGranularity);
 
         switch (relationMappingMethod) {
             case NearestMapper.MAPPER_NAME:
-                int neighbors = Integer.parseInt(config.getMappingAttribute(NearestMapper.ARG_NEIGHBORS));
-                double maxDistance = Double.parseDouble(config.getMappingAttribute(NearestMapper.ARG_MAX_DISTANCE));
                 spatialMap = NearestMapper.buildNearestMap(targetSpatialGranules,
-                        baseSpatialGranuleSet, neighbors, maxDistance);
+                        baseSpatialGranuleSet, config.getSpatialMappingArguments(), baseUUID, targetUUID);
                 break;
 
             case ContainMapper.MAPPER_NAME:
@@ -72,7 +72,7 @@ public class GranularityRelationMapper {
         try {
             Query query = new Query(granularityName);
             FeatureReader<SimpleFeatureType, SimpleFeature> reader =
-                    dataStore.getFeatureReader(query, Transaction.AUTO_COMMIT);
+                    dataStore.getDataStore().getFeatureReader(query, Transaction.AUTO_COMMIT);
             ArrayList<SimpleFeature> featureList = new ArrayList<>();
             while (reader.hasNext()) {
                 SimpleFeature feature = reader.next();

@@ -18,4 +18,8 @@ public class MapperUtil {
     public static Map<String, Map<String, Object>> getMAPPERS() {
         return MAPPERS;
     }
+
+    public static Map<String, Object> getMapper(String mapperName) {
+        return MAPPERS.get(mapperName);
+    }
 }

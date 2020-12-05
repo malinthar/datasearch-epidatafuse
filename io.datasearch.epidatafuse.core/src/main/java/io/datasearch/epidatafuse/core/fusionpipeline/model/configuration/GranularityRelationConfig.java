@@ -1,5 +1,7 @@
 package io.datasearch.epidatafuse.core.fusionpipeline.model.configuration;
 
+import io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmethod.MapperUtil;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,13 +30,13 @@ public class GranularityRelationConfig {
     private String targetTemporalGranularity;
     private String spatialRelationMappingMethod;
     private String temporalRelationMappingMethod;
-    private Map<String, String> customSpatialMappingAttributes;
-    private Map<String, String> customTemporalMappingAttributes;
+    private Map<String, Object> spatialMappingArguments;
+    private Map<String, Object> temporalMappingArguments;
 
     public GranularityRelationConfig(String featureTypeName, Map<String, Object> granularityConfig) {
-        this.customSpatialMappingAttributes = new HashMap<>();
-        customSpatialMappingAttributes = new HashMap<>();
-        customTemporalMappingAttributes = new HashMap<>();
+        this.spatialMappingArguments = new HashMap<>();
+        spatialMappingArguments = new HashMap<>();
+        temporalMappingArguments = new HashMap<>();
         this.featureTypeName = featureTypeName;
         this.spatialGranularity = (String) granularityConfig.get(SPATIAL_GRANULARITY_KEY);
         this.temporalGranularity = (String) granularityConfig.get(TEMPORAL_GRANULARITY_KEY);
@@ -52,7 +54,7 @@ public class GranularityRelationConfig {
                             (List<Map<String, String>>) spatialMap.get(MAPPING_ARGUMENTS_KEY);
                     if (spatialArguments != null) {
                         for (Map<String, String> argument : spatialArguments) {
-                            customSpatialMappingAttributes.put(argument.get(MAPPING_ARGUMENT_NAME_KEY),
+                            spatialMappingArguments.put(argument.get(MAPPING_ARGUMENT_NAME_KEY),
                                     argument.get(MAPPING_ARGUMENT_VALUE_KEY));
                         }
                     }
@@ -63,7 +65,7 @@ public class GranularityRelationConfig {
                             (List<Map<String, String>>) temporalMap.get(MAPPING_ARGUMENTS_KEY);
                     if (temporalArguments != null) {
                         for (Map<String, String> argument : temporalArguments) {
-                            customTemporalMappingAttributes.put(argument.get(MAPPING_ARGUMENT_NAME_KEY),
+                            temporalMappingArguments.put(argument.get(MAPPING_ARGUMENT_NAME_KEY),
                                     argument.get(MAPPING_ARGUMENT_VALUE_KEY));
                         }
                     }
@@ -101,7 +103,24 @@ public class GranularityRelationConfig {
     }
 
     public String getMappingAttribute(String attrName) {
-        return customSpatialMappingAttributes.get(attrName);
+        return (String) spatialMappingArguments.get(attrName);
     }
 
+    public Map<String, Object> getSpatialMappingArguments() {
+        if (spatialMappingArguments.size() == 0) {
+            return MapperUtil.getMapper(this.spatialRelationMappingMethod);
+
+        } else {
+            return spatialMappingArguments;
+        }
+
+    }
+
+    public Map<String, Object> getTemporalMappingArguments() {
+        if (temporalMappingArguments.size() == 0) {
+            return MapperUtil.getMapper(this.temporalRelationMappingMethod);
+        } else {
+            return temporalMappingArguments;
+        }
+    }
 }
