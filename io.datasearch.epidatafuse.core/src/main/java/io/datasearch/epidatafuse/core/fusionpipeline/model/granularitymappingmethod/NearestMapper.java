@@ -1,11 +1,18 @@
 package io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmethod;
 
+import io.datasearch.epidatafuse.core.fusionpipeline.datastore.schema.AttributeUtil;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.SpatialGranularityRelationMap;
+
 import org.geotools.data.DataUtilities;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.locationtech.geomesa.process.query.KNearestNeighborSearchProcess;
+import org.locationtech.geomesa.utils.interop.SimpleFeatureTypes;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,15 +51,22 @@ public class NearestMapper {
                                                                 SimpleFeatureCollection baseGranuleSet,
                                                                 int neighbors,
                                                                 double maxDistance) {
+
+        SimpleFeatureCollection targetGranuleSetAsPoints = convertGeometryToPoints(targetGranuleSet);
+        SimpleFeatureCollection baseGranuleSetAsPoints = convertGeometryToPoints(baseGranuleSet);
+
         SpatialGranularityRelationMap spatialMap = new SpatialGranularityRelationMap();
-        SimpleFeatureIterator featureIt = targetGranuleSet.features();
+//        SimpleFeatureIterator featureIt = targetGranuleSet.features();
+        SimpleFeatureIterator featureIt = targetGranuleSetAsPoints.features();
+
         try {
             while (featureIt.hasNext()) {
                 SimpleFeature targetPoint = featureIt.next();
                 ArrayList<String> nearestNeighbors =
-                        getNearestPoints(targetPoint, baseGranuleSet, neighbors, maxDistance);
+                        getNearestPoints(targetPoint, baseGranuleSetAsPoints, neighbors, maxDistance);
                 spatialMap.addTargetToBasesMapping(targetPoint.getID(), nearestNeighbors);
-                String msg = targetPoint.getID() + nearestNeighbors.toString();
+                String msg =
+                        targetPoint.getID() + " " + targetPoint.getAttribute(1).toString() + nearestNeighbors.size();
                 logger.info(msg);
             }
         } finally {
@@ -94,5 +108,36 @@ public class NearestMapper {
 
     public static Map<String, Object> getArguments() {
         return ARGUMENTS;
+    }
+
+    private static SimpleFeatureCollection convertGeometryToPoints(SimpleFeatureCollection geomCollection) {
+        ArrayList<SimpleFeature> pointCollectionArray = new ArrayList<SimpleFeature>();
+        SimpleFeatureIterator featureIt = geomCollection.features();
+
+        StringBuilder tempFeatureAttributes = new StringBuilder();
+        tempFeatureAttributes.append(AttributeUtil.getAttribute("id", "String"));
+        tempFeatureAttributes.append(",");
+        tempFeatureAttributes.append(AttributeUtil.getAttribute("geom", "Point"));
+
+        SimpleFeatureType tempSimpleFeatureType = SimpleFeatureTypes.createType("temptype",
+                tempFeatureAttributes.toString());
+
+        SimpleFeatureBuilder builder = new SimpleFeatureBuilder(tempSimpleFeatureType);
+
+        while (featureIt.hasNext()) {
+            SimpleFeature next = featureIt.next();
+            Geometry geom = (Geometry) next.getDefaultGeometry();
+            Point centroidPoint = geom.getCentroid();
+            String featureID = next.getID();
+
+            builder.add(featureID);
+            builder.add(centroidPoint);
+
+            SimpleFeature temp = builder.buildFeature(featureID);
+
+            pointCollectionArray.add(temp);
+        }
+        SimpleFeatureCollection pointCollection = DataUtilities.collection(pointCollectionArray);
+        return pointCollection;
     }
 }

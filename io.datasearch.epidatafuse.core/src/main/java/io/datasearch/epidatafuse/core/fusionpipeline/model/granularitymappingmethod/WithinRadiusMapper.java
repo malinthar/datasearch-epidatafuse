@@ -18,7 +18,7 @@ public class WithinRadiusMapper {
     private static final Map<String, Object> ARGUMENTS = new HashMap<>();
     public static final String ARG_RADIUS = "radius";
     public static final String ARG_MAX_NEIGHBORS = "maxDistance";
-    private static final Integer DEFAULT_RADIUS = 1000;
+    private static final Integer DEFAULT_RADIUS = 1;
     private static final Integer DEFAULT_MAX_NEIGHBORS = 0;
 
     static {

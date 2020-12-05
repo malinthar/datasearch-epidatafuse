@@ -8,6 +8,7 @@ import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationma
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.SpatialGranularityRelationMap;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.TemporalGranularityMap;
 
+
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureReader;
@@ -15,6 +16,7 @@ import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.type.AttributeTypeImpl;
 import org.geotools.filter.text.cql2.CQL;
@@ -22,6 +24,8 @@ import org.locationtech.jts.geom.Geometry;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
+import org.opengis.filter.identity.FeatureId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +36,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * For granularity conversion.
@@ -421,12 +427,38 @@ public class GranularityConvertor {
                                                             String indexCol, String distinctID) {
         ArrayList<SimpleFeature> featureList = new ArrayList<SimpleFeature>();
         try {
-            Filter filter = CQL.toFilter(
+//            Filter filterr = CQL.toFilter(
+//                    "id = " + distinctID +
+//                            "' AND dtg DURING " + startingDate + ":00.000/" + endDate + ":00.000");
+//            Query queryyy = new Query(typeName,filterr);
+//
+//            FeatureReader<SimpleFeatureType, SimpleFeature> reader =
+//                    this.dataStore.getFeatureReader(queryyy, Transaction.AUTO_COMMIT);
+//
+//            while (reader.hasNext()) {
+//                SimpleFeature feature = (SimpleFeature) reader.next();
+//                int a = 2;
+//            }
+
+//            Filter filter = CQL.toFilter(
+//                    indexCol + "='" + distinctID +
+//                            "' AND dtg DURING " + startingDate + ":00.000/" + endDate + ":00.000");
+
+//            Filter filter = CQL.toFilter(
+//                    "id='" + distinctID +
+//                            "' AND dtg DURING " + startingDate + ":00.000/" + endDate + ":00.000");
+
+            FilterFactory ff = CommonFactoryFinder.getFilterFactory();
+            Set<FeatureId> selection = new HashSet<>();
+            selection.add(ff.featureId(distinctID));
+//            Filter filterS = ff.id(selection);
+
+            Filter filter2 = CQL.toFilter(
                     indexCol + "='" + distinctID +
                             "' AND dtg DURING " + startingDate + ":00.000/" + endDate + ":00.000");
 
 //            Filter filter = CQL.toFilter("dtg DURING " + startingDate + ":00.000/" + endDate + ":00.000");
-            Query query = new Query(typeName, filter);
+            Query query = new Query(typeName, filter2);
             //query.getHints().put(QueryHints.EXACT_COUNT(), Boolean.TRUE);
 
             FeatureReader<SimpleFeatureType, SimpleFeature> reader =
