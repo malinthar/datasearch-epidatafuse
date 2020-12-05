@@ -215,7 +215,7 @@ public class RequestHandler {
     @RequestMapping("/granularityMap")
     public String granularityMap() {
         try {
-            String pipelineName = "dengue";
+            String pipelineName = "dengue-dec5";
             logger.info("h01");
             ServerContext.getPipeline(pipelineName).mapGranularityRelations();
             return "Success mapping";
@@ -228,9 +228,10 @@ public class RequestHandler {
     @RequestMapping("/convert")
     public String granularityConvert() {
         try {
-            String pipelineName = "dengue";
+            String pipelineName = "dengue-dec5";
             String featureType = "precipitation";
             //dengDIPipeLineMap.get(pipelineName).convertIntoRequiredGranule(featureType);
+
             ServerContext.getPipeline(pipelineName).aggregate();
             return "Success conversion";
         } catch (Exception e) {

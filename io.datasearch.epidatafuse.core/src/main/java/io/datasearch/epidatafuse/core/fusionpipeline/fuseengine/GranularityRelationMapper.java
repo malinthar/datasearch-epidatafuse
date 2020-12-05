@@ -88,15 +88,22 @@ public class GranularityRelationMapper {
 
     // todo:to implement
     public TemporalGranularityMap buildTemporalMap(GranularityRelationConfig granularityRelationConfig) {
-        logger.info("temporal " + granularityRelationConfig.getFeatureTypeName());
 
-        String baseTemporalGranularity = granularityRelationConfig.getTemporalGranularity();
-        String targetTemporalGranularity = granularityRelationConfig.getTargetTemporalGranularity();
-        String featureTypeName = granularityRelationConfig.getFeatureTypeName();
-        String temporalRelationMappingMethod = granularityRelationConfig.getTemporalRelationMappingMethod();
+        try {
+            logger.info("temporal " + granularityRelationConfig.getFeatureTypeName());
 
-        return new TemporalGranularityMap(
-                baseTemporalGranularity, targetTemporalGranularity, featureTypeName,
-                temporalRelationMappingMethod);
+            String baseTemporalGranularity = granularityRelationConfig.getTemporalGranularity();
+            String targetTemporalGranularity = granularityRelationConfig.getTargetTemporalGranularity();
+            String featureTypeName = granularityRelationConfig.getFeatureTypeName();
+            String temporalRelationMappingMethod = granularityRelationConfig.getTemporalRelationMappingMethod();
+
+            return new TemporalGranularityMap(
+                    baseTemporalGranularity, targetTemporalGranularity, featureTypeName,
+                    temporalRelationMappingMethod);
+        } catch (Exception e) {
+            return new TemporalGranularityMap(
+                    "day", "week", "test",
+                    "test");
+        }
     }
 }

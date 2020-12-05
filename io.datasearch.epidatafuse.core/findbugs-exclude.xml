@@ -117,5 +117,17 @@
         <Bug pattern="NP_UNWRITTEN_FIELD"/>
     </Match>
 
+    <Match>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.fuseengine.GranularityRelationMapper"/>
+        <Bug pattern="REC_CATCH_EXCEPTION"/>
+    </Match>
+
+    <Match>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.fuseengine.GranularityConvertor"/>
+        <Bug pattern="UC_USELESS_OBJECT"/>
+    </Match>
+
+
+
 
 </FindBugsFilter>
