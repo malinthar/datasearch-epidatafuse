@@ -17,6 +17,11 @@ public class PipelineInfo {
     private Map<String, List<Map<String, String>>> granularities;
     private Map<String, GranularityRelationConfig> granularityConfigs;
     private Map<String, AggregationConfig> aggregationConfigs;
+    private Map<String, String> granules = new HashMap<>();
+    private static final String MOH_KEY = "moh";
+    private static final String WEATHER_STATION_KEY = "weatherstation";
+    private static final String MOH_PATH = "./moh/shapefile/SL_MOH";
+    private static final String WEATHER_STATION_PATH = "./shapefile/sl_weatherstation";
 
     public PipelineInfo(String pipelineName, Map<String, SimpleFeatureTypeSchema> features,
                         Map<String, SimpleFeatureTypeSchema> granularities,
@@ -32,7 +37,13 @@ public class PipelineInfo {
         });
         granularities.entrySet().forEach(entry -> {
             this.granularities.put(entry.getKey(), entry.getValue().getAttributes());
+            if (MOH_KEY.equals(entry.getKey())) {
+                granules.put(entry.getKey(), MOH_PATH);
+            } else {
+                granules.put(entry.getKey(), WEATHER_STATION_PATH);
+            }
         });
+
     }
 
     public String getPipelineName() {
@@ -53,5 +64,9 @@ public class PipelineInfo {
 
     public Map<String, GranularityRelationConfig> getGranularityConfigs() {
         return granularityConfigs;
+    }
+
+    public Map<String, String> getGranules() {
+        return granules;
     }
 }

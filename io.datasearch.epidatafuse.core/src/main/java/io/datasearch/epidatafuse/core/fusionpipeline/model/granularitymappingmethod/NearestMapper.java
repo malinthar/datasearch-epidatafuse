@@ -29,8 +29,8 @@ public class NearestMapper {
     public static final String MAPPER_NAME = "Nearest";
     public static final String ARG_NEIGHBORS = "neighbors";
     public static final String ARG_MAX_DISTANCE = "maxDistance";
-    private static final Integer DEFAULT_NEIGHBORS = 1;
-    private static final Double DEFAULT_MAX_DISTANCE = 10.0;
+    private static final Integer DEFAULT_NEIGHBORS = 2;
+    private static final Double DEFAULT_MAX_DISTANCE = 10000.0;
     private static final Map<String, Object> ARGUMENTS = new HashMap<>();
 
     static {
