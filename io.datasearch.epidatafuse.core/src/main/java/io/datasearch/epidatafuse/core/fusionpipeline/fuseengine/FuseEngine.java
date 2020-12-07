@@ -43,7 +43,7 @@ public class FuseEngine {
                       Map<String, AggregationConfig> aggregationConfigs) {
         this.dataStore = dataStore;
         this.granularityRelationMapper = new GranularityRelationMapper(this.dataStore);
-        this.granularityConvertor = new GranularityConvertor(this.dataStore.getDataStore());
+        this.granularityConvertor = new GranularityConvertor(this.dataStore);
         this.granularityRelationConfigs = granularityRelationConfigs;
         this.aggregationConfigs = aggregationConfigs;
         this.dataFrameBuilder = new DataFrameBuilder();

@@ -57,12 +57,12 @@ public class NearestMapper {
         int neighbors;
         double maxDistance;
         if (mappingArguments.get(ARG_NEIGHBORS) != null) {
-            neighbors = (Integer) mappingArguments.get(ARG_NEIGHBORS);
+            neighbors = Integer.parseInt(mappingArguments.get(ARG_NEIGHBORS).toString());
         } else {
             neighbors = DEFAULT_NEIGHBORS;
         }
         if (mappingArguments.get(ARG_MAX_DISTANCE) != null) {
-            maxDistance = (Double) mappingArguments.get(ARG_MAX_DISTANCE);
+            maxDistance = Double.parseDouble(mappingArguments.get(ARG_MAX_DISTANCE).toString());
         } else {
             maxDistance = DEFAULT_MAX_DISTANCE;
         }

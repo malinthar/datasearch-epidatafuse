@@ -41,7 +41,7 @@ public class AggregationConfig {
             Map<String, Object> spatialAggregation =
                     (Map<String, Object>) aggregationConfig.get(SPATIAL_AGGREGATION_KEY);
             Map<String, Object> temporalAggregation =
-                    (Map<String, Object>) aggregationConfig.get(SPATIAL_AGGREGATION_KEY);
+                    (Map<String, Object>) aggregationConfig.get(TEMPORAL_AGGREGATION_KEY);
             if (spatialAggregation != null) {
                 this.spatialAggregationMethod = (String) spatialAggregation.get(METHOD_NAME_KEY);
                 List<Map<String, String>> args =
