@@ -227,7 +227,7 @@ public class RequestHandler {
     @RequestMapping("/convert")
     public String granularityConvert() {
         try {
-            String pipelineName = "dengue-dec5";
+            String pipelineName = "dengue";
             String featureType = "precipitation";
             //dengDIPipeLineMap.get(pipelineName).convertIntoRequiredGranule(featureType);
 

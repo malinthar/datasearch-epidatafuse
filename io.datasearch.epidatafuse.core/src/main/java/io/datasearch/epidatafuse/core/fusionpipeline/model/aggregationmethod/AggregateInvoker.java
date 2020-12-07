@@ -61,9 +61,12 @@ public class AggregateInvoker {
             Double value = (Double) pair.getValue();
 
             Double distance = distances.get(key);
-            Double weight = ((1.0 / distance) / inverseDistanceSum);
 
-            finalValue += value * weight;
+            if (distance != 0) {
+                Double weight = ((1.0 / distance) / inverseDistanceSum);
+
+                finalValue += value * weight;
+            }
         }
 
         return finalValue;

@@ -1,5 +1,6 @@
 package io.datasearch.epidatafuse.core.fusionpipeline.fuseengine;
 
+import io.datasearch.epidatafuse.core.fusionpipeline.datastore.PipelineDataStore;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.aggregationmethod.AggregateInvoker;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.configuration.AggregationConfig;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.datamodel.SpatioTemporallyAggregatedCollection;
@@ -46,10 +47,12 @@ import java.util.Set;
 public class GranularityConvertor {
     private static final Logger logger = LoggerFactory.getLogger(GranularityConvertor.class);
 
+    private PipelineDataStore pipelineDataStore;
     private DataStore dataStore;
 
-    public GranularityConvertor(DataStore dataStore) {
-        this.dataStore = dataStore;
+    public GranularityConvertor(PipelineDataStore pipelineDataStore) {
+        this.pipelineDataStore = pipelineDataStore;
+        this.dataStore = pipelineDataStore.getDataStore();
     }
 
     public SpatioTemporallyAggregatedCollection aggregate(GranularityMap granularityMap, AggregationConfig config)
@@ -114,7 +117,7 @@ public class GranularityConvertor {
         while (iterator.hasNext()) {
 
             SimpleFeature baseSpatialGranule = iterator.next();
-            String baseSpatialGranuleID = baseSpatialGranule.getID();
+            String baseSpatialGranuleID = baseSpatialGranule.getAttribute(indexCol).toString();
 
             ArrayList<SimpleFeature> featuresToAggregate =
                     this.getFeaturesBetweenDates(featureTypeName, startingTimestamp.toString(),
@@ -183,15 +186,23 @@ public class GranularityConvertor {
 
         String formatedDtgString = dtg;
 
+
+        String targetSpatialGranularity = granularityMap.getTargetSpatialGranularity();
+        String baseSpatialGranularity = granularityMap.getBaseSpatialGranularity();
+        String targetUUID =
+                this.pipelineDataStore.getGranularitySchema(targetSpatialGranularity).getUuidAttributeName();
+//        String baseUUID = this.pipelineDataStore.getGranularitySchema(baseSpatialGranularity).getUuidAttributeName();
+
         while (iterator.hasNext()) {
             SimpleFeature feature = iterator.next();
-            String targetGranule = feature.getID();
+            String targetGranule = feature.getAttribute(targetUUID).toString();
 
             //corresponding granule ids for the target according to granularityMap
             ArrayList<String> baseGranuleIds = spatialGranularityMap.getBaseGranuleIds(targetGranule);
 
             //get the observed or recorded values of each corresponding base granule
-            HashMap<String, Double> valueSet = this.getAggregatingAttributes(baseGranuleIds, featureSet, aggregateOn);
+            HashMap<String, Double> valueSet =
+                    this.getAggregatingAttributes(baseSpatialGranularity, baseGranuleIds, featureSet, aggregateOn);
 
             //get the required custom attributes such as weighting factors for aggregation
             HashMap<String, Double> customAttributeSet =
@@ -247,10 +258,12 @@ public class GranularityConvertor {
 
 
     //given the corresponding base granule ids and feature set get the corresponding value set.
-    public HashMap<String, Double> getAggregatingAttributes(ArrayList<String> granuleIds,
+    public HashMap<String, Double> getAggregatingAttributes(String granularity, ArrayList<String> granuleIds,
                                                             SimpleFeatureCollection featureCollection,
                                                             String attributeCol) {
 
+
+        String uuid = this.pipelineDataStore.getGranularitySchema(granularity).getUuidAttributeName();
 
         HashMap<String, Double> valueSet = new HashMap<String, Double>();
         HashMap<String, SimpleFeature> featureSet = new HashMap<String, SimpleFeature>();
@@ -258,7 +271,7 @@ public class GranularityConvertor {
         SimpleFeatureIterator iterator = featureCollection.features();
         while (iterator.hasNext()) {
             SimpleFeature feature = iterator.next();
-            featureSet.put(feature.getID(), feature);
+            featureSet.put(feature.getAttribute(uuid).toString(), feature);
         }
 
         granuleIds.forEach((granule) -> {
@@ -266,7 +279,7 @@ public class GranularityConvertor {
                 // check whether granule is in the featureset
                 if (featureSet.get(granule) != null) {
                     SimpleFeature feature = featureSet.get(granule);
-                    String valueString = (String) feature.getAttribute(attributeCol);
+                    String valueString = feature.getAttribute(attributeCol).toString();
                     Double value = Double.parseDouble(valueString);
                     valueSet.put(granule, value);
                 }
@@ -287,8 +300,13 @@ public class GranularityConvertor {
         ArrayList<SimpleFeature> baseGranules = new ArrayList<SimpleFeature>();
         SimpleFeature targetGranuleFeature = null;
 
-        String baseGranularityIndexCol = getFeatureIndexColName(baseGranularity);
-        String targetGranularityIndexCol = getFeatureIndexColName(targetGranularity);
+        String baseGranularityIndexCol =
+                this.pipelineDataStore.getGranularitySchema(baseGranularity).getUuidAttributeName();
+        String targetGranularityIndexCol =
+                this.pipelineDataStore.getGranularitySchema(targetGranularity).getUuidAttributeName();
+
+//        String baseGranularityIndexCol = getFeatureIndexColName(baseGranularity);
+//        String targetGranularityIndexCol = getFeatureIndexColName(targetGranularity);
 
         try {
 
@@ -327,7 +345,7 @@ public class GranularityConvertor {
         logger.info(baseGranules.toString());
 
         switch (aggregationMethod) {
-            case "inverseDistance":
+            case "InverseDistance":
 
                 //caluculate distance from the target granule to each base granules.
                 for (SimpleFeature baseGranule : baseGranules) {
@@ -335,7 +353,7 @@ public class GranularityConvertor {
                     Double distance = this.calculateDistance(baseGranule, targetGranuleFeature);
 //                   String info = targetGranuleFeature.getID() + "-" + baseGranule.getID() + ":" + distance.toString();
 
-                    customAttributes.put(baseGranule.getID(), distance);
+                    customAttributes.put(baseGranule.getAttribute(baseGranularityIndexCol).toString(), distance);
                 }
                 break;
             default:
@@ -367,19 +385,19 @@ public class GranularityConvertor {
         //if an aggregation process. there are two types, aggregation vs interpolation.
         if (!isAnAggregate) {
             switch (aggregationMethod) {
-                case "mean":
+                case "Mean":
                     finalValue = AggregateInvoker.mean(valueSet);
                     break;
-                case "sum":
+                case "Sum":
                     finalValue = AggregateInvoker.sum(valueSet);
                     break;
-                case "max":
+                case "Max":
                     finalValue = AggregateInvoker.max(valueSet);
                     break;
-                case "min":
+                case "Min":
                     finalValue = AggregateInvoker.min(valueSet);
                     break;
-                case "inverseDistance":
+                case "InverseDistance":
                     finalValue = AggregateInvoker.inverseDistance(valueSet, customAttributes);
                     break;
                 default:
