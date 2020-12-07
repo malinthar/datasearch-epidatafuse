@@ -55,6 +55,8 @@ public class FusionPipeline {
 
     public void init() {
         this.streamHandler.init();
+        this.mapGranularityRelations();
+        this.invokeAggregate();
     }
 
     public void terminate() {
@@ -100,13 +102,29 @@ public class FusionPipeline {
     }
 
     public void mapGranularityRelations() {
-        this.granularityRelationMaps = this.fuseEngine.buildGranularityMap(granularityRelationConfigs);
+        this.granularityRelationMaps = this.fuseEngine.invokeGranularityMappingProcess(granularityRelationConfigs);
     }
 
     public void aggregate() throws IOException {
-        String featureType = "precipitation";
-        this.fuseEngine
-                .aggregate(granularityRelationMaps.get(featureType), this.aggregationConfigs.get(featureType));
+//        String featureTypes = "precipitation";
+
+        if (this.granularityRelationMaps.size() != 0) {
+            granularityRelationMaps.forEach((String featureType, GranularityMap map) -> {
+                try {
+                    this.fuseEngine.aggregate(map, this.aggregationConfigs.get(featureType));
+                } catch (Exception e) {
+                    e.getMessage();
+                }
+            });
+
+        }
+
+//        this.fuseEngine
+//                .aggregate(granularityRelationMaps.get(featureType), this.aggregationConfigs.get(featureType));
+    }
+
+    public void invokeAggregate() {
+        this.fuseEngine.scheduleTasks(1000 * 60 * 5);
     }
 
     public void streamingIngest(Event[] events, String featureType) {

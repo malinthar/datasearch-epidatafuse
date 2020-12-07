@@ -46,6 +46,7 @@ import java.util.Set;
  */
 public class GranularityConvertor {
     private static final Logger logger = LoggerFactory.getLogger(GranularityConvertor.class);
+    private static final String INDEX_COLUMN_KEY = "spatialGranule";
 
     private PipelineDataStore pipelineDataStore;
     private DataStore dataStore;
@@ -68,7 +69,7 @@ public class GranularityConvertor {
         //features are taken directly from the database without temporal aggregation
         //SimpleFeatureCollection featureSet = this.getFeatures(featureTypeName);
 
-        String indexCol = config.getIndexCol();
+        String indexCol = this.INDEX_COLUMN_KEY;
         String aggregateOn = config.getAggregationOn();
         String aggregationMethod = config.getSpatialAggregationMethod();
         Boolean isASpatialInterpolation = config.isASpatialInterpolation();
@@ -91,18 +92,22 @@ public class GranularityConvertor {
         TemporalGranularityMap temporalGranularityMap = granularityMap.getTemporalGranularityMap();
 
         String featureTypeName = config.getFeatureTypeName();
-        String indexCol = config.getIndexCol();
+//        String indexCol = config.getIndexCol();
+        String indexCol = this.INDEX_COLUMN_KEY;
         String aggregateOn = config.getAggregationOn();
         String aggregationMethod = config.getTemporalAggregationMethod();
         Boolean isATemporalInterpolation = config.isATemporalInterpolation();
 
         String baseSpatialGranularity = granularityMap.getBaseSpatialGranularity();
 
+        String baseSpatialUuid =
+                this.pipelineDataStore.getGranularitySchema(baseSpatialGranularity).getUuidAttributeName();
+
         String targetTemporalGranularity = temporalGranularityMap.getTargetTemporalGranularity();
         long relationValue = temporalGranularityMap.getRelationValue();
 
 //        LocalDateTime currentTimestamp = LocalDateTime.now();
-        LocalDateTime currentTimestamp = LocalDateTime.of(2013, 1, 4, 8, 00, 00, 00);
+        LocalDateTime currentTimestamp = LocalDateTime.of(2013, 1, 7, 8, 00, 00, 00);
         LocalDateTime startingTimestamp = currentTimestamp.minusHours(relationValue);
 
         logger.info(currentTimestamp.toString());
@@ -117,11 +122,11 @@ public class GranularityConvertor {
         while (iterator.hasNext()) {
 
             SimpleFeature baseSpatialGranule = iterator.next();
-            String baseSpatialGranuleID = baseSpatialGranule.getAttribute(indexCol).toString();
+            String baseSpatialGranuleID = baseSpatialGranule.getAttribute(baseSpatialUuid).toString();
 
             ArrayList<SimpleFeature> featuresToAggregate =
                     this.getFeaturesBetweenDates(featureTypeName, startingTimestamp.toString(),
-                            currentTimestamp.toString(), indexCol, baseSpatialGranuleID);
+                            currentTimestamp.toString(), baseSpatialUuid, baseSpatialGranuleID);
 
             if (featuresToAggregate.size() > 0) {
 
@@ -145,7 +150,7 @@ public class GranularityConvertor {
                         aggregationMethod, null);
 
                 aggregatedFeature.setAttribute(aggregateOn, aggregatedValue);
-                logger.info(aggregatedFeature.toString());
+//                logger.info(aggregatedFeature.toString());
                 aggregatedFeatures.add(aggregatedFeature);
             }
         }
@@ -289,6 +294,7 @@ public class GranularityConvertor {
         });
 
         //logger.info(valueSet.toString());
+        iterator.close();
         return valueSet;
     }
 
@@ -342,7 +348,7 @@ public class GranularityConvertor {
             logger.error(e.getMessage());
         }
 //        logger.info(targetGranuleFeature.toString());
-        logger.info(baseGranules.toString());
+//        logger.info(baseGranules.toString());
 
         switch (aggregationMethod) {
             case "InverseDistance":
