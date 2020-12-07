@@ -44,26 +44,30 @@ public class GranularityRelationMapper {
         SpatialGranularityRelationMap spatialMap;
         String spatialGranularity = config.getSpatialGranularity();
         String relationMappingMethod = config.getSpatialRelationMappingMethod();
-        String targetSpatialGranularity = config.getTargetSpatialGranularity();
-        String targetUUID = this.dataStore.getGranularitySchema(targetSpatialGranularity).getUuidAttributeName();
-        String baseUUID = this.dataStore.getGranularitySchema(spatialGranularity).getUuidAttributeName();
-        SimpleFeatureCollection targetSpatialGranules = this.getGranuleSet(targetSpatialGranularity);
-        SimpleFeatureCollection baseSpatialGranuleSet = this.getGranuleSet(spatialGranularity);
+        if (relationMappingMethod == null) {
+            spatialMap = new SpatialGranularityRelationMap();
+        } else {
+            String targetSpatialGranularity = config.getTargetSpatialGranularity();
+            String targetUUID = this.dataStore.getGranularitySchema(targetSpatialGranularity).getUuidAttributeName();
+            String baseUUID = this.dataStore.getGranularitySchema(spatialGranularity).getUuidAttributeName();
+            SimpleFeatureCollection targetSpatialGranules = this.getGranuleSet(targetSpatialGranularity);
+            SimpleFeatureCollection baseSpatialGranuleSet = this.getGranuleSet(spatialGranularity);
 
-        switch (relationMappingMethod) {
-            case NearestMapper.MAPPER_NAME:
-                spatialMap = NearestMapper.buildNearestMap(targetSpatialGranules,
-                        baseSpatialGranuleSet, config.getSpatialMappingArguments(), baseUUID, targetUUID);
-                break;
+            switch (relationMappingMethod) {
+                case NearestMapper.MAPPER_NAME:
+                    spatialMap = NearestMapper.buildNearestMap(targetSpatialGranules,
+                            baseSpatialGranuleSet, config.getSpatialMappingArguments(), baseUUID, targetUUID);
+                    break;
 
-            case ContainMapper.MAPPER_NAME:
-                spatialMap = ContainMapper.buildContainMap(targetSpatialGranules, baseSpatialGranuleSet);
-                break;
-            case WithinRadiusMapper.MAPPER_NAME:
-                spatialMap = WithinRadiusMapper.buildWithinRadiusMap(targetSpatialGranules, baseSpatialGranuleSet);
-                break;
-            default:
-                spatialMap = new SpatialGranularityRelationMap();
+                case ContainMapper.MAPPER_NAME:
+                    spatialMap = ContainMapper.buildContainMap(targetSpatialGranules, baseSpatialGranuleSet);
+                    break;
+                case WithinRadiusMapper.MAPPER_NAME:
+                    spatialMap = WithinRadiusMapper.buildWithinRadiusMap(targetSpatialGranules, baseSpatialGranuleSet);
+                    break;
+                default:
+                    spatialMap = new SpatialGranularityRelationMap();
+            }
         }
         return spatialMap;
     }
