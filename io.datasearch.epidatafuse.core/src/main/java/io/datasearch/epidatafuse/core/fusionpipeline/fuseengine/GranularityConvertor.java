@@ -100,6 +100,9 @@ public class GranularityConvertor {
 
         String baseSpatialGranularity = granularityMap.getBaseSpatialGranularity();
 
+        String baseSpatialUuid =
+                this.pipelineDataStore.getGranularitySchema(baseSpatialGranularity).getUuidAttributeName();
+
         String targetTemporalGranularity = temporalGranularityMap.getTargetTemporalGranularity();
         long relationValue = temporalGranularityMap.getRelationValue();
 
@@ -119,11 +122,11 @@ public class GranularityConvertor {
         while (iterator.hasNext()) {
 
             SimpleFeature baseSpatialGranule = iterator.next();
-            String baseSpatialGranuleID = baseSpatialGranule.getAttribute(indexCol).toString();
+            String baseSpatialGranuleID = baseSpatialGranule.getAttribute(baseSpatialUuid).toString();
 
             ArrayList<SimpleFeature> featuresToAggregate =
                     this.getFeaturesBetweenDates(featureTypeName, startingTimestamp.toString(),
-                            currentTimestamp.toString(), indexCol, baseSpatialGranuleID);
+                            currentTimestamp.toString(), baseSpatialUuid, baseSpatialGranuleID);
 
             if (featuresToAggregate.size() > 0) {
 
