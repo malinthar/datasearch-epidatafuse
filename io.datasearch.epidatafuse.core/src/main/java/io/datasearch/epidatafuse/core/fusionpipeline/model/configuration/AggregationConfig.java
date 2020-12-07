@@ -30,7 +30,7 @@ public class AggregationConfig {
     public AggregationConfig(String featureTypeName, Map<String, Object> aggregationConfig) {
 
         this.featureTypeName = featureTypeName;
-        this.indexCol = "stationID";
+//        this.indexCol = "stationID";
         this.isASpatialInterpolation = false;
         this.isATemporalInterpolation = false;
         this.spatialArguments = new HashMap<>();
@@ -71,9 +71,9 @@ public class AggregationConfig {
         return featureTypeName;
     }
 
-    public String getIndexCol() {
-        return indexCol;
-    }
+//    public String getIndexCol() {
+//        return indexCol;
+//    }
 
     public Boolean isASpatialInterpolation() {
         return isASpatialInterpolation;

@@ -39,6 +39,7 @@ public class FuseEngine {
 
     private Timer timer = new Timer();
 
+
     public FuseEngine(PipelineDataStore dataStore, Map<String, GranularityRelationConfig> granularityRelationConfigs,
                       Map<String, AggregationConfig> aggregationConfigs) {
         this.dataStore = dataStore;
@@ -51,8 +52,10 @@ public class FuseEngine {
         scheduler.setFuseEngine(this);
     }
 
-    public Map<String, GranularityMap> setGranularityRelationMaps() {
-        Map<String, GranularityMap> granularityMaps = this.buildGranularityMap(this.granularityRelationConfigs);
+    public Map<String, GranularityMap> invokeGranularityMappingProcess(
+            Map<String, GranularityRelationConfig> granularityRelationConfigs) {
+
+        Map<String, GranularityMap> granularityMaps = this.buildGranularityMap(granularityRelationConfigs);
         this.granularityRelationMaps = granularityMaps;
         return granularityMaps;
     }

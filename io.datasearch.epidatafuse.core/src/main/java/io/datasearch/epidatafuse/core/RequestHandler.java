@@ -231,7 +231,8 @@ public class RequestHandler {
             String featureType = "precipitation";
             //dengDIPipeLineMap.get(pipelineName).convertIntoRequiredGranule(featureType);
 
-            ServerContext.getPipeline(pipelineName).aggregate();
+//            ServerContext.getPipeline(pipelineName).aggregate();
+            ServerContext.getPipeline(pipelineName).invokeAggregate();
             return "Success conversion";
         } catch (Exception e) {
             logger.error(e.getMessage());

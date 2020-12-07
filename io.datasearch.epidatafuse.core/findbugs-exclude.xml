@@ -127,6 +127,11 @@
         <Bug pattern="UC_USELESS_OBJECT"/>
     </Match>
 
+    <Match>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.model.configuration.AggregationConfig"/>
+        <Bug pattern="UUF_UNUSED_FIELD"/>
+    </Match>
+
 
 
 
