@@ -9,7 +9,6 @@ import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationma
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.SpatialGranularityRelationMap;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.TemporalGranularityMap;
 
-
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureReader;
@@ -17,16 +16,15 @@ import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
-import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.type.AttributeTypeImpl;
 import org.geotools.filter.text.cql2.CQL;
+import org.geotools.filter.text.ecql.ECQL;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory;
-import org.opengis.filter.identity.FeatureId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,12 +32,12 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Locale;
 
 /**
  * For granularity conversion.
@@ -377,9 +375,13 @@ public class GranularityConvertor {
 
         Geometry g1 = (Geometry) granule1.getDefaultGeometry();
         Geometry g2 = (Geometry) granule2.getDefaultGeometry();
+
+        Point gc1 = g1.getCentroid();
+        Point gc2 = g2.getCentroid();
         logger.info(g1.getCentroid().toString());
 
-        Double distance = g1.distance(g2);
+
+        Double distance = gc1.distance(gc2);
 
         return distance;
     }
@@ -405,6 +407,9 @@ public class GranularityConvertor {
                     break;
                 case "InverseDistance":
                     finalValue = AggregateInvoker.inverseDistance(valueSet, customAttributes);
+                    break;
+                case "None":
+                    finalValue = AggregateInvoker.defaultAggregate(valueSet);
                     break;
                 default:
                     finalValue = -0.4;
@@ -448,7 +453,7 @@ public class GranularityConvertor {
     }
 
     public ArrayList<SimpleFeature> getFeaturesBetweenDates(String typeName, String startingDate, String endDate,
-                                                            String indexCol, String distinctID) {
+                                                            String uuid, String distinctID) {
         ArrayList<SimpleFeature> featureList = new ArrayList<SimpleFeature>();
         try {
 //            Filter filterr = CQL.toFilter(
@@ -472,17 +477,20 @@ public class GranularityConvertor {
 //                    "id='" + distinctID +
 //                            "' AND dtg DURING " + startingDate + ":00.000/" + endDate + ":00.000");
 
-            FilterFactory ff = CommonFactoryFinder.getFilterFactory();
-            Set<FeatureId> selection = new HashSet<>();
-            selection.add(ff.featureId(distinctID));
-//            Filter filterS = ff.id(selection);
+//            FilterFactory ff = CommonFactoryFinder.getFilterFactory();
+//            Set<FeatureId> selection = new HashSet<>();
+//            selection.add(ff.featureId(distinctID));
+////            Filter filterS = ff.id(selection);
+//
+            String distinctIDLower = distinctID;
+            distinctIDLower = distinctIDLower.toLowerCase(Locale.getDefault());
 
-            Filter filter2 = CQL.toFilter(
-                    indexCol + "='" + distinctID +
+            Filter filter = ECQL.toFilter(
+                    uuid + " ILIKE '" + distinctIDLower +
                             "' AND dtg DURING " + startingDate + ":00.000/" + endDate + ":00.000");
 
 //            Filter filter = CQL.toFilter("dtg DURING " + startingDate + ":00.000/" + endDate + ":00.000");
-            Query query = new Query(typeName, filter2);
+            Query query = new Query(typeName, filter);
             //query.getHints().put(QueryHints.EXACT_COUNT(), Boolean.TRUE);
 
             FeatureReader<SimpleFeatureType, SimpleFeature> reader =
