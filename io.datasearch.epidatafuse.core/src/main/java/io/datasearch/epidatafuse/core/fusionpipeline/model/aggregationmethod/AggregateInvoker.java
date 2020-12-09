@@ -49,8 +49,10 @@ public class AggregateInvoker {
         Double finalValue = 0.0;
         Double inverseDistanceSum = 0.0;
 
-        for (Double value : distances.values()) {
-            inverseDistanceSum += (1.0 / value);
+        for (Double distance : distances.values()) {
+            if (distance != 0) {
+                inverseDistanceSum += (1.0 / distance);
+            }
         }
 
         Iterator it = valueSet.entrySet().iterator();
@@ -69,6 +71,17 @@ public class AggregateInvoker {
             }
         }
 
+        return finalValue;
+    }
+
+    public static Double defaultAggregate(HashMap<String, Double> valueSet) {
+        Double finalValue;
+        ArrayList<Double> values = new ArrayList<Double>(valueSet.values());
+        if (values.size() >= 1) {
+            finalValue = values.get(0);
+        } else {
+            finalValue = 0.0;
+        }
         return finalValue;
     }
 

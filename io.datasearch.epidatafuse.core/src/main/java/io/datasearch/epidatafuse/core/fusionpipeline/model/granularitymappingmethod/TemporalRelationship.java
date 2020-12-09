@@ -21,6 +21,10 @@ public class TemporalRelationship {
         relationshipTable.put("week", "day", 168);
         relationshipTable.put("month", "day", 720);
         relationshipTable.put("year", "day", 8760);
+        relationshipTable.put("hour", "hour", 1);
+        relationshipTable.put("day", "day", 24);
+        relationshipTable.put("week", "week", 168);
+        relationshipTable.put("year", "year", 8760);
     }
 
     public static long getRelationShip(String row, String col) {
