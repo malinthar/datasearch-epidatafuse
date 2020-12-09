@@ -61,10 +61,12 @@ public class GranularityRelationMapper {
                     break;
 
                 case ContainMapper.MAPPER_NAME:
-                    spatialMap = ContainMapper.buildContainMap(targetSpatialGranules, baseSpatialGranuleSet);
+                    spatialMap = ContainMapper
+                            .buildContainMap(targetSpatialGranules, baseSpatialGranuleSet, baseUUID, targetUUID);
                     break;
                 case WithinRadiusMapper.MAPPER_NAME:
-                    spatialMap = WithinRadiusMapper.buildWithinRadiusMap(targetSpatialGranules, baseSpatialGranuleSet);
+                    spatialMap = WithinRadiusMapper
+                            .buildWithinRadiusMap(targetSpatialGranules, baseSpatialGranuleSet, baseUUID, targetUUID);
                     break;
                 case DefaultMapper.MAPPER_NAME:
                     spatialMap = DefaultMapper

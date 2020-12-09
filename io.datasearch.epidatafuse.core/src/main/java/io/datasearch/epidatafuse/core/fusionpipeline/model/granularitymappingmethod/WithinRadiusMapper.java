@@ -34,14 +34,16 @@ public class WithinRadiusMapper {
      * @return
      */
     public static SpatialGranularityRelationMap buildWithinRadiusMap(SimpleFeatureCollection targetGranuleSet,
-                                                                     SimpleFeatureCollection baseGranuleSet) {
+                                                                     SimpleFeatureCollection baseGranuleSet,
+                                                                     String baseUUID,
+                                                                     String targetUUID) {
         SpatialGranularityRelationMap spatialMap = new SpatialGranularityRelationMap();
         SimpleFeatureIterator featureIt = targetGranuleSet.features();
         try {
             while (featureIt.hasNext()) {
                 SimpleFeature next = featureIt.next();
-                ArrayList<String> withinRadiusList = findWithInRadius(next, baseGranuleSet);
-                spatialMap.addTargetToBasesMapping(next.getID(), withinRadiusList);
+                ArrayList<String> withinRadiusList = findWithInRadius(next, baseGranuleSet, baseUUID);
+                spatialMap.addTargetToBasesMapping(next.getAttribute(targetUUID).toString(), withinRadiusList);
             }
         } finally {
             featureIt.close();
@@ -50,7 +52,7 @@ public class WithinRadiusMapper {
     }
 
     public static ArrayList<String> findWithInRadius(SimpleFeature targetGranule,
-                                                     SimpleFeatureCollection baseGranules) {
+                                                     SimpleFeatureCollection baseGranules, String baseUUID) {
         ArrayList<String> nearestNeighbors = new ArrayList<>();
         SimpleFeatureIterator featureIt = baseGranules.features();
         while (featureIt.hasNext()) {
@@ -59,7 +61,7 @@ public class WithinRadiusMapper {
             boolean contains = ((Geometry) targetGranule.getDefaultGeometry()).
                     isWithinDistance(baseGeometry, DEFAULT_RADIUS);
             if (contains) {
-                nearestNeighbors.add(next.getID());
+                nearestNeighbors.add(next.getAttribute(baseUUID).toString());
             }
         }
         return nearestNeighbors;

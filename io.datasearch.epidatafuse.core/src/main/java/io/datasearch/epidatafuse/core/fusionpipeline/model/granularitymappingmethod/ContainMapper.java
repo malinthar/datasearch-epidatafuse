@@ -18,14 +18,15 @@ public class ContainMapper {
     private static final Map<String, Object> ARGUMENTS = new HashMap<>();
 
     public static SpatialGranularityRelationMap buildContainMap(SimpleFeatureCollection targetGranuleSet,
-                                                                SimpleFeatureCollection baseGranuleSet) {
+                                                                SimpleFeatureCollection baseGranuleSet, String baseUUID,
+                                                                String targetUUID) {
         SpatialGranularityRelationMap spatialMap = new SpatialGranularityRelationMap();
         SimpleFeatureIterator featureIt = targetGranuleSet.features();
         try {
             while (featureIt.hasNext()) {
                 SimpleFeature next = featureIt.next();
-                ArrayList<String> containsMap = contains(next, baseGranuleSet);
-                spatialMap.addTargetToBasesMapping(next.getID(), containsMap);
+                ArrayList<String> containsMap = contains(next, baseGranuleSet, baseUUID);
+                spatialMap.addTargetToBasesMapping(next.getAttribute(targetUUID).toString(), containsMap);
             }
         } finally {
             featureIt.close();
@@ -33,7 +34,8 @@ public class ContainMapper {
         return spatialMap;
     }
 
-    public static ArrayList<String> contains(SimpleFeature targetGranule, SimpleFeatureCollection baseGranules) {
+    public static ArrayList<String> contains(SimpleFeature targetGranule, SimpleFeatureCollection baseGranules,
+                                             String baseUUID) {
         ArrayList<String> nearestNeighbors = new ArrayList<>();
         SimpleFeatureIterator featureIt = baseGranules.features();
         while (featureIt.hasNext()) {
@@ -41,7 +43,7 @@ public class ContainMapper {
             Geometry baseGeometry = (Geometry) next.getDefaultGeometry();
             boolean contains = ((Geometry) targetGranule.getDefaultGeometry()).contains(baseGeometry);
             if (contains) {
-                nearestNeighbors.add(next.getID());
+                nearestNeighbors.add(next.getAttribute(baseUUID).toString());
             }
         }
         return nearestNeighbors;
