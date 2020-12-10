@@ -112,4 +112,8 @@ public class AttributeUtil {
     public static List<String> getGeometricTypeList() {
         return GEOMETRIC_TYPE_LIST;
     }
+
+    public static List<String> getAttributeTypeList() {
+        return ATTRIBUTE_TYPE_LIST;
+    }
 }
