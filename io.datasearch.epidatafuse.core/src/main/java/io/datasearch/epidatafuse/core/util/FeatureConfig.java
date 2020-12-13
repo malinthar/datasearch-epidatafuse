@@ -19,7 +19,7 @@ public class FeatureConfig {
     public static final String UUID_ATTRIBUTE_NAME_KEY = "uuid_attribute_name";
     public static final String AGGREGATION_CONFIG_KEY = "aggregation_config";
     private Map<String, Object> granularityRelationConfig;
-    private Map<String, Object> aggregationConfig;
+    private List<Map<String, String>> aggregationConfig;
     private String pipelineName;
     private String featureName;
     private String featureType;
@@ -35,7 +35,7 @@ public class FeatureConfig {
             this.attributes = (List<Map<String, String>>) configurations.get(ATTRIBUTES_KEY);
             if (VARIABLE_TYPE_IDENTIFIER.equals(type)) {
                 this.granularityRelationConfig = (Map<String, Object>) configurations.get(GRANULARITY_CONFIG_KEY);
-                this.aggregationConfig = (Map<String, Object>) configurations.get(AGGREGATION_CONFIG_KEY);
+                this.aggregationConfig = (List<Map<String, String>>) configurations.get(AGGREGATION_CONFIG_KEY);
             } else if (GRANULARITY_TYPE_IDENTIFIER.equals(type)) {
                 this.uuidAttributeName = (String) configurations.get(UUID_ATTRIBUTE_NAME_KEY);
             }
@@ -69,7 +69,7 @@ public class FeatureConfig {
         return uuidAttributeName;
     }
 
-    public Map<String, Object> getAggregationConfig() {
+    public List<Map<String, String>> getAggregationConfig() {
         return this.aggregationConfig;
     }
 }

@@ -70,7 +70,7 @@ public class GranularityConvertor {
 
         String indexCol = this.INDEX_COLUMN_KEY;
         String aggregateOn = config.getAggregationOn();
-        String aggregationMethod = config.getSpatialAggregationMethod();
+        String aggregationMethod = config.getSpatialAggregationMethod(aggregateOn);
         Boolean isASpatialInterpolation = config.isASpatialInterpolation();
 
         TemporallyAggregatedCollection temporallyAggregatedFeatures =
@@ -94,7 +94,8 @@ public class GranularityConvertor {
 //        String indexCol = config.getIndexCol();
         String indexCol = this.INDEX_COLUMN_KEY;
         String aggregateOn = config.getAggregationOn();
-        String aggregationMethod = config.getTemporalAggregationMethod();
+        //todo: make this compatible for multiple attributes
+        String aggregationMethod = config.getTemporalAggregationMethod(aggregateOn);
         Boolean isATemporalInterpolation = config.isATemporalInterpolation();
 
         String baseSpatialGranularity = granularityMap.getBaseSpatialGranularity();
