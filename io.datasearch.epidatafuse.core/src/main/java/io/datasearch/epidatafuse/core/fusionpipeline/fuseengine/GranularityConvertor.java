@@ -2,6 +2,7 @@ package io.datasearch.epidatafuse.core.fusionpipeline.fuseengine;
 
 import io.datasearch.epidatafuse.core.fusionpipeline.datastore.PipelineDataStore;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.aggregationmethod.AggregateInvoker;
+import io.datasearch.epidatafuse.core.fusionpipeline.model.aggregationmethod.AggregationUtil;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.configuration.AggregationConfig;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.datamodel.SpatioTemporallyAggregatedCollection;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.datamodel.TemporallyAggregatedCollection;
@@ -69,7 +70,7 @@ public class GranularityConvertor {
 
         String indexCol = this.INDEX_COLUMN_KEY;
         String aggregateOn = config.getAggregationOn();
-        String aggregationMethod = config.getSpatialAggregationMethod();
+        String aggregationMethod = config.getSpatialAggregationMethod(aggregateOn);
         Boolean isASpatialInterpolation = config.isASpatialInterpolation();
 
         TemporallyAggregatedCollection temporallyAggregatedFeatures =
@@ -93,7 +94,8 @@ public class GranularityConvertor {
 //        String indexCol = config.getIndexCol();
         String indexCol = this.INDEX_COLUMN_KEY;
         String aggregateOn = config.getAggregationOn();
-        String aggregationMethod = config.getTemporalAggregationMethod();
+        //todo: make this compatible for multiple attributes
+        String aggregationMethod = config.getTemporalAggregationMethod(aggregateOn);
         Boolean isATemporalInterpolation = config.isATemporalInterpolation();
 
         String baseSpatialGranularity = granularityMap.getBaseSpatialGranularity();
@@ -393,19 +395,19 @@ public class GranularityConvertor {
         //if an aggregation process. there are two types, aggregation vs interpolation.
         if (!isAnAggregate) {
             switch (aggregationMethod) {
-                case "Mean":
+                case AggregationUtil.MEAN:
                     finalValue = AggregateInvoker.mean(valueSet);
                     break;
-                case "Sum":
+                case AggregationUtil.SUM:
                     finalValue = AggregateInvoker.sum(valueSet);
                     break;
-                case "Max":
+                case AggregationUtil.MAX:
                     finalValue = AggregateInvoker.max(valueSet);
                     break;
-                case "Min":
+                case AggregationUtil.MIN:
                     finalValue = AggregateInvoker.min(valueSet);
                     break;
-                case "InverseDistance":
+                case AggregationUtil.INVERSE_DISTANCE:
                     finalValue = AggregateInvoker.inverseDistance(valueSet, customAttributes);
                     break;
                 case "None":

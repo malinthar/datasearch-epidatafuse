@@ -3,7 +3,11 @@ package io.datasearch.epidatafuse.core;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.datasearch.epidatafuse.core.fusionpipeline.FusionPipeLineController;
+import io.datasearch.epidatafuse.core.fusionpipeline.FusionPipeline;
 import io.datasearch.epidatafuse.core.fusionpipeline.datastore.query.QueryManager;
+import io.datasearch.epidatafuse.core.fusionpipeline.datastore.schema.AttributeUtil;
+import io.datasearch.epidatafuse.core.fusionpipeline.model.aggregationmethod.AggregationUtil;
+import io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmethod.MapperUtil;
 import io.datasearch.epidatafuse.core.fusionpipeline.util.PipelineUtil;
 import io.datasearch.epidatafuse.core.util.ConfigurationLoader;
 import io.datasearch.epidatafuse.core.util.FeatureConfig;
@@ -42,6 +46,13 @@ public class RequestHandler {
     private static final String VARIABLE_TYPE_IDENTIFIER = "variable";
     private static final String GRANULARITY_TYPE_IDENTIFIER = "granularity";
     private static final String PIPELINE_NAMES_KEY = "pipeline_names";
+    private static final String ATTRIBUTE_TYPES_KEY = "attribute_types";
+    private static final String SPATIAL_GRANULARITIES_KEY = "spatialGranularities";
+    private static final String TEMPORAL_GRANULARITIES_KEY = "temporalGranularities";
+    private static final String SPATIAL_CONVERSION_METHODS = "spatialConversionMethods";
+    private static final String SPATIAL_AGGREGATION_METHODS = "spatialAggregationMethods";
+    private static final String TEMPORAL_CONVERSION_METHODS = "temporalConversionMethods";
+    private static final String TEMPORAL_AGGREGATION_METHODS = "temporalAggregationMethods";
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private static ObjectMapper mapper = new ObjectMapper();
 
@@ -298,6 +309,102 @@ public class RequestHandler {
         }
     }
 
+    @RequestMapping("/getAttributeInfo")
+    public String getAttributeInfo(@RequestBody Map<String, Object> payload) {
+        Response response;
+        try {
+            if (payload.get(PipelineUtil.PIPELINE_NAME_KEY) != null) {
+                String pipelineName = (String) payload.get(PipelineUtil.PIPELINE_NAME_KEY);
+                if (ServerContext.getPipeline(pipelineName) != null) {
+                    Map<String, Object> responseData = new HashMap<>();
+                    responseData.put(ATTRIBUTE_TYPES_KEY, AttributeUtil.getAttributeTypeList());
+                    response =
+                            new Response(true, false, INGESTION_SUCCESS_MESSAGE, responseData);
+                } else {
+                    response = new Response(true, false, INGESTION_SUCCESS_MESSAGE, new HashMap<>());
+                }
+
+            } else {
+                response =
+                        new Response(false, true, PIPELINE_NAME_EMPTY_ERROR_MESSAGE, new HashMap<>());
+            }
+            return mapper.writeValueAsString(response);
+        } catch (Exception e) {
+            if (e instanceof JsonProcessingException) {
+                return SERVER_ERROR_MESSAGE;
+            } else {
+                return SERVER_ERROR_MESSAGE;
+            }
+        }
+    }
+
+    @RequestMapping("/getGranularityInfo")
+    public String getGranularityInfo(@RequestBody Map<String, Object> payload) {
+        Response response;
+        try {
+            if (payload.get(PipelineUtil.PIPELINE_NAME_KEY) != null) {
+                String pipelineName = (String) payload.get(PipelineUtil.PIPELINE_NAME_KEY);
+                FusionPipeline pipeline = ServerContext.getPipeline(pipelineName);
+                if (pipeline != null) {
+                    Map<String, Object> responseData = new HashMap<>();
+                    List<String> keys = new ArrayList<>();
+                    keys.addAll(pipeline.getInfo().getGranularities().keySet());
+                    responseData.put(SPATIAL_GRANULARITIES_KEY, keys);
+                    responseData.put(TEMPORAL_GRANULARITIES_KEY, keys);
+                    response =
+                            new Response(true, false, INGESTION_SUCCESS_MESSAGE, responseData);
+                } else {
+                    response = new Response(true, false, INGESTION_SUCCESS_MESSAGE, new HashMap<>());
+                }
+
+            } else {
+                response =
+                        new Response(false, true, PIPELINE_NAME_EMPTY_ERROR_MESSAGE, new HashMap<>());
+            }
+            return mapper.writeValueAsString(response);
+        } catch (Exception e) {
+            if (e instanceof JsonProcessingException) {
+                return SERVER_ERROR_MESSAGE;
+            } else {
+                return SERVER_ERROR_MESSAGE;
+            }
+        }
+    }
+
+
+    @RequestMapping("/getConversionMethodInfo")
+    public String getConversionMethodInfo(@RequestBody Map<String, Object> payload) {
+        Response response;
+        try {
+            if (payload.get(PipelineUtil.PIPELINE_NAME_KEY) != null) {
+                String pipelineName = (String) payload.get(PipelineUtil.PIPELINE_NAME_KEY);
+                FusionPipeline pipeline = ServerContext.getPipeline(pipelineName);
+                if (pipeline != null) {
+                    Map<String, Object> responseData = new HashMap<>();
+                    responseData.put(SPATIAL_CONVERSION_METHODS, MapperUtil.getMAPPERS());
+                    responseData.put(TEMPORAL_CONVERSION_METHODS, MapperUtil.getMAPPERS());
+                    responseData.put(SPATIAL_AGGREGATION_METHODS, AggregationUtil.getSpatialAggregators());
+                    responseData.put(TEMPORAL_AGGREGATION_METHODS, AggregationUtil.getTemporalAggregators());
+                    response =
+                            new Response(true, false, INGESTION_SUCCESS_MESSAGE, responseData);
+                } else {
+                    response = new Response(true, false, INGESTION_SUCCESS_MESSAGE, new HashMap<>());
+                }
+
+            } else {
+                response =
+                        new Response(false, true, PIPELINE_NAME_EMPTY_ERROR_MESSAGE, new HashMap<>());
+            }
+            return mapper.writeValueAsString(response);
+        } catch (Exception e) {
+            if (e instanceof JsonProcessingException) {
+                return SERVER_ERROR_MESSAGE;
+            } else {
+                return SERVER_ERROR_MESSAGE;
+            }
+        }
+    }
+
     @RequestMapping("/testinit")
     public String testInit() {
         String message = "Successfully responded";
@@ -313,6 +420,7 @@ public class RequestHandler {
         }
         return jsonString;
     }
+
 
 //    @Deprecated
 //    @RequestMapping(value = "/createPipelineFromConfigFiles")

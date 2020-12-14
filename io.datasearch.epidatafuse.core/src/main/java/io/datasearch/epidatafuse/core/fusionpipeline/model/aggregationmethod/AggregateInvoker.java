@@ -16,32 +16,31 @@ import java.util.Map;
  */
 public class AggregateInvoker {
     private static final Logger logger = LoggerFactory.getLogger(AggregateInvoker.class);
-
     public static Double mean(HashMap<String, Double> valueSet) {
         Double finalValue;
         ArrayList<Double> values = new ArrayList<Double>(valueSet.values());
-        finalValue = calculate(values, "mean");
+        finalValue = calculate(values, AggregationUtil.MEAN);
         return finalValue;
     }
 
     public static Double sum(HashMap<String, Double> valueSet) {
         Double finalValue;
         ArrayList<Double> values = new ArrayList<Double>(valueSet.values());
-        finalValue = calculate(values, "sum");
+        finalValue = calculate(values, AggregationUtil.SUM);
         return finalValue;
     }
 
     public static Double max(HashMap<String, Double> valueSet) {
         Double finalValue;
         ArrayList<Double> values = new ArrayList<Double>(valueSet.values());
-        finalValue = calculate(values, "max");
+        finalValue = calculate(values, AggregationUtil.MAX);
         return finalValue;
     }
 
     public static Double min(HashMap<String, Double> valueSet) {
         Double finalValue;
         ArrayList<Double> values = new ArrayList<Double>(valueSet.values());
-        finalValue = calculate(values, "min");
+        finalValue = calculate(values, AggregationUtil.MIN);
         return finalValue;
     }
 
@@ -88,7 +87,7 @@ public class AggregateInvoker {
     public static double calculate(ArrayList<Double> values, String method) {
         Double calculatedValue = 0.0;
         switch (method) {
-            case "mean":
+            case AggregationUtil.MEAN:
                 Double sum = 0.0;
                 int count = 0;
                 for (Double value : values) {
@@ -103,7 +102,7 @@ public class AggregateInvoker {
                 calculatedValue = mean;
                 break;
 
-            case "sum":
+            case AggregationUtil.SUM:
                 sum = 0.0;
                 for (Double value : values) {
                     try {
@@ -115,11 +114,11 @@ public class AggregateInvoker {
                 calculatedValue = sum;
                 break;
 
-            case "max":
+            case AggregationUtil.MAX:
                 calculatedValue = Collections.max(values);
                 break;
 
-            case "min":
+            case AggregationUtil.MIN:
                 calculatedValue = Collections.min(values);
                 break;
             default:
