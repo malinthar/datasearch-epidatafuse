@@ -18,7 +18,7 @@ import org.geotools.data.DataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+
 import java.util.Map;
 
 /**
@@ -105,23 +105,28 @@ public class FusionPipeline {
         this.granularityRelationMaps = this.fuseEngine.invokeGranularityMappingProcess(granularityRelationConfigs);
     }
 
-    public void aggregate() throws IOException {
-//        String featureTypes = "precipitation";
-
-        if (this.granularityRelationMaps.size() != 0) {
-            granularityRelationMaps.forEach((String featureType, GranularityMap map) -> {
-                try {
-                    this.fuseEngine.aggregate(map, this.aggregationConfigs.get(featureType));
-                } catch (Exception e) {
-                    e.getMessage();
-                }
-            });
-
-        }
-
-//        this.fuseEngine
-//                .aggregate(granularityRelationMaps.get(featureType), this.aggregationConfigs.get(featureType));
-    }
+//    public void aggregate() throws IOException {
+//        String dtg = LocalDateTime.now().toString();
+//
+//        DataFrame dataFrame = new DataFrame(dtg);
+//
+//        if (this.granularityRelationMaps.size() != 0) {
+//            granularityRelationMaps.forEach((String featureType, GranularityMap map) -> {
+//                try {
+//                    SpatioTemporallyAggregatedCollection spatioTemporallyAggregatedCollection =
+//                            this.fuseEngine.aggregate(map, this.aggregationConfigs.get(featureType));
+//                    dataFrame.addAggregatedFeatureType(spatioTemporallyAggregatedCollection);
+//                } catch (Exception e) {
+//                    e.getMessage();
+//                }
+//            });
+//
+//        }
+//
+//        ArrayList<String> csvRecords = dataFrame.createCSVRecords();
+//        int a = 1;
+//
+//    }
 
     public void invokeAggregate() {
         this.fuseEngine.scheduleTasks(1000 * 60 * 5);

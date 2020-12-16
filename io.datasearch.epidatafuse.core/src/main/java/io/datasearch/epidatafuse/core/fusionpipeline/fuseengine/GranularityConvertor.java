@@ -247,6 +247,9 @@ public class GranularityConvertor {
         attributeList.add(aggregateOn);
         attributeList.add("dtg");
 
+        ArrayList<String> aggregatedAttributeList = new ArrayList<String>();
+        aggregatedAttributeList.add(aggregateOn);
+
         SimpleFeatureCollection aggregatedFeatureCollection = DataUtilities.collection(aggregatedFeatures);
 
         SpatioTemporallyAggregatedCollection spatioTemporallyAggregatedCollection =
@@ -256,7 +259,8 @@ public class GranularityConvertor {
                         granularityMap.getTargetSpatialGranularity(),
                         granularityMap.getTargetTemporalGranularity(),
                         formatedDtgString,
-                        attributeList
+                        attributeList,
+                        aggregatedAttributeList
                 );
         return spatioTemporallyAggregatedCollection;
     }
