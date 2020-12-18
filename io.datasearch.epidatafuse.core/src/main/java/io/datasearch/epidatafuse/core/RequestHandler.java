@@ -116,9 +116,15 @@ public class RequestHandler {
                 FeatureConfig featureConfig = new FeatureConfig(payload, GRANULARITY_TYPE_IDENTIFIER);
                 Boolean status = FusionPipeLineController.addNewFeature(pipelineName, featureConfig);
                 if (status) {
-                    return "success!";
+                    IngestConfig ingestConfig = new IngestConfig((Map<String, Object>) payload.get("ingestion_config"));
+                    Boolean statusIngest = FusionPipeLineController.ingestToGranularity(pipelineName, ingestConfig);
+                    if (statusIngest) {
+                        return "success!";
+                    } else {
+                        return "Unable to add new granularity";
+                    }
                 } else {
-                    return "Unable to add new feature";
+                    return "Unable to add new granularity";
                 }
             } else {
                 return "Pipeline name can not be empty!";
