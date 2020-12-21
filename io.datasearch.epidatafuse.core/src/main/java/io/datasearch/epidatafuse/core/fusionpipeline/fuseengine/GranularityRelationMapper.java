@@ -5,6 +5,7 @@ import io.datasearch.epidatafuse.core.fusionpipeline.datastore.query.QueryManage
 import io.datasearch.epidatafuse.core.fusionpipeline.model.configuration.GranularityRelationConfig;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmethod.ContainMapper;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmethod.DefaultMapper;
+import io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmethod.IntersectMapper;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmethod.NearestMapper;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmethod.WithinRadiusMapper;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.SpatialGranularityRelationMap;
@@ -59,7 +60,6 @@ public class GranularityRelationMapper {
                     spatialMap = NearestMapper.buildNearestMap(targetSpatialGranules,
                             baseSpatialGranuleSet, config.getSpatialMappingArguments(), baseUUID, targetUUID);
                     break;
-
                 case ContainMapper.MAPPER_NAME:
                     spatialMap = ContainMapper
                             .buildContainMap(targetSpatialGranules, baseSpatialGranuleSet, baseUUID, targetUUID);
@@ -67,6 +67,10 @@ public class GranularityRelationMapper {
                 case WithinRadiusMapper.MAPPER_NAME:
                     spatialMap = WithinRadiusMapper
                             .buildWithinRadiusMap(targetSpatialGranules, baseSpatialGranuleSet, baseUUID, targetUUID);
+                    break;
+                case IntersectMapper.MAPPER_NAME:
+                    spatialMap = IntersectMapper
+                            .buildIntersectMap(targetSpatialGranules, baseSpatialGranuleSet, baseUUID, targetUUID);
                     break;
                 case DefaultMapper.MAPPER_NAME:
                     spatialMap = DefaultMapper
