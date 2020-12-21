@@ -5,15 +5,18 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.locationtech.jts.geom.Geometry;
 import org.opengis.feature.simple.SimpleFeature;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 
 /**
  * intersect object mapping method.
  */
 public class IntersectMapper {
+    private static final Logger logger = LoggerFactory.getLogger(IntersectMapper.class);
     public static final String MAPPER_NAME = "Intersect";
     private static final Map<String, Object> ARGUMENTS = new HashMap<>();
 
@@ -27,6 +30,8 @@ public class IntersectMapper {
                 SimpleFeature next = featureIt.next();
                 ArrayList<String> intersectMap = intersect(next, baseGranuleSet, baseUUID);
                 spatialMap.addTargetToBasesMapping(next.getAttribute(targetUUID).toString(), intersectMap);
+                String msg = next.getAttribute(targetUUID) + " " + intersectMap.size();
+                logger.info(msg);
             }
         } finally {
             featureIt.close();
