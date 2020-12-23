@@ -14,6 +14,7 @@ public class AggregationUtil {
     public static final String MAX = "max";
     public static final String MIN = "min";
     public static final String INVERSE_DISTANCE = "InverseDistance";
+    public static final String AREA_BASED_AVERAGE = "AreaBasedAverage";
 
     static {
         SPATIAL_AGGREGATORS.put(MEAN, new HashMap<>());
@@ -21,6 +22,7 @@ public class AggregationUtil {
         SPATIAL_AGGREGATORS.put(MAX, new HashMap<>());
         SPATIAL_AGGREGATORS.put(MIN, new HashMap<>());
         SPATIAL_AGGREGATORS.put(INVERSE_DISTANCE, new HashMap<>());
+        SPATIAL_AGGREGATORS.put(AREA_BASED_AVERAGE, new HashMap<>());
 
         TEMPORAL_AGGREGATORS.put(MEAN, new HashMap<>());
         TEMPORAL_AGGREGATORS.put(SUM, new HashMap<>());

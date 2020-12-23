@@ -73,6 +73,37 @@ public class AggregateInvoker {
         return finalValue;
     }
 
+    public static Double areaBasedAverage(HashMap<String, Double> valueSet, HashMap<String, Double> intersectRatios) {
+        Double finalValue = 0.0;
+
+//        Iterator x = intersectRatios.entrySet().iterator();
+//        while (x.hasNext()) {
+//            Map.Entry pair = (Map.Entry) x.next();
+//            String key = (String) pair.getKey();
+//            Double value = (Double) pair.getValue();
+//            logger.info(key + ":" + value);
+//        }
+
+        Iterator it = valueSet.entrySet().iterator();
+
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
+            String key = (String) pair.getKey();
+            Double value = (Double) pair.getValue();
+            //logger.info(key + ":" + value);
+            Double ratio = intersectRatios.get(key);
+
+            if (ratio != 0) {
+                finalValue += value * ratio;
+            }
+
+            //logger.info(key + ": " + finalValue);
+        }
+        //logger.info("aggregated value :" + finalValue);
+        return finalValue;
+
+    }
+
     public static Double defaultAggregate(HashMap<String, Double> valueSet) {
         Double finalValue;
         ArrayList<Double> values = new ArrayList<Double>(valueSet.values());
