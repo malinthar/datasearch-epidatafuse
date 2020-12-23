@@ -100,6 +100,11 @@ public class AttributeUtil {
                     attributeValue = Date.from(LocalDate.parse(value, dateFormat)
                             .atStartOfDay(ZoneOffset.UTC).toInstant());
                     break;
+                case TIMESTAMP:
+                    DateTimeFormatter timeStampFormat = DateTimeFormatter.ofPattern("yyyyMMddHHmm", Locale.US);
+                    attributeValue =
+                            Date.from(LocalDate.parse(value, timeStampFormat).atStartOfDay(ZoneOffset.UTC).toInstant());
+                    break;
                 default:
                     attributeValue = value;
             }
