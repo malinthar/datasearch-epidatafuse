@@ -101,6 +101,9 @@ public class SimpleFeatureTransformer {
                         SimpleFeature tempNext = iterator.next();
                         SimpleFeature next = writer.next();
                         next.getUserData().put(Hints.PROVIDED_FID, generateFeatureID(tempNext.getID()));
+                        next.setDefaultGeometry(
+                                JTS.transform((Geometry) tempNext.getDefaultGeometryProperty().getValue(),
+                                mathTransform));
                         for (Map<String, String> attribute : simpleFeatureTypeSchema.getAttributes()) {
                             String attributeName = attribute.get(ATTRIBUTE_NAME_KEY);
                             if (AttributeUtil.getGeometricTypeList().contains(attribute.get(ATTRIBUTE_TYPE_KEY))) {
@@ -123,7 +126,6 @@ public class SimpleFeatureTransformer {
                     logger.error(e.getMessage());
                 }
             }
-
         }
         writer.close();
         return counter;
