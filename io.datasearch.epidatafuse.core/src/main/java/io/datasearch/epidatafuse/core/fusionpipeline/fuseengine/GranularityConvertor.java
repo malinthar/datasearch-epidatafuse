@@ -150,7 +150,7 @@ public class GranularityConvertor {
                         aggregationMethod, null);
 
                 aggregatedFeature.setAttribute(aggregateOn, aggregatedValue);
-//                logger.info(aggregatedFeature.toString());
+                logger.info(aggregatedFeature.toString());
                 aggregatedFeatures.add(aggregatedFeature);
             }
         }
@@ -297,7 +297,6 @@ public class GranularityConvertor {
             }
         });
 
-        //logger.info(valueSet.toString());
         iterator.close();
         return valueSet;
     }
@@ -366,6 +365,13 @@ public class GranularityConvertor {
                     customAttributes.put(baseGranule.getAttribute(baseGranularityIndexCol).toString(), distance);
                 }
                 break;
+
+            case "AreaBasedAverage":
+                for (SimpleFeature baseGranule : baseGranules) {
+                    Double intersectRatio = this.calculateIntersectRatio(targetGranuleFeature, baseGranule);
+                    customAttributes.put(baseGranule.getAttribute(baseGranularityIndexCol).toString(), intersectRatio);
+                }
+                break;
             default:
                 break;
 
@@ -392,6 +398,22 @@ public class GranularityConvertor {
         return distance;
     }
 
+    private Double calculateIntersectRatio(SimpleFeature granule1, SimpleFeature granule2) {
+        Geometry g1 = (Geometry) granule1.getDefaultGeometry();
+        Geometry g2 = (Geometry) granule2.getDefaultGeometry();
+        double areaRatio = 0.0;
+        try {
+            Geometry intersect = g1.intersection(g2);
+            areaRatio = intersect.getArea() / g2.getArea();
+            //logger.info((100 * areaRatio) + " %");
+        } catch (Throwable e) {
+            logger.error(e.getMessage());
+            areaRatio = 0.0;
+        }
+        return areaRatio;
+    }
+
+
     private Double calculateFinalValue(HashMap<String, Double> valueSet, Boolean isAnAggregate,
                                        String aggregationMethod, HashMap<String, Double> customAttributes) {
         Double finalValue;
@@ -413,6 +435,9 @@ public class GranularityConvertor {
                     break;
                 case AggregationUtil.INVERSE_DISTANCE:
                     finalValue = AggregateInvoker.inverseDistance(valueSet, customAttributes);
+                    break;
+                case AggregationUtil.AREA_BASED_AVERAGE:
+                    finalValue = AggregateInvoker.areaBasedAverage(valueSet, customAttributes);
                     break;
                 case "None":
                     finalValue = AggregateInvoker.defaultAggregate(valueSet);
