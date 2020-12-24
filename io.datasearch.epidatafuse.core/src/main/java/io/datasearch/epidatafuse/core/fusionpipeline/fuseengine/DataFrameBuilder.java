@@ -55,7 +55,8 @@ public class DataFrameBuilder {
 //    }
 
     public void writeToCSV(ArrayList<String> csvRecords, String fileName) {
-        String csvFileName = fileName + ".csv";
+        String dir = "public/output/";
+        String csvFileName = dir + fileName + ".csv";
         try {
             File file = new File(csvFileName);
             Writer w = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");

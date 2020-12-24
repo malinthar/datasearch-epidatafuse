@@ -13,7 +13,10 @@ import io.datasearch.epidatafuse.core.util.ConfigurationLoader;
 import io.datasearch.epidatafuse.core.util.FeatureConfig;
 import io.datasearch.epidatafuse.core.util.IngestConfig;
 import io.datasearch.epidatafuse.core.util.IngestionConfig;
+import io.datasearch.epidatafuse.core.util.OutputFrame;
 import io.datasearch.epidatafuse.core.util.PipelineInfo;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,6 +25,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -409,6 +415,63 @@ public class RequestHandler {
                 return SERVER_ERROR_MESSAGE;
             }
         }
+    }
+
+    @RequestMapping("/getdataframes")
+    public String getdataframes() {
+        String dir = "public/output/";
+        File folder = new File(dir);
+        File[] listOfFiles = folder.listFiles();
+
+        ArrayList<OutputFrame> outputData = new ArrayList<OutputFrame>();
+
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile()) {
+                File each = listOfFiles[i];
+
+                String[] headers = null;
+                ArrayList<String[]> content = new ArrayList<String[]>();
+
+                try {
+                    FileReader reader = new FileReader(each);
+                    BufferedReader bufferedReader = new BufferedReader(reader);
+
+                    String line = null;
+                    headers = bufferedReader.readLine().split(",");
+
+
+                    while ((line = bufferedReader.readLine()) != null) {
+                        String[] temp = line.split(",");
+                        content.add(temp);
+                    }
+                    bufferedReader.close();
+                    reader.close();
+
+                } catch (Exception e) {
+                    logger.info(e.getMessage());
+                }
+                String fileName = each.toString().substring(14);
+                OutputFrame frame = new OutputFrame(fileName, headers, content);
+                outputData.add(frame);
+            }
+        }
+
+        String message = "Successfully responded";
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("data", outputData);
+
+        Response response = new Response(true, false, message, data);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString;
+
+        try {
+            jsonString = mapper.writeValueAsString(response);
+        } catch (Exception e) {
+            jsonString = "Server error!";
+            logger.error("Could not write response", e.getMessage());
+        }
+        return jsonString;
     }
 
     @RequestMapping("/testinit")
