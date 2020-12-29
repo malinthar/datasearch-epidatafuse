@@ -36,6 +36,7 @@ public class AttributeUtil {
     private static final String BYTES = "Bytes";
     private static final String ATTRIBUTE_SEPARATOR = ":";
     public static final String SPATIAL_GRANULE_ATTRIBUTE = "spatialGranule";
+    public static final String GEOMETRY_ATTRIBUTE = "geom";
     public static final String TEMPORAL_GRANULE_ATTRIBUTE = "temporalGranule";
     private static final String ATTRIBUTE_NAME_KEY = "attribute_name";
     private static final String ATTRIBUTE_TYPE_KEY = "attribute_type";
@@ -79,6 +80,23 @@ public class AttributeUtil {
         spatialGranuleAttribute.put(ATTRIBUTE_TYPE_KEY, AttributeUtil.STRING);
         return spatialGranuleAttribute;
     }
+
+    public static String getGeometryAttributeWithType(String type) {
+        StringBuilder geometryAttribute = new StringBuilder();
+        geometryAttribute.append(",").
+                append(GEOMETRY_ATTRIBUTE).
+                append(ATTRIBUTE_SEPARATOR).
+                append(ATTRIBUTE_TYPE_MAP.get(type));
+        return geometryAttribute.toString();
+    }
+
+    public static Map<String, String> getGeometryAttribute() {
+        Map<String, String> geometryAttribute = new HashMap<>();
+        geometryAttribute.put(ATTRIBUTE_NAME_KEY, AttributeUtil.GEOMETRY_ATTRIBUTE);
+        return geometryAttribute;
+    }
+
+
 
     public static Map<String, String> getTemporalGranuleAttribute() {
         Map<String, String> temporalGranuleAttribute = new HashMap<>();

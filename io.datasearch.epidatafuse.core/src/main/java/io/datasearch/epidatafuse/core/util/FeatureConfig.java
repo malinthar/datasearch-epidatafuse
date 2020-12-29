@@ -18,6 +18,7 @@ public class FeatureConfig {
     public static final String GRANULARITY_TYPE_IDENTIFIER = "granularity";
     public static final String UUID_ATTRIBUTE_NAME_KEY = "uuid_attribute_name";
     public static final String AGGREGATION_CONFIG_KEY = "aggregation_config";
+    public static final String FILE_NAME_KEY = "file_name";
     private Map<String, Object> granularityRelationConfig;
     private List<Map<String, String>> aggregationConfig;
     private String pipelineName;
@@ -25,6 +26,7 @@ public class FeatureConfig {
     private String featureType;
     private List<Map<String, String>> attributes;
     private String uuidAttributeName;
+    private String fileName;
     private static final Logger logger = LoggerFactory.getLogger(FeatureConfig.class);
 
     public FeatureConfig(Map<String, Object> configurations, String type) {
@@ -38,6 +40,7 @@ public class FeatureConfig {
                 this.aggregationConfig = (List<Map<String, String>>) configurations.get(AGGREGATION_CONFIG_KEY);
             } else if (GRANULARITY_TYPE_IDENTIFIER.equals(type)) {
                 this.uuidAttributeName = (String) configurations.get(UUID_ATTRIBUTE_NAME_KEY);
+                this.fileName = (String) configurations.get(FILE_NAME_KEY);
             }
         } catch (Exception e) {
             throw e;
@@ -67,6 +70,10 @@ public class FeatureConfig {
 
     public String getUuidAttributeName() {
         return uuidAttributeName;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 
     public List<Map<String, String>> getAggregationConfig() {

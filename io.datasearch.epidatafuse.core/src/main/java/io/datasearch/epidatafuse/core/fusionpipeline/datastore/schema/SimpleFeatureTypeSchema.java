@@ -17,6 +17,7 @@ public class SimpleFeatureTypeSchema implements DiseaseDataSchema {
     private List<Map<String, String>> attributes;
     private String variableType;
     private String uuidAttributeName;
+    private String shapeFileName;
 
     //todo: Use string constants
     public SimpleFeatureTypeSchema(FeatureConfig featureConfig) {
@@ -25,6 +26,7 @@ public class SimpleFeatureTypeSchema implements DiseaseDataSchema {
         this.attributes = featureConfig.getAttributes();
         if (FeatureConfig.GRANULARITY_TYPE_IDENTIFIER.equals(featureConfig.getFeatureType())) {
             this.uuidAttributeName = featureConfig.getUuidAttributeName();
+            this.shapeFileName = featureConfig.getFileName();
         }
         buildSchema(this.attributes, featureConfig.getFeatureType());
     }
@@ -48,6 +50,10 @@ public class SimpleFeatureTypeSchema implements DiseaseDataSchema {
 
     public String getUuidAttributeName() {
         return uuidAttributeName;
+    }
+
+    public String getShapeFileName() {
+        return shapeFileName;
     }
 
     /**

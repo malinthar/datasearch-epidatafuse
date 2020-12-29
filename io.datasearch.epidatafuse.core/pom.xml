@@ -128,6 +128,17 @@
                  <artifactId>snakeyaml</artifactId>
                  <version>${snakeyaml.version}</version>
             </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.lingala.zip4j</groupId>
+                <artifactId>zip4j</artifactId>
+                <version>${zip4j.version}</version>
+            </dependency>
+
 
             <!-- spring boot dependencies -->
             <dependency>

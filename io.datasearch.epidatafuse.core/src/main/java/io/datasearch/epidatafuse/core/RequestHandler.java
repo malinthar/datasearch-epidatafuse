@@ -15,19 +15,30 @@ import io.datasearch.epidatafuse.core.util.IngestConfig;
 import io.datasearch.epidatafuse.core.util.IngestionConfig;
 import io.datasearch.epidatafuse.core.util.OutputFrame;
 import io.datasearch.epidatafuse.core.util.PipelineInfo;
-
-
+import net.lingala.zip4j.ZipFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +70,9 @@ public class RequestHandler {
     private static final String SPATIAL_AGGREGATION_METHODS = "spatialAggregationMethods";
     private static final String TEMPORAL_CONVERSION_METHODS = "temporalConversionMethods";
     private static final String TEMPORAL_AGGREGATION_METHODS = "temporalAggregationMethods";
+    private static final String FILE_NAME_KEY = "file_name";
+    private static final String FEATURE_NAME_KEY = "feature_name";
+    private static final String PIPELINE_NAME_KEY = "pipeline_name";
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private static ObjectMapper mapper = new ObjectMapper();
 
@@ -113,6 +127,49 @@ public class RequestHandler {
             }
         }
     }
+
+    @RequestMapping(value = "/putFile", method = RequestMethod.PUT)
+    public String putFile(@RequestParam("file") MultipartFile file,
+                          @RequestParam("pipeline_name") String pipelineName,
+                          @RequestParam("feature_name") String featureName) {
+
+        Path rootDir = Paths.get("public", "uploads", pipelineName, featureName);
+        try {
+            Files.createDirectories(rootDir);
+            Files.copy(file.getInputStream(), rootDir.resolve(file.getOriginalFilename()));
+            File zipfile = new File(rootDir.resolve(file.getOriginalFilename()).toString());
+            ZipFile zipFile = new ZipFile(zipfile);
+            Files.createDirectories(rootDir.resolve("shapefile"));
+            zipFile.extractAll(rootDir.resolve("shapefile").toString());
+        } catch (Exception e) {
+            throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
+        }
+        return "success!";
+    }
+
+    @RequestMapping(value = "/getFile", method = RequestMethod.POST)
+    public ResponseEntity<Resource> getFile(@RequestBody Map<String, Object> payload) {
+        try {
+            Path rootDir = Paths.get("public", "uploads",
+                    (String) payload.get(PIPELINE_NAME_KEY),
+                    (String) payload.get(FEATURE_NAME_KEY),
+                    (String) payload.get(FILE_NAME_KEY));
+            Resource resource = new UrlResource(rootDir.toUri());
+            File file = resource.getFile();
+            InputStreamResource inputResource = new InputStreamResource(new FileInputStream(file));
+            HttpHeaders header = new HttpHeaders();
+            header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=SL_MOH.zip");
+            return ResponseEntity.ok()
+                    .headers(header)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .contentLength(file.length())
+                    .body(inputResource);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
+        }
+    }
+
 
     @RequestMapping(value = "/addGranularity", method = RequestMethod.POST)
     public String addGranularity(@RequestBody Map<String, Object> payload) {
