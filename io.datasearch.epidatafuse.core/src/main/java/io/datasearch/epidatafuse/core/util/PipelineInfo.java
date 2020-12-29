@@ -37,11 +37,7 @@ public class PipelineInfo {
         });
         granularities.entrySet().forEach(entry -> {
             this.granularities.put(entry.getKey(), entry.getValue().getAttributes());
-            if (MOH_KEY.equals(entry.getKey())) {
-                granules.put(entry.getKey(), "SL_MOH.zip");
-            } else {
-                granules.put(entry.getKey(), "SL_MOH.zip");
-            }
+            this.granules.put(entry.getKey(), entry.getValue().getShapeFileName());
         });
 
     }

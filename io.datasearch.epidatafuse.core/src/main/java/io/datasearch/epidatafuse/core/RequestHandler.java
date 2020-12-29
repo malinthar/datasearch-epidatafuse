@@ -70,6 +70,9 @@ public class RequestHandler {
     private static final String SPATIAL_AGGREGATION_METHODS = "spatialAggregationMethods";
     private static final String TEMPORAL_CONVERSION_METHODS = "temporalConversionMethods";
     private static final String TEMPORAL_AGGREGATION_METHODS = "temporalAggregationMethods";
+    private static final String FILE_NAME_KEY = "file_name";
+    private static final String FEATURE_NAME_KEY = "feature_name";
+    private static final String PIPELINE_NAME_KEY = "pipeline_name";
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private static ObjectMapper mapper = new ObjectMapper();
 
@@ -147,8 +150,10 @@ public class RequestHandler {
     @RequestMapping(value = "/getFile", method = RequestMethod.POST)
     public ResponseEntity<Resource> getFile(@RequestBody Map<String, Object> payload) {
         try {
-            String fileName = "SL_MOH.zip";
-            Path rootDir = Paths.get("public", "uploads", "dengue", "moh", fileName);
+            Path rootDir = Paths.get("public", "uploads",
+                    (String) payload.get(PIPELINE_NAME_KEY),
+                    (String) payload.get(FEATURE_NAME_KEY),
+                    (String) payload.get(FILE_NAME_KEY));
             Resource resource = new UrlResource(rootDir.toUri());
             File file = resource.getFile();
             InputStreamResource inputResource = new InputStreamResource(new FileInputStream(file));

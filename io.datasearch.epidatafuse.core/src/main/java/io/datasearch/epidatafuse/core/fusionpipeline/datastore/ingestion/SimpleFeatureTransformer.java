@@ -86,7 +86,9 @@ public class SimpleFeatureTransformer {
             for (String dataSource : ingestConfig.getDataSources()) {
                 try {
                     URL sourceFileUrl = Paths.get("public", "uploads",
-                            "dengue", "moh", "shapefile", dataSource).toUri().toURL();
+                            ingestConfig.getPipelineName(),
+                            simpleFeatureTypeSchema.getSimpleFeatureTypeName(),
+                            "shapefile", dataSource).toUri().toURL();
                     Map<String, Object> dataStoreFinderUrlMap = new HashMap<>();
                     dataStoreFinderUrlMap.put("url", sourceFileUrl);
                     DataStore tempDataStore = DataStoreFinder.getDataStore(dataStoreFinderUrlMap);
