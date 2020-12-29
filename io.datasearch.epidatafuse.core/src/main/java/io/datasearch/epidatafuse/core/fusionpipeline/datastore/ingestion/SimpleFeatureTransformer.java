@@ -29,6 +29,7 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
@@ -69,7 +70,7 @@ public class SimpleFeatureTransformer {
         String sourceFormat = ingestConfig.getSourceFormat();
         FeatureWriter<SimpleFeatureType, SimpleFeature> writer =
                 dataStore.getFeatureWriterAppend(ingestConfig.getFeatureName(), Transaction.AUTO_COMMIT);
-        Map<String, String> transformations = ingestConfig.getTransformations();
+        Map<String, Integer> transformations = ingestConfig.getTransformations();
         if (DELIMITED_TEXT_TYPE.equals(sourceType)) {
             for (String dataSource : ingestConfig.getDataSources()) {
                 try {
@@ -84,7 +85,8 @@ public class SimpleFeatureTransformer {
         } else if (SHAPE_FILE_TYPE.equals(sourceType)) {
             for (String dataSource : ingestConfig.getDataSources()) {
                 try {
-                    URL sourceFileUrl = getClass().getClassLoader().getResource(dataSource);
+                    URL sourceFileUrl = Paths.get("public", "uploads",
+                            "dengue", "moh", "shapefile", dataSource).toUri().toURL();
                     Map<String, Object> dataStoreFinderUrlMap = new HashMap<>();
                     dataStoreFinderUrlMap.put("url", sourceFileUrl);
                     DataStore tempDataStore = DataStoreFinder.getDataStore(dataStoreFinderUrlMap);
@@ -101,9 +103,9 @@ public class SimpleFeatureTransformer {
                         SimpleFeature tempNext = iterator.next();
                         SimpleFeature next = writer.next();
                         next.getUserData().put(Hints.PROVIDED_FID, generateFeatureID(tempNext.getID()));
-                        next.setDefaultGeometry(
-                                JTS.transform((Geometry) tempNext.getDefaultGeometryProperty().getValue(),
-                                mathTransform));
+//                        next.setDefaultGeometry(
+//                                JTS.transform((Geometry) tempNext.getDefaultGeometryProperty().getValue(),
+//                                        mathTransform));
                         for (Map<String, String> attribute : simpleFeatureTypeSchema.getAttributes()) {
                             String attributeName = attribute.get(ATTRIBUTE_NAME_KEY);
                             if (AttributeUtil.getGeometricTypeList().contains(attribute.get(ATTRIBUTE_TYPE_KEY))) {
@@ -111,7 +113,7 @@ public class SimpleFeatureTransformer {
                                         JTS.transform((Geometry) tempNext.getDefaultGeometryProperty().getValue(),
                                                 mathTransform));
                             } else {
-                                int transformationIndex = Integer.parseInt(transformations.get(attributeName));
+                                int transformationIndex = transformations.get(attributeName);
                                 next.setAttribute(attributeName, tempNext.getAttribute(transformationIndex));
                             }
                         }
@@ -133,7 +135,7 @@ public class SimpleFeatureTransformer {
 
     public int transformCSV(SimpleFeatureTypeSchema schema,
                             FeatureWriter<SimpleFeatureType, SimpleFeature> writer,
-                            CSVParser parser, Map<String, String> transformations) throws Exception {
+                            CSVParser parser, Map<String, Integer> transformations) throws Exception {
         int counter = 0;
         for (CSVRecord record : parser) {
             SimpleFeature next = writer.next();
@@ -141,7 +143,7 @@ public class SimpleFeatureTransformer {
             for (Map<String, String> attribute : schema.getAttributes()) {
                 String attributeName = attribute.get(ATTRIBUTE_NAME_KEY);
                 String attributeType = attribute.get(ATTRIBUTE_TYPE_KEY);
-                int transformationIndex = Integer.parseInt(transformations.get(attributeName));
+                int transformationIndex = transformations.get(attributeName);
                 String attributeValue = record.get(transformationIndex);
                 Object value = AttributeUtil.convert(attributeValue, attributeType);
                 next.setAttribute(attributeName, value);

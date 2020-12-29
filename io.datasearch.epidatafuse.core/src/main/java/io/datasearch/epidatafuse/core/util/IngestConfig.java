@@ -18,7 +18,7 @@ public class IngestConfig {
     private String featureName;
     private String sourceType;
     private String sourceFormat;
-    private Map<String, String> transformations;
+    private Map<String, Integer> transformations;
     private List<String> dataSources;
 
     public IngestConfig(Map<String, Object> configurations) {
@@ -26,9 +26,9 @@ public class IngestConfig {
         this.sourceType = (String) configurations.get(SOURCE_TYPE_KEY);
         this.sourceFormat = (String) configurations.get(SOURCE_FORMAT_KEY);
         this.transformations = new HashMap<>();
-        for (Map<String, String> transformation : (List<Map<String, String>>) configurations.get(TRANSFORMATIONS_KEY)) {
-            this.transformations.put(transformation.get(ATTRIBUTE_NAME_KEY),
-                    transformation.get(TRANSFORMATION_KEY));
+        for (Map<String, Object> transformation : (List<Map<String, Object>>) configurations.get(TRANSFORMATIONS_KEY)) {
+            this.transformations.put((String) transformation.get(ATTRIBUTE_NAME_KEY),
+                    (Integer) transformation.get(TRANSFORMATION_KEY));
         }
         this.dataSources = (List<String>) configurations.get(DATA_SOURCES_KEY);
     }
@@ -37,7 +37,7 @@ public class IngestConfig {
         return featureName;
     }
 
-    public Map<String, String> getTransformations() {
+    public Map<String, Integer> getTransformations() {
         return transformations;
     }
 
