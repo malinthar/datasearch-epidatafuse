@@ -74,7 +74,11 @@ public class SimpleFeatureTransformer {
         if (DELIMITED_TEXT_TYPE.equals(sourceType)) {
             for (String dataSource : ingestConfig.getDataSources()) {
                 try {
-                    URL sourceFileUrl = getClass().getClassLoader().getResource(dataSource);
+                    //URL sourceFileUrl = getClass().getClassLoader().getResource(dataSource);
+                    URL sourceFileUrl = Paths.get("public", "uploads",
+                            ingestConfig.getPipelineName(),
+                            simpleFeatureTypeSchema.getSimpleFeatureTypeName(),
+                            dataSource).toUri().toURL();
                     CSVParser parser = CSVParser.parse(sourceFileUrl, DEFAULT_CHARSET,
                             CSV_FORMAT.get(sourceFormat).withHeader().withSkipHeaderRecord());
                     counter += transformCSV(simpleFeatureTypeSchema, writer, parser, transformations);
