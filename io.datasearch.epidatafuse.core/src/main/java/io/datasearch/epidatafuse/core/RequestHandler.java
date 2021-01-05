@@ -8,6 +8,7 @@ import io.datasearch.epidatafuse.core.fusionpipeline.datastore.query.QueryManage
 import io.datasearch.epidatafuse.core.fusionpipeline.datastore.schema.AttributeUtil;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.aggregationmethod.AggregationUtil;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmethod.MapperUtil;
+import io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmethod.TemporalRelationship;
 import io.datasearch.epidatafuse.core.fusionpipeline.util.PipelineUtil;
 import io.datasearch.epidatafuse.core.util.ConfigurationLoader;
 import io.datasearch.epidatafuse.core.util.FeatureConfig;
@@ -135,12 +136,16 @@ public class RequestHandler {
 
         Path rootDir = Paths.get("public", "uploads", pipelineName, featureName);
         try {
-            Files.createDirectories(rootDir);
-            Files.copy(file.getInputStream(), rootDir.resolve(file.getOriginalFilename()));
-            File zipfile = new File(rootDir.resolve(file.getOriginalFilename()).toString());
-            ZipFile zipFile = new ZipFile(zipfile);
-            Files.createDirectories(rootDir.resolve("shapefile"));
-            zipFile.extractAll(rootDir.resolve("shapefile").toString());
+            if (!Files.exists(rootDir.resolve(file.getOriginalFilename()))) {
+                Files.createDirectories(rootDir);
+                Files.copy(file.getInputStream(), rootDir.resolve(file.getOriginalFilename()));
+                if ("application/zip".equals(file.getContentType())) {
+                    File zipfile = new File(rootDir.resolve(file.getOriginalFilename()).toString());
+                    ZipFile zipFile = new ZipFile(zipfile);
+                    Files.createDirectories(rootDir.resolve("shapefile"));
+                    zipFile.extractAll(rootDir.resolve("shapefile").toString());
+                }
+            }
         } catch (Exception e) {
             throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
         }
@@ -202,8 +207,9 @@ public class RequestHandler {
     public String ingestToFeature(@RequestBody Map<String, Object> payload) {
         Response response;
         try {
-            if (payload.get(PipelineUtil.PIPELINE_NAME_KEY) != null) {
-                String pipelineName = (String) payload.get(PipelineUtil.PIPELINE_NAME_KEY);
+            String pipelineName = (String) payload.get(PIPELINE_NAME_KEY);
+            if (pipelineName != null
+                    && ServerContext.getPipeline(pipelineName) != null) {
                 IngestConfig ingestConfig = new IngestConfig(payload);
                 Boolean status = FusionPipeLineController.ingestToFeature(pipelineName, ingestConfig);
                 if (status) {
@@ -419,7 +425,8 @@ public class RequestHandler {
                     List<String> keys = new ArrayList<>();
                     keys.addAll(pipeline.getInfo().getGranularities().keySet());
                     responseData.put(SPATIAL_GRANULARITIES_KEY, keys);
-                    responseData.put(TEMPORAL_GRANULARITIES_KEY, keys);
+                    responseData.put(TEMPORAL_GRANULARITIES_KEY,
+                            TemporalRelationship.getTemporalUnitsList());
                     response =
                             new Response(true, false, INGESTION_SUCCESS_MESSAGE, responseData);
                 } else {
@@ -439,7 +446,6 @@ public class RequestHandler {
             }
         }
     }
-
 
     @RequestMapping("/getConversionMethodInfo")
     public String getConversionMethodInfo(@RequestBody Map<String, Object> payload) {
