@@ -8,6 +8,7 @@ import io.datasearch.epidatafuse.core.fusionpipeline.datastore.query.QueryManage
 import io.datasearch.epidatafuse.core.fusionpipeline.datastore.schema.AttributeUtil;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.aggregationmethod.AggregationUtil;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmethod.MapperUtil;
+import io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmethod.TemporalRelationship;
 import io.datasearch.epidatafuse.core.fusionpipeline.util.PipelineUtil;
 import io.datasearch.epidatafuse.core.util.ConfigurationLoader;
 import io.datasearch.epidatafuse.core.util.FeatureConfig;
@@ -424,7 +425,8 @@ public class RequestHandler {
                     List<String> keys = new ArrayList<>();
                     keys.addAll(pipeline.getInfo().getGranularities().keySet());
                     responseData.put(SPATIAL_GRANULARITIES_KEY, keys);
-                    responseData.put(TEMPORAL_GRANULARITIES_KEY, keys);
+                    responseData.put(TEMPORAL_GRANULARITIES_KEY,
+                            TemporalRelationship.getTemporalUnitsList());
                     response =
                             new Response(true, false, INGESTION_SUCCESS_MESSAGE, responseData);
                 } else {
