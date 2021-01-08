@@ -18,6 +18,7 @@ import org.geotools.data.DataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -37,6 +38,8 @@ public class FusionPipeline {
     private Map<String, SchemaConfig> schemaConfigs;
     private Map<String, GranularityMap> granularityRelationMaps;
     private String pipelineName;
+    private String initTimestamp;
+    private String initialTimestamp;
 
     public FusionPipeline(String pipelineName, DataStore dataStore,
                           Map<String, SimpleFeatureTypeSchema> featureSFTSchemas,
@@ -65,10 +68,12 @@ public class FusionPipeline {
         this.fuseEngine.setFusionFQMultiplier(fusionFQMultiplier);
     }
 
-    public void init() {
+    public void init(String initialTimestamp) {
+        this.initialTimestamp = initialTimestamp;
         this.streamHandler.init();
         this.mapGranularityRelations();
         this.invokeAggregate();
+        this.initTimestamp = new Date().toString();
     }
 
     public void terminate() {
@@ -153,6 +158,7 @@ public class FusionPipeline {
                 this.pipelineDataStore.getGranularitySchemas(),
                 this.granularityRelationConfigs, this.aggregationConfigs,
                 this.fuseEngine.getFusionFrequency(), this.fuseEngine.getFusionFQUnit(),
-                this.fuseEngine.getFusionFQMultiplier());
+                this.fuseEngine.getFusionFQMultiplier(),
+                this.initTimestamp, this.initialTimestamp);
     }
 }

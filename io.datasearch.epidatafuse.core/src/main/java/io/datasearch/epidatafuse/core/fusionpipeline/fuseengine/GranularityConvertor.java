@@ -106,7 +106,7 @@ public class GranularityConvertor {
         String targetTemporalGranularity = temporalGranularityMap.getTargetTemporalGranularity();
         long relationValue = temporalGranularityMap.getRelationValue();
 
-//        LocalDateTime currentTimestamp = LocalDateTime.now();
+//      LocalDateTime currentTimestamp = LocalDateTime.now();
         LocalDateTime currentTimestamp = LocalDateTime.of(2013, 1, 7, 8, 00, 00, 00);
         LocalDateTime startingTimestamp = currentTimestamp.minusHours(relationValue);
 

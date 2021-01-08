@@ -85,10 +85,10 @@ public class FusionPipeLineController {
         return dataStore;
     }
 
-    public static Boolean initPipeline(String pipelineName) {
+    public static Boolean initPipeline(String pipelineName, String initialTimestamp) {
         FusionPipeline pipeline = ServerContext.getPipeline(pipelineName);
         if (ServerContext.getPipeline(pipelineName) != null) {
-            pipeline.init();
+            pipeline.init(initialTimestamp);
             return true;
         }
         return false;
