@@ -47,7 +47,8 @@ public class FusionPipeline {
         this.pipelineName = pipelineName;
         this.pipelineDataStore = new PipelineDataStore(dataStore, featureSFTSchemas, granularitySFTSchemas);
         this.streamHandler = new StreamHandler(this);
-        this.fuseEngine = new FuseEngine(pipelineDataStore, granularityRelationConfigs, aggregationConfigs);
+        this.fuseEngine =
+                new FuseEngine(pipelineDataStore, pipelineName, granularityRelationConfigs, aggregationConfigs);
         this.granularityRelationConfigs = granularityRelationConfigs;
         this.aggregationConfigs = aggregationConfigs;
     }

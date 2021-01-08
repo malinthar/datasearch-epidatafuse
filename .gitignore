@@ -7,6 +7,9 @@
 .checkstyle
 .fbExcludeFilterFile 
 
+#public folder data
+public/
+io.datasearch.epidatafuse.core/public/
 
 .metadata
 tmp/
