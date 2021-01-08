@@ -44,9 +44,11 @@ public class FuseEngine {
     private String fusionFQUnit;
     private String fusionFQMultiplier;
     private Timer timer = new Timer();
+    private String pipelineName;
 
 
-    public FuseEngine(PipelineDataStore dataStore, Map<String, GranularityRelationConfig> granularityRelationConfigs,
+    public FuseEngine(PipelineDataStore dataStore, String pipelineName,
+                      Map<String, GranularityRelationConfig> granularityRelationConfigs,
                       Map<String, AggregationConfig> aggregationConfigs) {
         this.dataStore = dataStore;
         this.granularityRelationMapper = new GranularityRelationMapper(this.dataStore);
@@ -55,6 +57,7 @@ public class FuseEngine {
         this.aggregationConfigs = aggregationConfigs;
         this.dataFrameBuilder = new DataFrameBuilder();
         this.scheduler = new Scheduler();
+        this.pipelineName = pipelineName;
         scheduler.setFuseEngine(this);
     }
 
@@ -116,7 +119,7 @@ public class FuseEngine {
             String fileName =
                     "finalDataFrame_" + dataFrame.getSpatialGranularity() + "_" + dataFrame.getTemporalGranularity() +
                             "_" + dtg;
-            this.dataFrameBuilder.writeToCSV(csvRecords, fileName);
+            this.dataFrameBuilder.writeToCSV(csvRecords, fileName, pipelineName);
 
         } else {
             logger.info("Cannot aggregate. granularity map is empty");
