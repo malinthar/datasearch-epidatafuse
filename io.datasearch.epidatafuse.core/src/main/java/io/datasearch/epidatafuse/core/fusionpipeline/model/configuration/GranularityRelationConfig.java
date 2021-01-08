@@ -43,8 +43,9 @@ public class GranularityRelationConfig {
         this.temporalGranularity = (String) granularityConfig.get(TEMPORAL_GRANULARITY_KEY);
         this.targetSpatialGranularity = (String) granularityConfig.get(TARGET_SPATIAL_GRANULARITY_KEY);
         this.targetTemporalGranularity = (String) granularityConfig.get(TARGET_TEMPORAL_GRANULARITY_KEY);
-        this.temporalMultiplier = (Integer) granularityConfig.get(TEMPORAL_MULTIPLIER_KEY);
-        this.targetTemporalMultiplier = (Integer) granularityConfig.get(TARGET_TEMPORAL_MULTIPLIER_KEY);
+        this.temporalMultiplier = Integer.parseInt((String) granularityConfig.get(TEMPORAL_MULTIPLIER_KEY));
+        this.targetTemporalMultiplier =
+                Integer.parseInt((String) granularityConfig.get(TARGET_TEMPORAL_MULTIPLIER_KEY));
         if (granularityConfig.get(GRANULARITY_MAPPING_KEY) != null) {
             Map<String, Object> mappingMethod = (Map<String, Object>) granularityConfig.get(GRANULARITY_MAPPING_KEY);
             if (mappingMethod != null) {

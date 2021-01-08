@@ -22,12 +22,19 @@ public class PipelineInfo {
     private static final String WEATHER_STATION_KEY = "weatherstation";
     private static final String MOH_PATH = "./moh/shapefile/SL_MOH";
     private static final String WEATHER_STATION_PATH = "./shapefile/sl_weatherstation";
+    private long fusionFrequency;
+    private String fusionFQUnit;
+    private String fusionFQMultiplier;
 
     public PipelineInfo(String pipelineName, Map<String, SimpleFeatureTypeSchema> features,
                         Map<String, SimpleFeatureTypeSchema> granularities,
                         Map<String, GranularityRelationConfig> granularityConfigs,
-                        Map<String, AggregationConfig> aggregationConfigs) {
+                        Map<String, AggregationConfig> aggregationConfigs, long fusionFrequency,
+                        String fusionFQUnit, String fusionFQMultiplier) {
         this.pipelineName = pipelineName;
+        this.fusionFrequency = fusionFrequency;
+        this.fusionFQUnit = fusionFQUnit;
+        this.fusionFQMultiplier = fusionFQMultiplier;
         this.features = new HashMap<>();
         this.granularities = new HashMap<>();
         this.granularityConfigs = granularityConfigs;
@@ -64,5 +71,17 @@ public class PipelineInfo {
 
     public Map<String, String> getGranules() {
         return granules;
+    }
+
+    public long getFusionFrequency() {
+        return fusionFrequency;
+    }
+
+    public String getFusionFQMultiplier() {
+        return fusionFQMultiplier;
+    }
+
+    public String getFusionFQUnit() {
+        return fusionFQUnit;
     }
 }

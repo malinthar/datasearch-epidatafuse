@@ -40,7 +40,9 @@ public class FuseEngine {
     private Map<String, AggregationConfig> aggregationConfigs;
 
     private Map<String, GranularityMap> granularityRelationMaps;
-
+    private long fusionFrequency;
+    private String fusionFQUnit;
+    private String fusionFQMultiplier;
     private Timer timer = new Timer();
 
 
@@ -134,8 +136,32 @@ public class FuseEngine {
         return scheduler;
     }
 
-    public void scheduleTasks(long period) {
-        this.timer.schedule(scheduler, 0, period);
+    public void scheduleTasks() {
+        this.timer.schedule(scheduler, 0, this.fusionFrequency);
+    }
+
+    public void setFusionFrequency(long fusionFrequency) {
+        this.fusionFrequency = fusionFrequency;
+    }
+
+    public void setFusionFQUnit(String fusionFQUnit) {
+        this.fusionFQUnit = fusionFQUnit;
+    }
+
+    public void setFusionFQMultiplier(String fusionFQMultiplier) {
+        this.fusionFQMultiplier = fusionFQMultiplier;
+    }
+
+    public long getFusionFrequency() {
+        return fusionFrequency;
+    }
+
+    public String getFusionFQUnit() {
+        return fusionFQUnit;
+    }
+
+    public String getFusionFQMultiplier() {
+        return fusionFQMultiplier;
     }
 
     public DataFrameBuilder getDataFrameBuilder() {
