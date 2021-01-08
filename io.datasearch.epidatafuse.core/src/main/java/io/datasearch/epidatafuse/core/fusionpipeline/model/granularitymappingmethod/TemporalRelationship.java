@@ -7,7 +7,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -25,6 +27,7 @@ public class TemporalRelationship {
 
     private static final List<String> TEMPORAL_UNITS_LIST;
     private static Table<String, String, Integer> relationshipTable = HashBasedTable.create();
+    private static final Map<String, Long> GRANULARITY_MAP;
 
     static {
         relationshipTable.put("day", "hour", 24);
@@ -38,7 +41,15 @@ public class TemporalRelationship {
         relationshipTable.put("year", "year", 8760);
 
         TEMPORAL_UNITS_LIST = new ArrayList<>();
-        TEMPORAL_UNITS_LIST.addAll(Arrays.asList(HOUR, DAY, WEEK, MONTH, YEAR));
+        TEMPORAL_UNITS_LIST.addAll(Arrays.asList(MINUTE, HOUR, DAY, WEEK, MONTH, YEAR));
+
+        GRANULARITY_MAP = new HashMap<>();
+        GRANULARITY_MAP.put(MINUTE, 1000 * 60L);
+        GRANULARITY_MAP.put(HOUR, 1000 * 60 * 60L);
+        GRANULARITY_MAP.put(DAY, 1000 * 60 * 60 * 2L);
+        GRANULARITY_MAP.put(WEEK, 1000 * 60 * 60 * 24 * 7L);
+        GRANULARITY_MAP.put(MONTH, 1000 * 60 * 60 * 24 * 30L);
+        GRANULARITY_MAP.put(YEAR, 1000 * 60 * 60 * 24 * 365L);
     }
 
     public static long getRelationShip(String row, String col) {
@@ -51,6 +62,10 @@ public class TemporalRelationship {
             value = 0;
         }
         return value;
+    }
+
+    public static long getGranularityToSeconds(String granularity) {
+        return GRANULARITY_MAP.get(granularity);
     }
 
     public static List<String> getTemporalUnitsList() {

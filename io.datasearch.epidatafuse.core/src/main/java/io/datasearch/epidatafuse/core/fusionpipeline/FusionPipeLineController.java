@@ -6,6 +6,7 @@ import io.datasearch.epidatafuse.core.fusionpipeline.datastore.schema.SchemaBuil
 import io.datasearch.epidatafuse.core.fusionpipeline.datastore.schema.SimpleFeatureTypeSchema;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.configuration.AggregationConfig;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.configuration.GranularityRelationConfig;
+import io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmethod.TemporalRelationship;
 import io.datasearch.epidatafuse.core.fusionpipeline.util.PipelineUtil;
 import io.datasearch.epidatafuse.core.util.FeatureConfig;
 import io.datasearch.epidatafuse.core.util.IngestConfig;
@@ -91,6 +92,21 @@ public class FusionPipeLineController {
             return true;
         }
         return false;
+    }
+
+    public static Boolean setFusionFrequency(String pipelineName, String granularity, String multiplier) {
+        FusionPipeline pipeline = ServerContext.getPipeline(pipelineName);
+        try {
+            pipeline.setFusionFrequency(
+                    TemporalRelationship.getGranularityToSeconds(granularity) *
+                            Integer.parseInt(multiplier));
+            pipeline.setFusionFQUnit(granularity);
+            pipeline.setFusionFQMultiplier(multiplier);
+            return true;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return false;
+        }
     }
 
 //    @Deprecated

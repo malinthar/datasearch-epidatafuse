@@ -18,7 +18,6 @@ import org.geotools.data.DataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import java.util.Map;
 
 /**
@@ -51,6 +50,18 @@ public class FusionPipeline {
         this.fuseEngine = new FuseEngine(pipelineDataStore, granularityRelationConfigs, aggregationConfigs);
         this.granularityRelationConfigs = granularityRelationConfigs;
         this.aggregationConfigs = aggregationConfigs;
+    }
+
+    public void setFusionFrequency(long fusionFrequency) {
+        this.fuseEngine.setFusionFrequency(fusionFrequency);
+    }
+
+    public void setFusionFQUnit(String fusionFQUnit) {
+        this.fuseEngine.setFusionFQUnit(fusionFQUnit);
+    }
+
+    public void setFusionFQMultiplier(String fusionFQMultiplier) {
+        this.fuseEngine.setFusionFQMultiplier(fusionFQMultiplier);
     }
 
     public void init() {
@@ -129,7 +140,7 @@ public class FusionPipeline {
 //    }
 
     public void invokeAggregate() {
-        this.fuseEngine.scheduleTasks(1000 * 60 * 5);
+        this.fuseEngine.scheduleTasks();
     }
 
     public void streamingIngest(Event[] events, String featureType) {
@@ -139,6 +150,8 @@ public class FusionPipeline {
     public PipelineInfo getInfo() {
         return new PipelineInfo(this.pipelineName, this.pipelineDataStore.getSchemas(),
                 this.pipelineDataStore.getGranularitySchemas(),
-                this.granularityRelationConfigs, this.aggregationConfigs);
+                this.granularityRelationConfigs, this.aggregationConfigs,
+                this.fuseEngine.getFusionFrequency(), this.fuseEngine.getFusionFQUnit(),
+                this.fuseEngine.getFusionFQMultiplier());
     }
 }
