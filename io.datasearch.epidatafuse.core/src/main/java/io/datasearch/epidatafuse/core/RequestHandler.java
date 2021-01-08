@@ -76,6 +76,7 @@ public class RequestHandler {
     private static final String PIPELINE_NAME_KEY = "pipeline_name";
     private static final String FUSION_FREQUENCY_UNIT_KEY = "granularity";
     private static final String FUSION_FREQUENCY_MULTIPLIER_KEY = "multiplier";
+    private static final String INITIAL_TIMESTAMP_KEY = "initialTimestamp";
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private static ObjectMapper mapper = new ObjectMapper();
@@ -301,7 +302,8 @@ public class RequestHandler {
         try {
             if (payload.get(PipelineUtil.PIPELINE_NAME_KEY) != null) {
                 String pipelineName = (String) payload.get(PipelineUtil.PIPELINE_NAME_KEY);
-                Boolean status = FusionPipeLineController.initPipeline(pipelineName);
+                String initialTimestamp = (String) payload.get(INITIAL_TIMESTAMP_KEY);
+                Boolean status = FusionPipeLineController.initPipeline(pipelineName, initialTimestamp);
                 if (status) {
                     return "Success!";
                 } else {

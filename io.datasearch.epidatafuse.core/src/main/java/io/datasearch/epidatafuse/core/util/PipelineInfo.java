@@ -25,16 +25,23 @@ public class PipelineInfo {
     private long fusionFrequency;
     private String fusionFQUnit;
     private String fusionFQMultiplier;
+    private String initialTimestamp;
+    private String initTimestamp;
 
     public PipelineInfo(String pipelineName, Map<String, SimpleFeatureTypeSchema> features,
                         Map<String, SimpleFeatureTypeSchema> granularities,
                         Map<String, GranularityRelationConfig> granularityConfigs,
                         Map<String, AggregationConfig> aggregationConfigs, long fusionFrequency,
-                        String fusionFQUnit, String fusionFQMultiplier) {
+                        String fusionFQUnit,
+                        String fusionFQMultiplier,
+                        String initTimestamp,
+                        String initialTimestamp) {
         this.pipelineName = pipelineName;
         this.fusionFrequency = fusionFrequency;
         this.fusionFQUnit = fusionFQUnit;
         this.fusionFQMultiplier = fusionFQMultiplier;
+        this.initialTimestamp = initialTimestamp;
+        this.initTimestamp = initTimestamp;
         this.features = new HashMap<>();
         this.granularities = new HashMap<>();
         this.granularityConfigs = granularityConfigs;
@@ -83,5 +90,13 @@ public class PipelineInfo {
 
     public String getFusionFQUnit() {
         return fusionFQUnit;
+    }
+
+    public String getInitialTimestamp() {
+        return initialTimestamp;
+    }
+
+    public String getInitTimestamp() {
+        return initTimestamp;
     }
 }
