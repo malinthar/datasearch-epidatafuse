@@ -40,6 +40,7 @@ public class FusionPipeline {
     private String pipelineName;
     private String initTimestamp;
     private String initialTimestamp;
+    private static final String URL_KEY = "url";
 
     public FusionPipeline(String pipelineName, DataStore dataStore,
                           Map<String, SimpleFeatureTypeSchema> featureSFTSchemas,
@@ -90,6 +91,11 @@ public class FusionPipeline {
 
     public void addGranularity(SimpleFeatureTypeSchema schema) {
         this.pipelineDataStore.addGranularitySchema(schema);
+    }
+
+    public void addStreamingConfig(String featureName, Map<String, Object> parameters) {
+        this.getSchema(featureName).setExternalSourceAPIURL((String) parameters.get(URL_KEY));
+        this.streamHandler.addStreamingConfiguration(featureName, parameters);
     }
 
     public DataStore getDataStore() {

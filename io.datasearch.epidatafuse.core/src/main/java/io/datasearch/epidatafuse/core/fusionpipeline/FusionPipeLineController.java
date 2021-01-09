@@ -94,6 +94,20 @@ public class FusionPipeLineController {
         return false;
     }
 
+
+    public static Boolean addStreamingConfiguration(String pipelineName, String featureName,
+                                                    Map<String, Object> parameters) {
+
+        FusionPipeline pipeline = ServerContext.getPipeline(pipelineName);
+        try {
+            pipeline.addStreamingConfig(featureName, parameters);
+            return true;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return false;
+        }
+    }
+
     public static Boolean setFusionFrequency(String pipelineName, String granularity, String multiplier) {
         FusionPipeline pipeline = ServerContext.getPipeline(pipelineName);
         try {

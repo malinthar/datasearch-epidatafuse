@@ -6,14 +6,14 @@ import csv
 
 app = Flask(__name__)
 
-file = "../data/denguecases.csv"
+file = "data/denguecases.csv"
 with open(file,'rt')as f:
     reader = csv.reader(f)
     dengue_data = []
     for row in reader:
         dengue_data.append(row)
 
-file = "../data/percipitation.csv"
+file = "data/percipitation.csv"
 with open(file,'rt')as f:
     reader = csv.reader(f)
     percipitation_data = []
@@ -31,7 +31,7 @@ def hello_world():
 def hello_test():
    print("Executed!")
    res = {
-       "stationID" :"28u3rfknfcv",
+       "stationID" :"28",
        "stationName":"Cinnamon Lake Side Hotel",
        "observedValue":"0.6",
        "dtg":"20130526",
@@ -50,7 +50,7 @@ def hello_weather():
    }
    return jsonify(res)
 
-@app.route("/percipitation")
+@app.route("/precipitation", methods=['POST'])
 def hello_percipitation():
     with percipitation_counter.get_lock():
         percipitation_counter.value += 1
@@ -65,6 +65,7 @@ def hello_percipitation():
         "spatialGranule":response_data[4],
         "temporalGranule":response_data[5]
     }
+    print("request")
     return jsonify(res)
 
 @app.route("/denguecases")

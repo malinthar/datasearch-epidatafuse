@@ -77,6 +77,7 @@ public class RequestHandler {
     private static final String FUSION_FREQUENCY_UNIT_KEY = "granularity";
     private static final String FUSION_FREQUENCY_MULTIPLIER_KEY = "multiplier";
     private static final String INITIAL_TIMESTAMP_KEY = "initialTimestamp";
+    private static final String PARAMETERS_KEY = "parameters";
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private static ObjectMapper mapper = new ObjectMapper();
@@ -113,6 +114,37 @@ public class RequestHandler {
                 String unit = (String) payload.get(FUSION_FREQUENCY_UNIT_KEY);
                 String multiplier = (String) payload.get(FUSION_FREQUENCY_MULTIPLIER_KEY);
                 Boolean status = FusionPipeLineController.setFusionFrequency(pipelineName, unit, multiplier);
+                if (status) {
+                    response =
+                            new Response(true, false, ADD_NEW_FEATURE_SUCCESS_MESSAGE, new HashMap<>());
+                } else {
+                    response =
+                            new Response(false, true, ADD_NEW_FEATURE_ERROR_MESSAGE, new HashMap<>());
+                }
+            } else {
+                response =
+                        new Response(false, true, PIPELINE_NAME_EMPTY_ERROR_MESSAGE, new HashMap<>());
+            }
+            return mapper.writeValueAsString(response);
+        } catch (Exception e) {
+            if (e instanceof JsonProcessingException) {
+                return SERVER_ERROR_MESSAGE;
+            } else {
+                return ADD_NEW_FEATURE_ERROR_MESSAGE;
+            }
+        }
+    }
+
+    @RequestMapping(value = "/addStreamingConfiguration", method = RequestMethod.POST)
+    public String addStreamingConfiguration(@RequestBody Map<String, Object> payload) {
+        Response response;
+        try {
+            if (payload.get(PipelineUtil.PIPELINE_NAME_KEY) != null) {
+                String pipelineName = (String) payload.get(PipelineUtil.PIPELINE_NAME_KEY);
+                String featureName = (String) payload.get(FEATURE_NAME_KEY);
+                Map<String, Object> parameters = (Map<String, Object>) payload.get(PARAMETERS_KEY);
+                Boolean status =
+                        FusionPipeLineController.addStreamingConfiguration(pipelineName, featureName, parameters);
                 if (status) {
                     response =
                             new Response(true, false, ADD_NEW_FEATURE_SUCCESS_MESSAGE, new HashMap<>());

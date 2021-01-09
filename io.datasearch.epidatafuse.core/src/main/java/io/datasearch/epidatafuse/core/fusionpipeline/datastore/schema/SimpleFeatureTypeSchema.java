@@ -18,6 +18,7 @@ public class SimpleFeatureTypeSchema implements DiseaseDataSchema {
     private String variableType;
     private String uuidAttributeName;
     private String shapeFileName;
+    private String externalSourceAPIURL;
 
     //todo: Use string constants
     public SimpleFeatureTypeSchema(FeatureConfig featureConfig) {
@@ -54,6 +55,14 @@ public class SimpleFeatureTypeSchema implements DiseaseDataSchema {
 
     public String getShapeFileName() {
         return shapeFileName;
+    }
+
+    public void setExternalSourceAPIURL(String externalSourceAPIURL) {
+        this.externalSourceAPIURL = externalSourceAPIURL;
+    }
+
+    public String getExternalSourceAPIURL() {
+        return externalSourceAPIURL;
     }
 
     /**
