@@ -131,9 +131,9 @@ public class NearestMapper {
         SimpleFeatureIterator featureIt = geomCollection.features();
 
         StringBuilder tempFeatureAttributes = new StringBuilder();
-        tempFeatureAttributes.append(AttributeUtil.getAttribute(uuid, "String"));
+        tempFeatureAttributes.append(AttributeUtil.getAttribute(uuid, true, "String"));
         tempFeatureAttributes.append(",");
-        tempFeatureAttributes.append(AttributeUtil.getAttribute("geom", "Point"));
+        tempFeatureAttributes.append(AttributeUtil.getAttribute("geom", false, "Point"));
 
         SimpleFeatureType tempSimpleFeatureType = SimpleFeatureTypes.createType("temptype",
                 tempFeatureAttributes.toString());

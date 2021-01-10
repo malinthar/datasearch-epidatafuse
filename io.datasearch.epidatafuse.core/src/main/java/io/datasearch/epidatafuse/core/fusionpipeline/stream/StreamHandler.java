@@ -53,7 +53,6 @@ public class StreamHandler {
                     sourceConnection.getValue().addCallback("ResponseStream",
                             new SourceConnector(this.pipeline, sourceConnection.getKey()));
                     sourceConnection.getValue().start();
-                    //Adding callback to retrieve output events from stream
                 }
             } catch (Exception e) {
                 logger.error(e.getMessage());
