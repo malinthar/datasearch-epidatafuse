@@ -168,7 +168,7 @@ public class GranularityConvertor {
                         aggregatedFeatureCollection,
                         baseSpatialGranularity,
                         targetTemporalGranularity,
-                        currentTimestamp.toString()
+                        endTimestamp.toString()
                 );
 
         return temporallyAggregatedCollection;
@@ -523,7 +523,7 @@ public class GranularityConvertor {
 
             Filter filter = ECQL.toFilter(
                     uuid + " ILIKE '" + distinctIDLower +
-                            "' AND dtg DURING " + startingDate + ":00.000/" + endDate + ":00.000");
+                            "' AND dtg DURING " + startingDate + "/" + endDate);
 
 //            Filter filter = CQL.toFilter("dtg DURING " + startingDate + ":00.000/" + endDate + ":00.000");
             Query query = new Query(typeName, filter);
