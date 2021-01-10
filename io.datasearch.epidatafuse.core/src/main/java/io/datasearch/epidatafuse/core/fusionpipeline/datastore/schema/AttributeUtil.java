@@ -40,6 +40,10 @@ public class AttributeUtil {
     public static final String TEMPORAL_GRANULE_ATTRIBUTE = "temporalGranule";
     private static final String ATTRIBUTE_NAME_KEY = "attribute_name";
     private static final String ATTRIBUTE_TYPE_KEY = "attribute_type";
+    private static final String INDEXED_KEY = "indexed";
+    private static final String DEFAULT_INDEX = "default=true";
+    private static final String SRID_ENTRY = "srid = 4326";
+    private static final String INDEXED = "index=true";
 
     private static final List<String> ATTRIBUTE_TYPE_LIST =
             Arrays.asList(STRING, INTEGER, DOUBLE, LONG, FLOAT, BOOLEAN, UUID, DATE, TIMESTAMP,
@@ -54,9 +58,19 @@ public class AttributeUtil {
         ATTRIBUTE_TYPE_LIST.forEach(attribute -> ATTRIBUTE_TYPE_MAP.put(attribute, attribute));
     }
 
-    public static String getAttribute(String attributeName, String attributeType) {
+    public static String getAttribute(String attributeName, Boolean indexed, String attributeType) {
         if (attributeName != null && ATTRIBUTE_TYPE_MAP.get(attributeType) != null) {
-            return attributeName + ATTRIBUTE_SEPARATOR + ATTRIBUTE_TYPE_MAP.get(attributeType);
+            StringBuilder builder = new StringBuilder("");
+            builder.append(attributeName).append(ATTRIBUTE_SEPARATOR).append(ATTRIBUTE_TYPE_MAP.get(attributeType));
+            if (DATE.equals(attributeType) || TIMESTAMP.equals(attributeType)) {
+                builder.append(ATTRIBUTE_SEPARATOR).append(DEFAULT_INDEX);
+            } else if (GEOMETRIC_TYPE_LIST.contains(attributeType)) {
+                builder.append(ATTRIBUTE_SEPARATOR).
+                        append(DEFAULT_INDEX).append(ATTRIBUTE_SEPARATOR).append(SRID_ENTRY);
+            } else if (indexed) {
+                builder.append(ATTRIBUTE_SEPARATOR).append(INDEXED);
+            }
+            return builder.toString();
         } else {
             return null;
         }
@@ -67,10 +81,11 @@ public class AttributeUtil {
         granularityAttributes.append(",").
                 append(SPATIAL_GRANULE_ATTRIBUTE).
                 append(ATTRIBUTE_SEPARATOR).
-                append(STRING).append(",").
+                append(STRING).append(ATTRIBUTE_SEPARATOR).append(INDEXED)
+                .append(",").
                 append(TEMPORAL_GRANULE_ATTRIBUTE).
                 append(ATTRIBUTE_SEPARATOR).
-                append(STRING);
+                append(STRING).append(ATTRIBUTE_SEPARATOR).append(INDEXED);
         return granularityAttributes.toString();
     }
 
@@ -78,6 +93,7 @@ public class AttributeUtil {
         Map<String, String> spatialGranuleAttribute = new HashMap<>();
         spatialGranuleAttribute.put(ATTRIBUTE_NAME_KEY, AttributeUtil.SPATIAL_GRANULE_ATTRIBUTE);
         spatialGranuleAttribute.put(ATTRIBUTE_TYPE_KEY, AttributeUtil.STRING);
+        spatialGranuleAttribute.put(INDEXED_KEY, "true");
         return spatialGranuleAttribute;
     }
 
@@ -97,11 +113,11 @@ public class AttributeUtil {
     }
 
 
-
     public static Map<String, String> getTemporalGranuleAttribute() {
         Map<String, String> temporalGranuleAttribute = new HashMap<>();
         temporalGranuleAttribute.put(ATTRIBUTE_NAME_KEY, AttributeUtil.TEMPORAL_GRANULE_ATTRIBUTE);
         temporalGranuleAttribute.put(ATTRIBUTE_TYPE_KEY, AttributeUtil.STRING);
+        temporalGranuleAttribute.put(INDEXED_KEY, "true");
         return temporalGranuleAttribute;
     }
 

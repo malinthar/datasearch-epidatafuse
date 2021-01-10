@@ -18,6 +18,7 @@ public class SimpleFeatureTypeSchema implements DiseaseDataSchema {
     private String variableType;
     private String uuidAttributeName;
     private String shapeFileName;
+    private String externalSourceAPIURL;
 
     //todo: Use string constants
     public SimpleFeatureTypeSchema(FeatureConfig featureConfig) {
@@ -56,6 +57,14 @@ public class SimpleFeatureTypeSchema implements DiseaseDataSchema {
         return shapeFileName;
     }
 
+    public void setExternalSourceAPIURL(String externalSourceAPIURL) {
+        this.externalSourceAPIURL = externalSourceAPIURL;
+    }
+
+    public String getExternalSourceAPIURL() {
+        return externalSourceAPIURL;
+    }
+
     /**
      * Create a SimpleFeatureType in hbase datastore building a schema from given attributes.
      *
@@ -66,8 +75,14 @@ public class SimpleFeatureTypeSchema implements DiseaseDataSchema {
         for (int i = 0; i < attributes.size(); i++) {
             String attributeName = attributes.get(i).get(PipelineUtil.ATTRIBUTE_NAME_KEY);
             String attributeType = attributes.get(i).get(PipelineUtil.ATTRIBUTE_TYPE_KEY);
+            Boolean indexed = Boolean.parseBoolean(attributes.get(i).get(PipelineUtil.INDEXED_KEY));
             //todo: throw error if attribute type is not a defined one
-            featureAttributes.append(AttributeUtil.getAttribute(attributeName, attributeType));
+            if (FeatureConfig.GRANULARITY_TYPE_IDENTIFIER.equals(featureType) &&
+                    attributeName.equals(uuidAttributeName)) {
+                featureAttributes.append(AttributeUtil.getAttribute(attributeName, true, attributeType));
+            } else {
+                featureAttributes.append(AttributeUtil.getAttribute(attributeName, indexed, attributeType));
+            }
             if (i != attributes.size() - 1) {
                 featureAttributes.append(",");
             }

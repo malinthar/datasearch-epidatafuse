@@ -27,6 +27,7 @@ public class PipelineInfo {
     private String fusionFQMultiplier;
     private String initialTimestamp;
     private String initTimestamp;
+    private Map<String, String> streamingConfig;
 
     public PipelineInfo(String pipelineName, Map<String, SimpleFeatureTypeSchema> features,
                         Map<String, SimpleFeatureTypeSchema> granularities,
@@ -43,11 +44,13 @@ public class PipelineInfo {
         this.initialTimestamp = initialTimestamp;
         this.initTimestamp = initTimestamp;
         this.features = new HashMap<>();
+        this.streamingConfig = new HashMap<>();
         this.granularities = new HashMap<>();
         this.granularityConfigs = granularityConfigs;
         this.aggregationConfigs = aggregationConfigs;
         features.entrySet().forEach(entry -> {
             this.features.put(entry.getKey(), entry.getValue().getAttributes());
+            this.streamingConfig.put(entry.getKey(), entry.getValue().getExternalSourceAPIURL());
         });
         granularities.entrySet().forEach(entry -> {
             this.granularities.put(entry.getKey(), entry.getValue().getAttributes());
@@ -98,5 +101,9 @@ public class PipelineInfo {
 
     public String getInitTimestamp() {
         return initTimestamp;
+    }
+
+    public Map<String, String> getStreamingConfig() {
+        return streamingConfig;
     }
 }

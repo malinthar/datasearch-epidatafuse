@@ -14,6 +14,7 @@ public class PipelineUtil {
     public static final String ADDITIONAL_CONFIGURATIONS_KEY = "additional_configurations";
     public static final String ATTRIBUTE_NAME_KEY = "attribute_name";
     public static final String ATTRIBUTE_TYPE_KEY = "attribute_type";
+    public static final String INDEXED_KEY = "indexed";
 
     public static final String ZOOKEEPERS_KEY = "hbase.zookeepers";
     public static final String ZOOKEEPER = "localhost";

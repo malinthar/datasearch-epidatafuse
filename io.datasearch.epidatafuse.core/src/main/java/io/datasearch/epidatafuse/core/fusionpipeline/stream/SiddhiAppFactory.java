@@ -19,21 +19,19 @@ public class SiddhiAppFactory {
     private static final String REQUEST_FREQUENCY = "request_frequency";
     private static final String ATTRIBUTE_NAME_KEY = "attribute_name";
 
-    public static SiddhiAppRuntime generateSourceConnection(Map<String, Object> sourceConfig,
+    public static SiddhiAppRuntime generateSourceConnection(String url, long requestFrequency,
                                                             SimpleFeatureTypeSchema schema) {
 
-        Map<String, Object> parameters = (Map<String, Object>) sourceConfig.get("parameters");
         StringBuilder siddhiApp = new StringBuilder("");
-        siddhiApp.append(generateHttpCallResponse((String) parameters.get(URL_KEY), schema));
+        siddhiApp.append(generateHttpCallResponse(url, schema));
         siddhiApp.append("define trigger TimeTriggerStream at every " +
-                parameters.get(REQUEST_FREQUENCY) + " sec;");
+                5 + " sec;");
         siddhiApp.append(
                 "@info(name= 'pass_though') " +
                         "from TimeTriggerStream " +
                         "select eventTimestamp() as timestamp " +
                         "insert into CallStream;");
         try {
-            //Generate runtime
             SiddhiAppRuntime siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(siddhiApp.toString());
             return siddhiAppRuntime;
         } catch (Exception e) {
@@ -45,7 +43,7 @@ public class SiddhiAppFactory {
         StringBuilder httpCallResponse = new StringBuilder();
         httpCallResponse.append("@sink(type='http-call', sink.id='" + schema.getSimpleFeatureTypeName() + "',");
         httpCallResponse.append("publisher.url='" + url + "',");
-        httpCallResponse.append("method='GET', @map(type='json'))");
+        httpCallResponse.append("method='POST', @map(type='json'))");
         httpCallResponse.append("define stream CallStream (timestamp long);");
         httpCallResponse.append("@source(type='http-call-response' , sink.id='" +
                 schema.getSimpleFeatureTypeName() + "', " +
@@ -53,9 +51,6 @@ public class SiddhiAppFactory {
                 "@map(type='json'))");
         httpCallResponse.append("define stream ResponseStream(");
         List<Map<String, String>> attributes = schema.getAttributes();
-//                .stream()
-//                .filter(attr -> ((Integer) attr.get("derived")) == 0)
-//                .collect(Collectors.toList());
         for (Map<String, String> attribute : attributes) {
             if (attributes.indexOf(attribute) == 0) {
                 httpCallResponse.append(attribute.get(ATTRIBUTE_NAME_KEY) + " string");
@@ -64,15 +59,7 @@ public class SiddhiAppFactory {
             }
         }
         httpCallResponse.append(");");
-//        httpCallResponse.append("define stream ResponseStream(StationName string," +
-//                "Latitude string,Longitude " +
-//                "string,dtg string,ObservedValue string);");
         return httpCallResponse.toString();
-
-    }
-
-    public static String generateRDBMSSource() {
-        return null;
     }
 }
 
