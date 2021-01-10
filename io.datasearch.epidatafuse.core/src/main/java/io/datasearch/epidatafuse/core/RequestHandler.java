@@ -335,6 +335,7 @@ public class RequestHandler {
             if (payload.get(PipelineUtil.PIPELINE_NAME_KEY) != null) {
                 String pipelineName = (String) payload.get(PipelineUtil.PIPELINE_NAME_KEY);
                 String initialTimestamp = (String) payload.get(INITIAL_TIMESTAMP_KEY);
+                FusionPipeLineController.setFusionInitTimestamp(pipelineName, initialTimestamp);
                 Boolean status = FusionPipeLineController.initPipeline(pipelineName, initialTimestamp);
                 if (status) {
                     return "Success!";

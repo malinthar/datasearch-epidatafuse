@@ -10,6 +10,8 @@ import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationma
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.SpatialGranularityRelationMap;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.TemporalGranularityMap;
 
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureReader;
@@ -49,6 +51,8 @@ public class GranularityConvertor {
 
     private PipelineDataStore pipelineDataStore;
     private DataStore dataStore;
+    private String initTime;
+    private long currentAndInitTimeDiff;
 
     public GranularityConvertor(PipelineDataStore pipelineDataStore) {
         this.pipelineDataStore = pipelineDataStore;
@@ -106,11 +110,12 @@ public class GranularityConvertor {
         String targetTemporalGranularity = temporalGranularityMap.getTargetTemporalGranularity();
         long relationValue = temporalGranularityMap.getRelationValue();
 
-//      LocalDateTime currentTimestamp = LocalDateTime.now();
-        LocalDateTime currentTimestamp = LocalDateTime.of(2013, 1, 7, 8, 00, 00, 00);
-        LocalDateTime startingTimestamp = currentTimestamp.minusHours(relationValue);
+        LocalDateTime currentTimestamp = LocalDateTime.now();
+//        LocalDateTime currentTimestamp = LocalDateTime.of(2013, 1, 7, 8, 00, 00, 00);
+        LocalDateTime endTimestamp = currentTimestamp.minusMinutes(this.currentAndInitTimeDiff);
+        LocalDateTime startingTimestamp = endTimestamp.minusHours(relationValue);
 
-        logger.info(currentTimestamp.toString());
+        logger.info(endTimestamp.toString());
         logger.info(startingTimestamp.toString());
 
         SimpleFeatureIterator iterator = baseSpatialGranuleSet.features();
@@ -126,7 +131,7 @@ public class GranularityConvertor {
 
             ArrayList<SimpleFeature> featuresToAggregate =
                     this.getFeaturesBetweenDates(featureTypeName, startingTimestamp.toString(),
-                            currentTimestamp.toString(), baseSpatialUuid, baseSpatialGranuleID);
+                            endTimestamp.toString(), baseSpatialUuid, baseSpatialGranuleID);
 
             if (featuresToAggregate.size() > 0) {
 
@@ -558,5 +563,14 @@ public class GranularityConvertor {
             logger.error(e.getMessage());
         }
         return indexCol;
+    }
+
+    public void setFusionInitTimestamp(String initTimestampString) {
+        this.initTime = initTimestampString;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        LocalDateTime currentTimestamp = LocalDateTime.now();
+        LocalDateTime initTimestamp = LocalDateTime.parse(initTime, formatter);
+        this.currentAndInitTimeDiff = ChronoUnit.MINUTES.between(initTimestamp, currentTimestamp);
+        int a = 1;
     }
 }

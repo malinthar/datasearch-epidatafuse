@@ -52,7 +52,7 @@ public class FusionPipeline {
         this.pipelineDataStore = new PipelineDataStore(dataStore, featureSFTSchemas, granularitySFTSchemas);
         this.streamHandler = new StreamHandler(this);
         this.fuseEngine =
-                new FuseEngine(pipelineDataStore, pipelineName, granularityRelationConfigs, aggregationConfigs);
+                new FuseEngine(pipelineDataStore, this.pipelineName, granularityRelationConfigs, aggregationConfigs);
         this.granularityRelationConfigs = granularityRelationConfigs;
         this.aggregationConfigs = aggregationConfigs;
     }
@@ -166,5 +166,9 @@ public class FusionPipeline {
                 this.fuseEngine.getFusionFrequency(), this.fuseEngine.getFusionFQUnit(),
                 this.fuseEngine.getFusionFQMultiplier(),
                 this.initTimestamp, this.initialTimestamp);
+    }
+
+    public void setFusionInitTimestamp(String initTimestamp) {
+        this.fuseEngine.setFusionInitTimestamp(initTimestamp);
     }
 }
