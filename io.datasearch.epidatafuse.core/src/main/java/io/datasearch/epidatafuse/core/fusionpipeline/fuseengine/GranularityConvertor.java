@@ -10,8 +10,6 @@ import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationma
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.SpatialGranularityRelationMap;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.TemporalGranularityMap;
 
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureReader;
@@ -34,7 +32,11 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
+
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -137,7 +139,8 @@ public class GranularityConvertor {
 //                    this.getFeaturesBetweenDates(featureTypeName, startingTimestamp.toString(),
 //                            endTimestamp.toString(), baseSpatialUuid, baseSpatialGranuleID);
 
-            ArrayList<SimpleFeature> featuresToAggregate = spatiallyIndexedFeatures.get(baseSpatialGranuleID);
+            ArrayList<SimpleFeature> featuresToAggregate =
+                    spatiallyIndexedFeatures.get(baseSpatialGranuleID.toLowerCase(Locale.getDefault()));
 
             if (featuresToAggregate != null && featuresToAggregate.size() > 0) {
 
@@ -525,8 +528,8 @@ public class GranularityConvertor {
 ////            Filter filterS = ff.id(selection);
 //            Filter filter = CQL.toFilter("dtg DURING " + startingDate + ":00.000/" + endDate + ":00.000");
 
-            String distinctIDLower = distinctID;
-            distinctIDLower = distinctIDLower.toLowerCase(Locale.getDefault());
+//            String distinctIDLower = distinctID;
+//            distinctIDLower = distinctIDLower.toLowerCase(Locale.getDefault());
 
 //            Filter filter = ECQL.toFilter(
 //                    uuid + " ILIKE '" + distinctIDLower +
@@ -577,6 +580,8 @@ public class GranularityConvertor {
             while (it.hasNext()) {
                 SimpleFeature feature = it.next();
                 String featureUuid = feature.getAttribute(uuid).toString();
+                featureUuid = featureUuid.toLowerCase(Locale.getDefault());
+
                 if (spatiallyIndexedHashMap.containsKey(featureUuid)) {
                     spatiallyIndexedHashMap.get(featureUuid).add(feature);
                 } else {
