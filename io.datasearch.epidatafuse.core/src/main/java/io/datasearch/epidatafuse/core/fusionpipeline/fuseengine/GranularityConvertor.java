@@ -124,16 +124,22 @@ public class GranularityConvertor {
 
         ArrayList<SimpleFeature> aggregatedFeatures = new ArrayList<SimpleFeature>();
 
+        HashMap<String, ArrayList<SimpleFeature>> spatiallyIndexedFeatures =
+                getAllFeaturesBetweenDates(featureTypeName, startingTimestamp.toString(),
+                        endTimestamp.toString(), baseSpatialUuid);
+
         while (iterator.hasNext()) {
 
             SimpleFeature baseSpatialGranule = iterator.next();
             String baseSpatialGranuleID = baseSpatialGranule.getAttribute(baseSpatialUuid).toString();
 
-            ArrayList<SimpleFeature> featuresToAggregate =
-                    this.getFeaturesBetweenDates(featureTypeName, startingTimestamp.toString(),
-                            endTimestamp.toString(), baseSpatialUuid, baseSpatialGranuleID);
+//            ArrayList<SimpleFeature> featuresToAggregate =
+//                    this.getFeaturesBetweenDates(featureTypeName, startingTimestamp.toString(),
+//                            endTimestamp.toString(), baseSpatialUuid, baseSpatialGranuleID);
 
-            if (featuresToAggregate.size() > 0) {
+            ArrayList<SimpleFeature> featuresToAggregate = spatiallyIndexedFeatures.get(baseSpatialGranuleID);
+
+            if (featuresToAggregate != null && featuresToAggregate.size() > 0) {
 
                 HashMap<String, Double> valueSet = new HashMap<String, Double>();
                 SimpleFeature aggregatedFeature = null;
@@ -527,7 +533,7 @@ public class GranularityConvertor {
 //                            "' AND dtg DURING " + startingDate + "/" + endDate);
 
             Filter filter = ECQL.toFilter(
-                    uuid + " ILIKE '" + distinctIDLower +
+                    uuid + " = '" + distinctID +
                             "'and dtg DURING " + startingDate + "/" + endDate);
 
             Query query = new Query(typeName, filter);
@@ -552,6 +558,40 @@ public class GranularityConvertor {
             logger.error(e.getMessage());
         }
         return featureList;
+    }
+
+    public HashMap<String, ArrayList<SimpleFeature>> getAllFeaturesBetweenDates(String typeName, String startingDate,
+                                                                                String endDate,
+                                                                                String uuid) {
+        try {
+
+            Filter filter = ECQL.toFilter("dtg DURING " + startingDate + "/" + endDate);
+
+            Query query = new Query(typeName, filter);
+
+            SimpleFeatureCollection coll = this.dataStore.getFeatureSource(typeName).getFeatures(query);
+            SimpleFeatureIterator it = coll.features();
+            HashMap<String, ArrayList<SimpleFeature>> spatiallyIndexedHashMap =
+                    new HashMap<String, ArrayList<SimpleFeature>>();
+
+            while (it.hasNext()) {
+                SimpleFeature feature = it.next();
+                String featureUuid = feature.getAttribute(uuid).toString();
+                if (spatiallyIndexedHashMap.containsKey(featureUuid)) {
+                    spatiallyIndexedHashMap.get(featureUuid).add(feature);
+                } else {
+                    ArrayList<SimpleFeature> features = new ArrayList<SimpleFeature>();
+                    features.add(feature);
+                    spatiallyIndexedHashMap.put(featureUuid, features);
+                }
+            }
+            it.close();
+            return spatiallyIndexedHashMap;
+
+        } catch (Throwable e) {
+            logger.error(e.getMessage());
+            return null;
+        }
     }
 
     public SimpleFeatureType getFeatureType(String featureTypeName) {
