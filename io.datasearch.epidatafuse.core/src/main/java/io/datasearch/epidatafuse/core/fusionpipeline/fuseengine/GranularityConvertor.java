@@ -517,26 +517,37 @@ public class GranularityConvertor {
 //            Set<FeatureId> selection = new HashSet<>();
 //            selection.add(ff.featureId(distinctID));
 ////            Filter filterS = ff.id(selection);
-//
+//            Filter filter = CQL.toFilter("dtg DURING " + startingDate + ":00.000/" + endDate + ":00.000");
+
             String distinctIDLower = distinctID;
             distinctIDLower = distinctIDLower.toLowerCase(Locale.getDefault());
 
+//            Filter filter = ECQL.toFilter(
+//                    uuid + " ILIKE '" + distinctIDLower +
+//                            "' AND dtg DURING " + startingDate + "/" + endDate);
+
             Filter filter = ECQL.toFilter(
                     uuid + " ILIKE '" + distinctIDLower +
-                            "' AND dtg DURING " + startingDate + "/" + endDate);
+                            "'and dtg DURING " + startingDate + "/" + endDate);
 
-//            Filter filter = CQL.toFilter("dtg DURING " + startingDate + ":00.000/" + endDate + ":00.000");
             Query query = new Query(typeName, filter);
             //query.getHints().put(QueryHints.EXACT_COUNT(), Boolean.TRUE);
 
-            FeatureReader<SimpleFeatureType, SimpleFeature> reader =
-                    this.dataStore.getFeatureReader(query, Transaction.AUTO_COMMIT);
+//            FeatureReader<SimpleFeatureType, SimpleFeature> reader =
+//                    this.dataStore.getFeatureReader(query, Transaction.AUTO_COMMIT);
+            SimpleFeatureCollection coll = this.dataStore.getFeatureSource(typeName).getFeatures(query);
+            SimpleFeatureIterator it = coll.features();
 
-            while (reader.hasNext()) {
-                SimpleFeature feature = (SimpleFeature) reader.next();
+            while (it.hasNext()) {
+                SimpleFeature feature = (SimpleFeature) it.next();
                 featureList.add(feature);
             }
-            reader.close();
+            it.close();
+//            while (reader.hasNext()) {
+//                SimpleFeature feature = (SimpleFeature) reader.next();
+//                featureList.add(feature);
+//            }
+//            reader.close();
         } catch (Throwable e) {
             logger.error(e.getMessage());
         }
