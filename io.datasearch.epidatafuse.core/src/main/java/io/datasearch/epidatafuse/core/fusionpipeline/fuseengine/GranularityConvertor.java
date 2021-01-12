@@ -53,7 +53,7 @@ public class GranularityConvertor {
 
     private PipelineDataStore pipelineDataStore;
     private DataStore dataStore;
-    private String initTime;
+    private String initialTime;
     private long currentAndInitTimeDiff;
 
     public GranularityConvertor(PipelineDataStore pipelineDataStore) {
@@ -621,11 +621,11 @@ public class GranularityConvertor {
         return indexCol;
     }
 
-    public void setFusionInitTimestamp(String initTimestampString) {
-        this.initTime = initTimestampString;
+    public void setFusionInitialTimestamp(String initialTimestampString) {
+        this.initialTime = initialTimestampString;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         LocalDateTime currentTimestamp = LocalDateTime.now();
-        LocalDateTime initTimestamp = LocalDateTime.parse(initTime, formatter);
+        LocalDateTime initTimestamp = LocalDateTime.parse(initialTime, formatter);
         this.currentAndInitTimeDiff = ChronoUnit.MINUTES.between(initTimestamp, currentTimestamp);
         int a = 1;
     }

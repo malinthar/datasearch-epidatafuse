@@ -45,7 +45,7 @@ public class FuseEngine {
     private String fusionFQMultiplier;
     private Timer timer = new Timer();
     private String pipelineName;
-    private String initTimestamp;
+    private String initialTimestamp;
 
     public FuseEngine(PipelineDataStore dataStore, String pipelineName,
                       Map<String, GranularityRelationConfig> granularityRelationConfigs,
@@ -171,9 +171,9 @@ public class FuseEngine {
         return dataFrameBuilder;
     }
 
-    public void setFusionInitTimestamp(String initTimestamp) {
-        this.initTimestamp = initTimestamp;
-        this.granularityConvertor.setFusionInitTimestamp(initTimestamp);
+    public void setFusionInitialTimestamp(String initialTimestamp) {
+        this.initialTimestamp = initialTimestamp;
+        this.granularityConvertor.setFusionInitialTimestamp(initialTimestamp);
     }
 }
 
