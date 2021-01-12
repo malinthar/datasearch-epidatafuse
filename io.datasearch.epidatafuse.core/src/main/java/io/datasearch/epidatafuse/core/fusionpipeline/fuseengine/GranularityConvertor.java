@@ -238,7 +238,7 @@ public class GranularityConvertor {
             aggregatedFeature.setAttribute(aggregateOn, aggregatedValue);
 
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-            DateFormat dateStringFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+            DateFormat dateStringFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
             Date date;
 
