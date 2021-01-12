@@ -123,16 +123,6 @@ public class FusionPipeLineController {
         }
     }
 
-    public static Boolean setFusionInitTimestamp(String pipelineName, String initTimestamp) {
-        FusionPipeline pipeline = ServerContext.getPipeline(pipelineName);
-        try {
-            pipeline.setFusionInitTimestamp(initTimestamp);
-            return true;
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return false;
-        }
-    }
 
 //    @Deprecated
 //    public static GranularityRelationConfig buildGranularityRelationConfig(

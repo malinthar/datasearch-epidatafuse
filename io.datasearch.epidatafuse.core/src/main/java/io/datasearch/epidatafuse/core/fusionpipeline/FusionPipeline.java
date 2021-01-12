@@ -70,6 +70,7 @@ public class FusionPipeline {
     }
 
     public void init(String initialTimestamp) {
+        this.fuseEngine.setFusionInitTimestamp(initTimestamp);
         this.initialTimestamp = initialTimestamp;
         this.streamHandler.init();
         this.mapGranularityRelations();
