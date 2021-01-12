@@ -550,60 +550,63 @@ public class RequestHandler {
     }
 
     @RequestMapping("/getdataframes")
-    public String getdataframes() {
-        String dir = "public/output/";
-        File folder = new File(dir);
-        File[] listOfFiles = folder.listFiles();
+    public String getdataframes(@RequestBody Map<String, Object> payload) {
+        Response response;
+        try {
+            if (payload.get(PipelineUtil.PIPELINE_NAME_KEY) != null) {
+                String pipelineName = (String) payload.get(PipelineUtil.PIPELINE_NAME_KEY);
+                String dir = "public/output/";
+                Path rootDir = Paths.get("public", "output",
+                        pipelineName);
+                File folder = new File(rootDir.toUri());
+                File[] listOfFiles = folder.listFiles();
+                ArrayList<OutputFrame> outputData = new ArrayList<OutputFrame>();
+                for (int i = 0; i < listOfFiles.length; i++) {
+                    if (listOfFiles[i].isFile()) {
+                        File each = listOfFiles[i];
 
-        ArrayList<OutputFrame> outputData = new ArrayList<OutputFrame>();
+                        String[] headers = null;
+                        ArrayList<String[]> content = new ArrayList<String[]>();
 
-        for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()) {
-                File each = listOfFiles[i];
+                        try {
+                            FileReader reader = new FileReader(each);
+                            BufferedReader bufferedReader = new BufferedReader(reader);
 
-                String[] headers = null;
-                ArrayList<String[]> content = new ArrayList<String[]>();
-
-                try {
-                    FileReader reader = new FileReader(each);
-                    BufferedReader bufferedReader = new BufferedReader(reader);
-
-                    String line = null;
-                    headers = bufferedReader.readLine().split(",");
+                            String line = null;
+                            headers = bufferedReader.readLine().split(",");
 
 
-                    while ((line = bufferedReader.readLine()) != null) {
-                        String[] temp = line.split(",");
-                        content.add(temp);
+                            while ((line = bufferedReader.readLine()) != null) {
+                                String[] temp = line.split(",");
+                                content.add(temp);
+                            }
+                            bufferedReader.close();
+                            reader.close();
+
+                        } catch (Exception e) {
+                            logger.info(e.getMessage());
+                        }
+                        String fileName = each.getName();
+                        OutputFrame frame = new OutputFrame(fileName, headers, content);
+                        outputData.add(frame);
                     }
-                    bufferedReader.close();
-                    reader.close();
-
-                } catch (Exception e) {
-                    logger.info(e.getMessage());
                 }
-                String fileName = each.toString().substring(14);
-                OutputFrame frame = new OutputFrame(fileName, headers, content);
-                outputData.add(frame);
+                Map<String, Object> responseData = new HashMap<String, Object>();
+                responseData.put("data", outputData);
+                response =
+                        new Response(true, false, INGESTION_SUCCESS_MESSAGE, responseData);
+            } else {
+                response =
+                        new Response(false, true, PIPELINE_NAME_EMPTY_ERROR_MESSAGE, new HashMap<>());
+            }
+            return mapper.writeValueAsString(response);
+        } catch (Exception e) {
+            if (e instanceof JsonProcessingException) {
+                return SERVER_ERROR_MESSAGE;
+            } else {
+                return SERVER_ERROR_MESSAGE;
             }
         }
-
-        String message = "Successfully responded";
-        Map<String, Object> data = new HashMap<String, Object>();
-        data.put("data", outputData);
-
-        Response response = new Response(true, false, message, data);
-
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonString;
-
-        try {
-            jsonString = mapper.writeValueAsString(response);
-        } catch (Exception e) {
-            jsonString = "Server error!";
-            logger.error("Could not write response", e.getMessage());
-        }
-        return jsonString;
     }
 
     @RequestMapping("/testinit")
