@@ -65,6 +65,7 @@ public class RequestHandler {
     private static final String GRANULARITY_TYPE_IDENTIFIER = "granularity";
     private static final String PIPELINE_NAMES_KEY = "pipeline_names";
     private static final String ATTRIBUTE_TYPES_KEY = "attribute_types";
+    private static final String GEOM_ATTRIBUTE_TYPES_KEY = "geom_attribute_types";
     private static final String SPATIAL_GRANULARITIES_KEY = "spatialGranularities";
     private static final String TEMPORAL_GRANULARITIES_KEY = "temporalGranularities";
     private static final String SPATIAL_CONVERSION_METHODS = "spatialConversionMethods";
@@ -460,7 +461,8 @@ public class RequestHandler {
                 String pipelineName = (String) payload.get(PipelineUtil.PIPELINE_NAME_KEY);
                 if (ServerContext.getPipeline(pipelineName) != null) {
                     Map<String, Object> responseData = new HashMap<>();
-                    responseData.put(ATTRIBUTE_TYPES_KEY, AttributeUtil.getAttributeTypeList());
+                    responseData.put(ATTRIBUTE_TYPES_KEY, AttributeUtil.getNongeomAttributeTypeList());
+                    responseData.put(GEOM_ATTRIBUTE_TYPES_KEY, AttributeUtil.getGeometricTypeList());
                     response =
                             new Response(true, false, INGESTION_SUCCESS_MESSAGE, responseData);
                 } else {
