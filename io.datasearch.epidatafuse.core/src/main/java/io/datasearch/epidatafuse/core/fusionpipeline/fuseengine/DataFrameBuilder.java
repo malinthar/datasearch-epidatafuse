@@ -23,7 +23,7 @@ public class DataFrameBuilder {
     public void writeToCSV(ArrayList<String> csvRecords, String fileName, String pipelineName) {
         Path rootDir = Paths.get("public", "output", pipelineName);
 
-        String dir = "public/output/" + pipelineName;
+        String dir = "public/output/" + pipelineName + "/";
         String csvFileName = dir + fileName + ".csv";
         try {
             if (!Files.exists(rootDir)) {

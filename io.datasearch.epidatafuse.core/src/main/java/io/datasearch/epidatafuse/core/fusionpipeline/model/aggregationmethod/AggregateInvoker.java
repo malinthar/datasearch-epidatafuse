@@ -16,6 +16,7 @@ import java.util.Map;
  */
 public class AggregateInvoker {
     private static final Logger logger = LoggerFactory.getLogger(AggregateInvoker.class);
+
     public static Double mean(HashMap<String, Double> valueSet) {
         Double finalValue;
         ArrayList<Double> values = new ArrayList<Double>(valueSet.values());
@@ -146,11 +147,23 @@ public class AggregateInvoker {
                 break;
 
             case AggregationUtil.MAX:
-                calculatedValue = Collections.max(values);
+                try {
+                    if (values.size() > 0) {
+                        calculatedValue = Collections.max(values);
+                    }
+                } catch (Exception e) {
+                    logger.info(e.getMessage());
+                }
                 break;
 
             case AggregationUtil.MIN:
-                calculatedValue = Collections.min(values);
+                try {
+                    if (values.size() > 0) {
+                        calculatedValue = Collections.min(values);
+                    }
+                } catch (Exception e) {
+                    logger.info(e.getMessage());
+                }
                 break;
             default:
                 calculatedValue = 0.0;

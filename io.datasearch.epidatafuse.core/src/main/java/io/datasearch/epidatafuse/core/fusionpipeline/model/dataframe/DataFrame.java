@@ -72,10 +72,12 @@ public class DataFrame {
     public String createCsvRow(String targetGranule) {
         ArrayList<String> row = new ArrayList<>();
         row.add(targetGranule);
+        String dtg = getAggregatedFeatures().get(featureTypeNames.get(0)).getDtg();
         row.add(dtg);
         for (String featureType : featureTypeNames) {
             String aggregateAttr = aggregatedAttributeNames.get(featureType);
             SimpleFeature feature = aggregatedFeatures.get(featureType).getFeatureForSpatialGranule(targetGranule);
+
             if (feature != null) {
                 String value = feature.getAttribute(aggregateAttr).toString();
                 row.add(value);

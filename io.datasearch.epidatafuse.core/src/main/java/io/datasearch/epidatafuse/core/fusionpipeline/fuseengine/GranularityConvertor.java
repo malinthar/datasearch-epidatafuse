@@ -32,7 +32,11 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
+
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,6 +53,8 @@ public class GranularityConvertor {
 
     private PipelineDataStore pipelineDataStore;
     private DataStore dataStore;
+    private String initTime;
+    private long currentAndInitTimeDiff;
 
     public GranularityConvertor(PipelineDataStore pipelineDataStore) {
         this.pipelineDataStore = pipelineDataStore;
@@ -106,11 +112,12 @@ public class GranularityConvertor {
         String targetTemporalGranularity = temporalGranularityMap.getTargetTemporalGranularity();
         long relationValue = temporalGranularityMap.getRelationValue();
 
-//      LocalDateTime currentTimestamp = LocalDateTime.now();
-        LocalDateTime currentTimestamp = LocalDateTime.of(2013, 1, 7, 8, 00, 00, 00);
-        LocalDateTime startingTimestamp = currentTimestamp.minusHours(relationValue);
+        LocalDateTime currentTimestamp = LocalDateTime.now();
+//        LocalDateTime currentTimestamp = LocalDateTime.of(2013, 1, 7, 8, 00, 00, 00);
+        LocalDateTime endTimestamp = currentTimestamp.minusMinutes(this.currentAndInitTimeDiff);
+        LocalDateTime startingTimestamp = endTimestamp.minusHours(relationValue);
 
-        logger.info(currentTimestamp.toString());
+        logger.info(endTimestamp.toString());
         logger.info(startingTimestamp.toString());
 
         SimpleFeatureIterator iterator = baseSpatialGranuleSet.features();
@@ -119,16 +126,23 @@ public class GranularityConvertor {
 
         ArrayList<SimpleFeature> aggregatedFeatures = new ArrayList<SimpleFeature>();
 
+        HashMap<String, ArrayList<SimpleFeature>> spatiallyIndexedFeatures =
+                getAllFeaturesBetweenDates(featureTypeName, startingTimestamp.toString(),
+                        endTimestamp.toString(), baseSpatialUuid);
+
         while (iterator.hasNext()) {
 
             SimpleFeature baseSpatialGranule = iterator.next();
             String baseSpatialGranuleID = baseSpatialGranule.getAttribute(baseSpatialUuid).toString();
 
-            ArrayList<SimpleFeature> featuresToAggregate =
-                    this.getFeaturesBetweenDates(featureTypeName, startingTimestamp.toString(),
-                            currentTimestamp.toString(), baseSpatialUuid, baseSpatialGranuleID);
+//            ArrayList<SimpleFeature> featuresToAggregate =
+//                    this.getFeaturesBetweenDates(featureTypeName, startingTimestamp.toString(),
+//                            endTimestamp.toString(), baseSpatialUuid, baseSpatialGranuleID);
 
-            if (featuresToAggregate.size() > 0) {
+            ArrayList<SimpleFeature> featuresToAggregate =
+                    spatiallyIndexedFeatures.get(baseSpatialGranuleID.toLowerCase(Locale.getDefault()));
+
+            if (featuresToAggregate != null && featuresToAggregate.size() > 0) {
 
                 HashMap<String, Double> valueSet = new HashMap<String, Double>();
                 SimpleFeature aggregatedFeature = null;
@@ -163,7 +177,7 @@ public class GranularityConvertor {
                         aggregatedFeatureCollection,
                         baseSpatialGranularity,
                         targetTemporalGranularity,
-                        currentTimestamp.toString()
+                        endTimestamp.toString()
                 );
 
         return temporallyAggregatedCollection;
@@ -512,30 +526,77 @@ public class GranularityConvertor {
 //            Set<FeatureId> selection = new HashSet<>();
 //            selection.add(ff.featureId(distinctID));
 ////            Filter filterS = ff.id(selection);
-//
-            String distinctIDLower = distinctID;
-            distinctIDLower = distinctIDLower.toLowerCase(Locale.getDefault());
+//            Filter filter = CQL.toFilter("dtg DURING " + startingDate + ":00.000/" + endDate + ":00.000");
+
+//            String distinctIDLower = distinctID;
+//            distinctIDLower = distinctIDLower.toLowerCase(Locale.getDefault());
+
+//            Filter filter = ECQL.toFilter(
+//                    uuid + " ILIKE '" + distinctIDLower +
+//                            "' AND dtg DURING " + startingDate + "/" + endDate);
 
             Filter filter = ECQL.toFilter(
-                    uuid + " ILIKE '" + distinctIDLower +
-                            "' AND dtg DURING " + startingDate + ":00.000/" + endDate + ":00.000");
+                    uuid + " = '" + distinctID +
+                            "'and dtg DURING " + startingDate + "/" + endDate);
 
-//            Filter filter = CQL.toFilter("dtg DURING " + startingDate + ":00.000/" + endDate + ":00.000");
             Query query = new Query(typeName, filter);
             //query.getHints().put(QueryHints.EXACT_COUNT(), Boolean.TRUE);
 
-            FeatureReader<SimpleFeatureType, SimpleFeature> reader =
-                    this.dataStore.getFeatureReader(query, Transaction.AUTO_COMMIT);
+//            FeatureReader<SimpleFeatureType, SimpleFeature> reader =
+//                    this.dataStore.getFeatureReader(query, Transaction.AUTO_COMMIT);
+            SimpleFeatureCollection coll = this.dataStore.getFeatureSource(typeName).getFeatures(query);
+            SimpleFeatureIterator it = coll.features();
 
-            while (reader.hasNext()) {
-                SimpleFeature feature = (SimpleFeature) reader.next();
+            while (it.hasNext()) {
+                SimpleFeature feature = (SimpleFeature) it.next();
                 featureList.add(feature);
             }
-            reader.close();
+            it.close();
+//            while (reader.hasNext()) {
+//                SimpleFeature feature = (SimpleFeature) reader.next();
+//                featureList.add(feature);
+//            }
+//            reader.close();
         } catch (Throwable e) {
             logger.error(e.getMessage());
         }
         return featureList;
+    }
+
+    public HashMap<String, ArrayList<SimpleFeature>> getAllFeaturesBetweenDates(String typeName, String startingDate,
+                                                                                String endDate,
+                                                                                String uuid) {
+        try {
+
+            Filter filter = ECQL.toFilter("dtg DURING " + startingDate + "/" + endDate);
+
+            Query query = new Query(typeName, filter);
+
+            SimpleFeatureCollection coll = this.dataStore.getFeatureSource(typeName).getFeatures(query);
+            SimpleFeatureIterator it = coll.features();
+            HashMap<String, ArrayList<SimpleFeature>> spatiallyIndexedHashMap =
+                    new HashMap<String, ArrayList<SimpleFeature>>();
+
+            while (it.hasNext()) {
+                SimpleFeature feature = it.next();
+                String featureUuid = feature.getAttribute(uuid).toString();
+                featureUuid = featureUuid.toLowerCase(Locale.getDefault());
+
+                if (spatiallyIndexedHashMap.containsKey(featureUuid)) {
+                    spatiallyIndexedHashMap.get(featureUuid).add(feature);
+                } else {
+                    ArrayList<SimpleFeature> features = new ArrayList<SimpleFeature>();
+                    features.add(feature);
+                    spatiallyIndexedHashMap.put(featureUuid, features);
+                }
+            }
+            it.close();
+            return spatiallyIndexedHashMap;
+
+        } catch (Throwable e) {
+            logger.error(e.getMessage());
+            return null;
+        }
     }
 
     public SimpleFeatureType getFeatureType(String featureTypeName) {
@@ -558,5 +619,14 @@ public class GranularityConvertor {
             logger.error(e.getMessage());
         }
         return indexCol;
+    }
+
+    public void setFusionInitTimestamp(String initTimestampString) {
+        this.initTime = initTimestampString;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        LocalDateTime currentTimestamp = LocalDateTime.now();
+        LocalDateTime initTimestamp = LocalDateTime.parse(initTime, formatter);
+        this.currentAndInitTimeDiff = ChronoUnit.MINUTES.between(initTimestamp, currentTimestamp);
+        int a = 1;
     }
 }

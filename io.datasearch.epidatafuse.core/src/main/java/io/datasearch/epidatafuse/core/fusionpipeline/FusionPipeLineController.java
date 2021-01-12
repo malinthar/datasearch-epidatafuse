@@ -26,7 +26,7 @@ public class FusionPipeLineController {
 
     public static void createFusionPipeLine(String pipelineName) {
         try {
-            DataStore dataStore = createDataStore(pipelineName + "10");
+            DataStore dataStore = createDataStore(pipelineName + "11");
             Map<String, SimpleFeatureTypeSchema> featureSFTSchemas = new HashMap<>();
             Map<String, SimpleFeatureTypeSchema> granularitySFTSchemas = new HashMap<>();
             Map<String, GranularityRelationConfig> granularityRelationConfigs = new HashMap<>();
@@ -116,6 +116,17 @@ public class FusionPipeLineController {
                             Integer.parseInt(multiplier));
             pipeline.setFusionFQUnit(granularity);
             pipeline.setFusionFQMultiplier(multiplier);
+            return true;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return false;
+        }
+    }
+
+    public static Boolean setFusionInitTimestamp(String pipelineName, String initTimestamp) {
+        FusionPipeline pipeline = ServerContext.getPipeline(pipelineName);
+        try {
+            pipeline.setFusionInitTimestamp(initTimestamp);
             return true;
         } catch (Exception e) {
             logger.error(e.getMessage());
