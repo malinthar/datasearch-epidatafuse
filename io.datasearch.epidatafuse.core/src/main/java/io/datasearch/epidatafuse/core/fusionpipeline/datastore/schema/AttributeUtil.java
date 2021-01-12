@@ -49,6 +49,10 @@ public class AttributeUtil {
             Arrays.asList(STRING, INTEGER, DOUBLE, LONG, FLOAT, BOOLEAN, UUID, DATE, TIMESTAMP,
                     POINT, LINESTRING, POLYGON, MULTI_POINT, MULTI_LINE_STRING,
                     MULTI_POLYGON, GEOMETRY_COLLECTION, GEOMETRY, LIST, MAP, BYTES);
+
+    private static final List<String> NONGEOM_ATTRIBUTE_TYPE_LIST =
+            Arrays.asList(STRING, INTEGER, DOUBLE, LONG, FLOAT, BOOLEAN, UUID, DATE, TIMESTAMP, LIST, MAP, BYTES);
+
     private static final List<String> GEOMETRIC_TYPE_LIST = Arrays.asList(GEOMETRY,
             GEOMETRY_COLLECTION, POINT, POLYGON, LINESTRING, MULTI_POINT, MULTI_LINE_STRING, MULTI_POLYGON);
     private static final Map<String, String> ATTRIBUTE_TYPE_MAP;
@@ -150,6 +154,10 @@ public class AttributeUtil {
 
     public static List<String> getGeometricTypeList() {
         return GEOMETRIC_TYPE_LIST;
+    }
+
+    public static List<String> getNongeomAttributeTypeList() {
+        return NONGEOM_ATTRIBUTE_TYPE_LIST;
     }
 
     public static List<String> getAttributeTypeList() {
