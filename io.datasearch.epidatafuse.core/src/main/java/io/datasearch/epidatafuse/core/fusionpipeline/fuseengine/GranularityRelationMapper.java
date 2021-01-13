@@ -108,16 +108,19 @@ public class GranularityRelationMapper {
             logger.info("temporal " + granularityRelationConfig.getFeatureTypeName());
 
             String baseTemporalGranularity = granularityRelationConfig.getTemporalGranularity();
+            int baseTemporalMultiplier = granularityRelationConfig.getTemporalMultiplier();
             String targetTemporalGranularity = granularityRelationConfig.getTargetTemporalGranularity();
+            int targetTemporalMultiplier = granularityRelationConfig.getTargetTemporalMultiplier();
             String featureTypeName = granularityRelationConfig.getFeatureTypeName();
             String temporalRelationMappingMethod = granularityRelationConfig.getTemporalRelationMappingMethod();
 
             return new TemporalGranularityMap(
-                    baseTemporalGranularity, targetTemporalGranularity, featureTypeName,
+                    baseTemporalGranularity, baseTemporalMultiplier, targetTemporalGranularity,
+                    targetTemporalMultiplier, featureTypeName,
                     temporalRelationMappingMethod);
         } catch (Exception e) {
             return new TemporalGranularityMap(
-                    "day", "week", "test",
+                    "day", 1, "week", 1, "test",
                     "test");
         }
     }

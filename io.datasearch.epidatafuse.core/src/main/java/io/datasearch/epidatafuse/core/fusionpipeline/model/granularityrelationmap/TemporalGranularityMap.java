@@ -8,18 +8,29 @@ import io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmet
 public class TemporalGranularityMap {
 
     private String baseTemporalGranularity;
+    private int baseTemporalMultiplier;
     private String targetTemporalGranularity;
+    private int targetTemporalMultiplier;
     private String featureTypeName;
     private String relationMappingMethod;
     private long relationValue;
+    private long interpolationDivideFactor;
 
-    public TemporalGranularityMap(String baseTemporalGranularity, String targetTemporalGranularity,
+    public TemporalGranularityMap(String baseTemporalGranularity, int baseTemporalMultiplier,
+                                  String targetTemporalGranularity, int targetTemporalMultiplier,
                                   String featureTypeName, String relationMappingMethod) {
         this.baseTemporalGranularity = baseTemporalGranularity;
+        this.baseTemporalMultiplier = baseTemporalMultiplier;
         this.targetTemporalGranularity = targetTemporalGranularity;
+        this.targetTemporalMultiplier = targetTemporalMultiplier;
         this.featureTypeName = featureTypeName;
         this.relationMappingMethod = relationMappingMethod;
-        this.relationValue = TemporalRelationship.getRelationShip(baseTemporalGranularity, targetTemporalGranularity);
+        this.relationValue = TemporalRelationship
+                .getRelationShip(baseTemporalGranularity, baseTemporalMultiplier, targetTemporalGranularity,
+                        targetTemporalMultiplier);
+        this.interpolationDivideFactor =
+                TemporalRelationship.getInterpolationDivideFactor(baseTemporalGranularity, baseTemporalMultiplier,
+                        targetTemporalGranularity, targetTemporalMultiplier);
     }
 
     public String getBaseTemporalGranularity() {
@@ -40,5 +51,9 @@ public class TemporalGranularityMap {
 
     public long getRelationValue() {
         return relationValue;
+    }
+
+    public long getInterpolationDivideFactor() {
+        return interpolationDivideFactor;
     }
 }
