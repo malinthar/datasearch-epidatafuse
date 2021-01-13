@@ -28,6 +28,9 @@ public class TemporalRelationship {
     private static final List<String> TEMPORAL_UNITS_LIST;
     private static Table<String, String, Integer> relationshipTable = HashBasedTable.create();
     private static final Map<String, Long> GRANULARITY_MAP;
+    private static final HashMap<String, Integer> GRANULARITY_MAP_HOURS;
+
+    private static final Table<String, String, Integer> INTERPOLATION_DIVIDE_FACTORS = HashBasedTable.create();
 
     static {
         relationshipTable.put("day", "hour", 24);
@@ -50,16 +53,64 @@ public class TemporalRelationship {
         GRANULARITY_MAP.put(WEEK, 1000 * 60 * 60 * 24 * 7L);
         GRANULARITY_MAP.put(MONTH, 1000 * 60 * 60 * 24 * 30L);
         GRANULARITY_MAP.put(YEAR, 1000 * 60 * 60 * 24 * 365L);
+
+        GRANULARITY_MAP_HOURS = new HashMap<String, Integer>();
+        GRANULARITY_MAP_HOURS.put(HOUR, 1);
+        GRANULARITY_MAP_HOURS.put(DAY, 24);
+        GRANULARITY_MAP_HOURS.put(WEEK, 168);
+        GRANULARITY_MAP_HOURS.put(MONTH, 720);
+        GRANULARITY_MAP_HOURS.put(YEAR, 8760);
+
+        INTERPOLATION_DIVIDE_FACTORS.put("year", "year", 1);
+        INTERPOLATION_DIVIDE_FACTORS.put("year", "month", 12);
+        INTERPOLATION_DIVIDE_FACTORS.put("year", "week", 52);
+        INTERPOLATION_DIVIDE_FACTORS.put("year", "day", 365);
+        INTERPOLATION_DIVIDE_FACTORS.put("year", "hour", 8760);
+        INTERPOLATION_DIVIDE_FACTORS.put("year", "minute", 525600);
+
+        INTERPOLATION_DIVIDE_FACTORS.put("month", "month", 1);
+        INTERPOLATION_DIVIDE_FACTORS.put("month", "week", 4);
+        INTERPOLATION_DIVIDE_FACTORS.put("month", "day", 30);
+        INTERPOLATION_DIVIDE_FACTORS.put("month", "hour", 720);
+        INTERPOLATION_DIVIDE_FACTORS.put("month", "minute", 43200);
+
+        INTERPOLATION_DIVIDE_FACTORS.put("week", "week", 1);
+        INTERPOLATION_DIVIDE_FACTORS.put("week", "day", 7);
+        INTERPOLATION_DIVIDE_FACTORS.put("week", "hour", 168);
+        INTERPOLATION_DIVIDE_FACTORS.put("week", "minute", 10080);
+
+        INTERPOLATION_DIVIDE_FACTORS.put("day", "day", 1);
+        INTERPOLATION_DIVIDE_FACTORS.put("day", "hour", 24);
+        INTERPOLATION_DIVIDE_FACTORS.put("day", "minute", 1440);
+
+        INTERPOLATION_DIVIDE_FACTORS.put("hour", "hour", 1);
+        INTERPOLATION_DIVIDE_FACTORS.put("hour", "minute", 60);
+
     }
 
-    public static long getRelationShip(String row, String col) {
-        long value;
-        if (relationshipTable.contains(row, col)) {
-            value = relationshipTable.get(row, col);
-        } else if (relationshipTable.contains(col, row)) {
-            value = relationshipTable.get(col, row);
-        } else {
-            value = 0;
+//    public static long getRelationShip(String row, String col) {
+//        long value;
+//        if (relationshipTable.contains(row, col)) {
+//            value = relationshipTable.get(row, col);
+//        } else if (relationshipTable.contains(col, row)) {
+//            value = relationshipTable.get(col, row);
+//        } else {
+//            value = 1;
+//        }
+//        return value;
+//    }
+
+    public static long getRelationShip(String baseTemporalGranularity, int baseMultiplier,
+                                       String targetTemporalGranularity, int targetMultiplier) {
+        long value = 1;
+        if (GRANULARITY_MAP_HOURS.containsKey(baseTemporalGranularity) &&
+                GRANULARITY_MAP_HOURS.containsKey(targetTemporalGranularity)) {
+            if (TEMPORAL_UNITS_LIST.indexOf(baseTemporalGranularity) >
+                    TEMPORAL_UNITS_LIST.indexOf(targetTemporalGranularity)) {
+                value = GRANULARITY_MAP_HOURS.get(baseTemporalGranularity) * baseMultiplier;
+            } else {
+                value = GRANULARITY_MAP_HOURS.get(targetTemporalGranularity) * targetMultiplier;
+            }
         }
         return value;
     }
@@ -70,5 +121,27 @@ public class TemporalRelationship {
 
     public static List<String> getTemporalUnitsList() {
         return TEMPORAL_UNITS_LIST;
+    }
+
+    public static long getInterpolationDivideFactor(String baseTemporalGranularity, int baseMultiplier,
+                                                    String targetTemporalGranularity, int targetMultiplier) {
+        long value;
+        if (TEMPORAL_UNITS_LIST.contains(baseTemporalGranularity) &&
+                TEMPORAL_UNITS_LIST.contains(targetTemporalGranularity)) {
+            if (TEMPORAL_UNITS_LIST.indexOf(baseTemporalGranularity) >
+                    TEMPORAL_UNITS_LIST.indexOf(targetTemporalGranularity)) {
+                if (INTERPOLATION_DIVIDE_FACTORS.contains(baseTemporalGranularity, targetTemporalGranularity)) {
+                    value = INTERPOLATION_DIVIDE_FACTORS.get(baseTemporalGranularity, targetTemporalGranularity) *
+                            (baseMultiplier / targetMultiplier);
+                } else {
+                    value = 0;
+                }
+            } else {
+                value = 0;
+            }
+        } else {
+            value = 0;
+        }
+        return value;
     }
 }

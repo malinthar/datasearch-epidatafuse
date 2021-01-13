@@ -16,6 +16,9 @@ public class AggregationUtil {
     public static final String INVERSE_DISTANCE = "InverseDistance";
     public static final String AREA_BASED_AVERAGE = "AreaBasedAverage";
 
+    public static final String BRING_FORWARD = "BringForward";
+    public static final String EQUALLY_DISTRIBUTE = "Divide";
+
     static {
         SPATIAL_AGGREGATORS.put(MEAN, new HashMap<>());
         SPATIAL_AGGREGATORS.put(SUM, new HashMap<>());

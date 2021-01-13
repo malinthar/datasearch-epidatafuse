@@ -167,6 +167,16 @@
         <Bug pattern="EI_EXPOSE_REP2"/>
     </Match>
 
+    <Match>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.TemporalGranularityMap"/>
+        <Bug pattern="URF_UNREAD_FIELD"/>
+    </Match>
+
+    <Match>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.model.granularitymappingmethod.TemporalRelationship"/>
+        <Bug pattern="ICAST_INTEGER_MULTIPLY_CAST_TO_LONG"/>
+    </Match>
+
 
 
 

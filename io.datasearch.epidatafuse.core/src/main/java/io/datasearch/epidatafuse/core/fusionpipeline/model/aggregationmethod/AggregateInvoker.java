@@ -105,6 +105,23 @@ public class AggregateInvoker {
 
     }
 
+    public static Double equallyDistribute(HashMap<String, Double> valueSet, HashMap<String, Double> customAttributes) {
+        Double finalValue;
+        Double divideFactor = customAttributes.get("INTERPOLATION_DIVIDE_FACTOR");
+        ArrayList<Double> values = new ArrayList<Double>(valueSet.values());
+
+        if (values.size() >= 1) {
+            if (divideFactor != null && divideFactor != 0) {
+                finalValue = (values.get(0)) / divideFactor;
+            } else {
+                finalValue = values.get(0);
+            }
+        } else {
+            finalValue = 0.0;
+        }
+        return finalValue;
+    }
+
     public static Double defaultAggregate(HashMap<String, Double> valueSet) {
         Double finalValue;
         ArrayList<Double> values = new ArrayList<Double>(valueSet.values());
@@ -172,4 +189,6 @@ public class AggregateInvoker {
 
         return calculatedValue;
     }
+
+
 }

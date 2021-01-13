@@ -111,9 +111,12 @@ public class GranularityConvertor {
 
         String targetTemporalGranularity = temporalGranularityMap.getTargetTemporalGranularity();
         long relationValue = temporalGranularityMap.getRelationValue();
+        double interpolationDivideFactor = (double) temporalGranularityMap.getInterpolationDivideFactor();
+
+        HashMap<String, Double> customAttributes = new HashMap<String, Double>();
+        customAttributes.put("INTERPOLATION_DIVIDE_FACTOR", interpolationDivideFactor);
 
         LocalDateTime currentTimestamp = LocalDateTime.now();
-//        LocalDateTime currentTimestamp = LocalDateTime.of(2013, 1, 7, 8, 00, 00, 00);
         LocalDateTime endTimestamp = currentTimestamp.minusMinutes(this.currentAndInitTimeDiff);
         LocalDateTime startingTimestamp = endTimestamp.minusHours(relationValue);
 
@@ -161,7 +164,7 @@ public class GranularityConvertor {
                 }
 
                 Double aggregatedValue = this.calculateFinalValue(valueSet, isATemporalInterpolation,
-                        aggregationMethod, null);
+                        aggregationMethod, customAttributes);
 
                 aggregatedFeature.setAttribute(aggregateOn, aggregatedValue);
                 logger.info(aggregatedFeature.toString());
@@ -238,7 +241,7 @@ public class GranularityConvertor {
             aggregatedFeature.setAttribute(aggregateOn, aggregatedValue);
 
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-            DateFormat dateStringFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+            DateFormat dateStringFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
             Date date;
 
@@ -453,6 +456,10 @@ public class GranularityConvertor {
                 case AggregationUtil.AREA_BASED_AVERAGE:
                     finalValue = AggregateInvoker.areaBasedAverage(valueSet, customAttributes);
                     break;
+                case AggregationUtil.EQUALLY_DISTRIBUTE:
+                    finalValue = AggregateInvoker.equallyDistribute(valueSet, customAttributes);
+                    break;
+                case AggregationUtil.BRING_FORWARD:
                 case "None":
                     finalValue = AggregateInvoker.defaultAggregate(valueSet);
                     break;
