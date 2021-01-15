@@ -26,7 +26,7 @@ public class FusionPipeLineController {
 
     public static void createFusionPipeLine(String pipelineName) {
         try {
-            DataStore dataStore = createDataStore(pipelineName + "11");
+            DataStore dataStore = createDataStore(pipelineName + "12");
             Map<String, SimpleFeatureTypeSchema> featureSFTSchemas = new HashMap<>();
             Map<String, SimpleFeatureTypeSchema> granularitySFTSchemas = new HashMap<>();
             Map<String, GranularityRelationConfig> granularityRelationConfigs = new HashMap<>();
@@ -54,7 +54,7 @@ public class FusionPipeLineController {
                         featureConfig.getAggregationConfig());
                 pipeline.addFeature(schema, granularityConfig, aggregationConfig);
             } else if (featureConfig.GRANULARITY_TYPE_IDENTIFIER.equals(featureConfig.getFeatureType())) {
-                pipeline.addGranularity(schema);
+                pipeline.addGranularity(schema, featureConfig.getSpatialHierarchyLevel());
             }
             return true;
         }

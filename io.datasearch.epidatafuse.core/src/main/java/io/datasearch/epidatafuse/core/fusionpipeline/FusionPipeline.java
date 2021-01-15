@@ -90,8 +90,9 @@ public class FusionPipeline {
         this.aggregationConfigs.put(schema.getSimpleFeatureTypeName(), aggregationConfig);
     }
 
-    public void addGranularity(SimpleFeatureTypeSchema schema) {
+    public void addGranularity(SimpleFeatureTypeSchema schema, Integer spatialHierarchyLevel) {
         this.pipelineDataStore.addGranularitySchema(schema);
+        this.fuseEngine.addNewConceptToHierarchy(schema.getSimpleFeatureTypeName(), spatialHierarchyLevel);
     }
 
     public void addStreamingConfig(String featureName, Map<String, Object> parameters) {
