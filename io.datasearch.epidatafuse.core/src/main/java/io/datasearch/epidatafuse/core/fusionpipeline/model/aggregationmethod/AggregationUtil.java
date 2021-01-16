@@ -31,6 +31,8 @@ public class AggregationUtil {
         TEMPORAL_AGGREGATORS.put(SUM, new HashMap<>());
         TEMPORAL_AGGREGATORS.put(MAX, new HashMap<>());
         TEMPORAL_AGGREGATORS.put(MIN, new HashMap<>());
+        TEMPORAL_AGGREGATORS.put(BRING_FORWARD, new HashMap<>());
+        TEMPORAL_AGGREGATORS.put(EQUALLY_DISTRIBUTE, new HashMap<>());
     }
 
     public static Map<String, Map<String, Object>> getSpatialAggregators() {
