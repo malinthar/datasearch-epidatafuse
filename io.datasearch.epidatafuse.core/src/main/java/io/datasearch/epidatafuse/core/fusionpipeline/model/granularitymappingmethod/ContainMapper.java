@@ -41,7 +41,7 @@ public class ContainMapper {
         while (featureIt.hasNext()) {
             SimpleFeature next = featureIt.next();
             Geometry baseGeometry = (Geometry) next.getDefaultGeometry();
-            boolean contains = ((Geometry) targetGranule.getDefaultGeometry()).contains(baseGeometry);
+            boolean contains = ((Geometry) targetGranule.getDefaultGeometry()).covers(baseGeometry);
             if (contains) {
                 nearestNeighbors.add(next.getAttribute(baseUUID).toString());
             }
