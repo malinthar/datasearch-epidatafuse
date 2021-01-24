@@ -5,10 +5,10 @@ import io.datasearch.epidatafuse.core.fusionpipeline.model.configuration.Aggrega
 import io.datasearch.epidatafuse.core.fusionpipeline.model.configuration.GranularityRelationConfig;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.dataframe.DataFrame;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.datamodel.SpatioTemporallyAggregatedCollection;
+import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.ConceptHierarchy;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.GranularityMap;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.SpatialGranularityRelationMap;
 import io.datasearch.epidatafuse.core.fusionpipeline.model.granularityrelationmap.TemporalGranularityMap;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,20 +25,13 @@ import java.util.Timer;
 public class FuseEngine {
 
     private static final Logger logger = LoggerFactory.getLogger(FuseEngine.class);
-    //aggregating
     private DataFrameBuilder dataFrameBuilder;
-    //granularityConvertor
     private GranularityConvertor granularityConvertor;
-    //granularityRelationMapper
     private GranularityRelationMapper granularityRelationMapper;
-
     private PipelineDataStore dataStore;
-
     private Scheduler scheduler;
-
     private Map<String, GranularityRelationConfig> granularityRelationConfigs;
     private Map<String, AggregationConfig> aggregationConfigs;
-
     private Map<String, GranularityMap> granularityRelationMaps;
     private long fusionFrequency;
     private String fusionFQUnit;
@@ -46,6 +39,7 @@ public class FuseEngine {
     private Timer timer = new Timer();
     private String pipelineName;
     private String initialTimestamp;
+    private ConceptHierarchy spatialConceptHierarchy;
 
     public FuseEngine(PipelineDataStore dataStore, String pipelineName,
                       Map<String, GranularityRelationConfig> granularityRelationConfigs,
@@ -58,6 +52,7 @@ public class FuseEngine {
         this.dataFrameBuilder = new DataFrameBuilder();
         this.scheduler = new Scheduler();
         this.pipelineName = pipelineName;
+        this.spatialConceptHierarchy = new ConceptHierarchy();
         scheduler.setFuseEngine(this);
     }
 
@@ -174,6 +169,10 @@ public class FuseEngine {
     public void setFusionInitialTimestamp(String initialTimestamp) {
         this.initialTimestamp = initialTimestamp;
         this.granularityConvertor.setFusionInitialTimestamp(initialTimestamp);
+    }
+
+    public void addNewConceptToHierarchy(String granularityName, Integer level) {
+        this.spatialConceptHierarchy.addNewConcept(granularityName, level);
     }
 }
 
