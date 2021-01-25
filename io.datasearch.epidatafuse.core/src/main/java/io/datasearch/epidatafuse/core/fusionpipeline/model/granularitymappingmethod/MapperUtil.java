@@ -10,9 +10,11 @@ public class MapperUtil {
     private static final Map<String, Map<String, Object>> MAPPERS = new HashMap<>();
 
     static {
+        MAPPERS.put(DefaultMapper.MAPPER_NAME, DefaultMapper.getArguments());
         MAPPERS.put(NearestMapper.MAPPER_NAME, NearestMapper.getArguments());
         MAPPERS.put(ContainMapper.MAPPER_NAME, ContainMapper.getArguments());
         MAPPERS.put(WithinRadiusMapper.MAPPER_NAME, ContainMapper.getArguments());
+        MAPPERS.put(IntersectMapper.MAPPER_NAME, IntersectMapper.getArguments());
     }
 
     public static Map<String, Map<String, Object>> getMAPPERS() {
@@ -22,4 +24,5 @@ public class MapperUtil {
     public static Map<String, Object> getMapper(String mapperName) {
         return MAPPERS.get(mapperName);
     }
+
 }

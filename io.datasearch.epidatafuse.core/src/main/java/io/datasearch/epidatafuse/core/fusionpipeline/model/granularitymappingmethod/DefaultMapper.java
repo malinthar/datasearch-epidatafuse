@@ -6,6 +6,8 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Mapping granules within a given radius
@@ -13,7 +15,8 @@ import java.util.ArrayList;
 
 public class DefaultMapper {
 
-    public static final String MAPPER_NAME = "None";
+    public static final String MAPPER_NAME = "None(Default)";
+    private static final Map<String, Object> ARGUMENTS = new HashMap<>();
 
     public static SpatialGranularityRelationMap buildDefaultMap(SimpleFeatureCollection targetGranuleSet,
                                                                 SimpleFeatureCollection baseGranuleSet, String baseUUID,
@@ -33,5 +36,9 @@ public class DefaultMapper {
         }
         return spatialMap;
 
+    }
+
+    public static Map<String, Object> getArguments() {
+        return ARGUMENTS;
     }
 }

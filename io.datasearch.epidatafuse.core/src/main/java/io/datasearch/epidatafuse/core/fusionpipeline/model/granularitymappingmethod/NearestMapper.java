@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class NearestMapper {
     private static final Logger logger = LoggerFactory.getLogger(NearestMapper.class);
-    public static final String MAPPER_NAME = "Nearest";
+    public static final String MAPPER_NAME = "NearestNeighbours";
     public static final String ARG_NEIGHBORS = "neighbors";
     public static final String ARG_MAX_DISTANCE = "maxDistance";
     private static final Integer DEFAULT_NEIGHBORS = 2;
