@@ -177,6 +177,11 @@
         <Bug pattern="ICAST_INTEGER_MULTIPLY_CAST_TO_LONG"/>
     </Match>
 
+    <Match>
+        <Class name="io.datasearch.epidatafuse.core.fusionpipeline.fuseengine.GranularityConvertor"/>
+        <Bug pattern="RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT"/>
+    </Match>
+
 
 
 
