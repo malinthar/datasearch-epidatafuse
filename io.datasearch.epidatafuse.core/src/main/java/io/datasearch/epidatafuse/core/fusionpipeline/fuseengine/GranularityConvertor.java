@@ -142,8 +142,14 @@ public class GranularityConvertor {
 //                    this.getFeaturesBetweenDates(featureTypeName, startingTimestamp.toString(),
 //                            endTimestamp.toString(), baseSpatialUuid, baseSpatialGranuleID);
 
-            ArrayList<SimpleFeature> featuresToAggregate =
-                    spatiallyIndexedFeatures.get(baseSpatialGranuleID.toLowerCase(Locale.getDefault()));
+            ArrayList<SimpleFeature> featuresToAggregate;
+            try {
+                featuresToAggregate =
+                        spatiallyIndexedFeatures.get(baseSpatialGranuleID.toLowerCase(Locale.getDefault()));
+            } catch (Exception e) {
+                e.getMessage();
+                featuresToAggregate = new ArrayList<SimpleFeature>();
+            }
 
             if (featuresToAggregate != null && featuresToAggregate.size() > 0) {
 
